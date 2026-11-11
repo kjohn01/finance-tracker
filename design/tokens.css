@@ -13,6 +13,7 @@
   --surface-3: #d2dcd6;
   --line: #d0dad4;
   --line-strong: #aebbb4;
+  --line-field: #7a8781; /* borders of inputs and outline buttons: 3:1 on the surface */
   --scrim: rgba(18, 28, 25, 0.48);
 
   /* Ink */
@@ -122,6 +123,7 @@
   --surface-3: #243631;
   --line: #273833;
   --line-strong: #3a4f49;
+  --line-field: #6f8079;
   --scrim: rgba(2, 8, 6, 0.66);
 
   --ink: #eef2ec;
