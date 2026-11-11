@@ -1,0 +1,1528 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finance Tracker prototype</title>
+<style>
+/* TOKENS:START */
+/* Finance Tracker design tokens.
+   Source of truth for colour, type, spacing, radius, shadow and chart palette.
+   design/prototype/index.html inlines this file verbatim (between the TOKENS markers);
+   rebuild with design/prototype/sync-tokens.sh after editing. */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces: the pale green of passbook and cheque paper, with white slips on top */
+  --bg: #e9f0eb;
+  --surface: #fbfcfa;
+  --surface-2: #e0e8e3;
+  --surface-3: #d2dcd6;
+  --line: #d0dad4;
+  --line-strong: #aebbb4;
+  --line-field: #7a8781; /* borders of inputs and outline buttons: 3:1 on the surface */
+  --scrim: rgba(18, 28, 25, 0.48);
+
+  /* Ink */
+  --ink: #17201d;
+  --ink-2: #47524e;
+  --ink-3: #55605b;
+  --ink-inverse: #fbfcfa;
+
+  /* Brand: lagoon teal. Kaya gold marks "now"; orange belongs to charts (expenses), not to chrome */
+  --brand: #0b5d53;
+  --brand-hover: #094c44;
+  --on-brand: #ffffff;
+  --accent: #009180;
+  --accent-soft: #d9efe9;
+  --warm: #eb6834;
+  --warm-soft: #fde5d8;
+  --gold: #f2c14e;
+  --gold-soft: #fbefcd;
+  --deep: #0c4a43;
+  --on-deep: #f3f7f4;
+
+  /* Meaning (always paired with an icon or a word) */
+  --pos: #0a6b3c;
+  --pos-soft: #dcefe2;
+  --neg: #b3331c;
+  --neg-soft: #fbe2db;
+  --warn: #855600;
+  --warn-soft: #fbefcd;
+  --focus: #1f6fe0;
+
+  /* Chart palette: categorical, fixed order, validated for colour-blind separation on --surface */
+  --s1: #009180; /* teal: income, kept, single-series default */
+  --s2: #eb6834; /* orange: expenses, dining */
+  --s3: #2a78d6; /* blue: housing */
+  --s4: #eda100; /* yellow: transport */
+  --s5: #e87ba4; /* magenta: shopping */
+  --s6: #008300; /* green: groceries */
+  --s7: #6250d6; /* violet: travel */
+  --s8: #e34948; /* red: bills and subscriptions */
+  --s-other: #8d9a94; /* neutral: other, context series */
+  /* Sequential ramp (calendar heatmap): one hue, more is darker */
+  --seq-0: #e0e8e3;
+  --seq-1: #cfeae3;
+  --seq-2: #9bd6c9;
+  --seq-3: #55b9a7;
+  --seq-4: #14907f;
+  --seq-5: #0a5e54;
+  --grid: #e2e9e4;
+  --axis: #aebbb4;
+
+  /* Type: system stack only, no web fonts */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+  --fs-3xl: 34px;
+  --fs-4xl: 46px;
+  --fs-5xl: 60px;
+  --lh-tight: 1.12;
+  --lh-snug: 1.3;
+  --lh-body: 1.5;
+  --fw-regular: 400;
+  --fw-medium: 550;
+  --fw-bold: 680;
+
+  /* Spacing: 4 px base */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Radius */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* Shadow */
+  --sh-1: 0 1px 0 rgba(18, 33, 29, 0.05);
+  --sh-2: 0 6px 20px -8px rgba(18, 33, 29, 0.18), 0 1px 2px rgba(18, 33, 29, 0.06);
+  --sh-3: 0 24px 60px -20px rgba(20, 30, 26, 0.38), 0 2px 6px rgba(20, 30, 26, 0.1);
+
+  /* Motion and targets */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+  --tap: 44px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0d1614;
+  --surface: #15211e;
+  --surface-2: #1c2b27;
+  --surface-3: #243631;
+  --line: #273833;
+  --line-strong: #3a4f49;
+  --line-field: #6f8079;
+  --scrim: rgba(2, 8, 6, 0.66);
+
+  --ink: #eef2ec;
+  --ink-2: #b9c5bf;
+  --ink-3: #93a29c;
+  --ink-inverse: #0d1614;
+
+  --brand: #62d6c1;
+  --brand-hover: #7ee2cf;
+  --on-brand: #06231f;
+  --accent: #19a391;
+  --accent-soft: #173b35;
+  --warm: #d95926;
+  --warm-soft: #43261a;
+  --gold: #f2c14e;
+  --gold-soft: #3d3317;
+  --deep: #103f39;
+  --on-deep: #f3f7f4;
+
+  --pos: #5fd08f;
+  --pos-soft: #173524;
+  --neg: #ff9a80;
+  --neg-soft: #43231b;
+  --warn: #f2c14e;
+  --warn-soft: #3d3317;
+  --focus: #8ab8ff;
+
+  /* Same eight hues, re-stepped for the dark surface and validated again */
+  --s1: #19a391;
+  --s2: #d95926;
+  --s3: #3987e5;
+  --s4: #c98500;
+  --s5: #d55181;
+  --s6: #008300;
+  --s7: #9085e9;
+  --s8: #e66767;
+  --s-other: #7d8a85;
+  --seq-0: #1c2b27;
+  --seq-1: #17443d;
+  --seq-2: #176256;
+  --seq-3: #1b8473;
+  --seq-4: #35ad98;
+  --seq-5: #7fe0cc;
+  --grid: #223430;
+  --axis: #3a4f49;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --sh-2: 0 8px 24px -10px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --sh-3: 0 28px 70px -20px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+/* TOKENS:END */
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:var(--fs-md);line-height:var(--lh-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+a{color:var(--brand);text-underline-offset:3px}
+svg{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:var(--r-xs)}
+[tabindex="-1"]:focus{outline:none}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--brand);color:var(--on-brand);padding:12px 14px;border-radius:var(--r-sm);z-index:99}
+.skip:focus{top:8px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* ---------- primitives ---------- */
+.num{font-variant-numeric:tabular-nums}
+.amt{transition:filter var(--dur) var(--ease)}
+.priv .amt{filter:blur(7px);user-select:none}
+.eyebrow{font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-3)}
+.muted{color:var(--ink-3)}
+.ink2{color:var(--ink-2)}
+.small{font-size:var(--fs-sm)}
+.xs{font-size:var(--fs-xs)}
+.pos{color:var(--pos)}.neg{color:var(--neg)}
+.row{display:flex;align-items:center;gap:var(--sp-3)}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.stack{display:flex;flex-direction:column;gap:var(--sp-3)}
+.trunc{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ic{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ic.sm{width:16px;height:16px}
+.small>.ic,.sub>.ic,.hint>.ic,p>.ic{display:inline-block;vertical-align:-3px}
+.ic.lg{width:24px;height:24px}
+
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2);min-height:var(--tap);padding:0 var(--sp-5);border-radius:var(--r-pill);font-weight:var(--fw-medium);font-size:var(--fs-md);white-space:nowrap;border:1px solid transparent;transition:background var(--dur) var(--ease),transform var(--dur) var(--ease),border-color var(--dur)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--brand);color:var(--on-brand)}
+.btn.primary:hover{background:var(--brand-hover)}
+.btn.ghost{border-color:var(--line-field);background:var(--surface);color:var(--ink)}
+.btn.ghost:hover{background:var(--surface-2)}
+.btn.quiet{color:var(--brand);padding:0 var(--sp-3)}
+.btn.quiet:hover{background:var(--accent-soft)}
+.btn.danger{background:var(--neg);color:var(--ink-inverse)}
+.btn.danger-ghost{border-color:var(--neg);color:var(--neg);background:transparent}
+.btn.sm{min-height:36px;padding:0 var(--sp-4);font-size:var(--fs-sm)}
+.btn.block{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.iconbtn{display:inline-flex;align-items:center;justify-content:center;width:var(--tap);height:var(--tap);border-radius:var(--r-pill);color:var(--ink-2);flex:none}
+.iconbtn:hover{background:var(--surface-2);color:var(--ink)}
+.iconbtn.on{background:var(--accent-soft);color:var(--brand)}
+.iconbtn.txt{font-size:var(--fs-sm);font-weight:var(--fw-bold);width:auto;min-width:var(--tap);padding:0 10px}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);min-width:0}
+.card h3{font-size:var(--fs-lg);font-weight:var(--fw-bold);line-height:var(--lh-snug);letter-spacing:-.01em}
+.card .sub{font-size:var(--fs-sm);color:var(--ink-3);margin-top:2px}
+.card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);margin-bottom:var(--sp-4)}
+.chip{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--ink-2);font-size:var(--fs-xs);font-weight:var(--fw-medium);white-space:nowrap}
+.chip.teal{background:var(--accent-soft);color:var(--brand)}
+.chip.warm{background:var(--warm-soft);color:var(--neg)}
+.chip.gold{background:var(--gold-soft);color:var(--warn)}
+.chip.line{background:transparent;border:1px solid var(--line-strong)}
+.dot{width:10px;height:10px;border-radius:3px;flex:none;display:inline-block}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:var(--r-pill);padding:3px;gap:2px;max-width:100%}
+.seg button{min-height:36px;padding:0 14px;border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--ink);box-shadow:var(--sh-1)}
+.seg.fill{display:flex}.seg.fill button{flex:1;justify-content:center;padding:0 8px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span,.label{font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-2)}
+.input,.select{min-height:var(--tap);width:100%;border:1px solid var(--line-field);border-radius:var(--r-sm);background:var(--surface);padding:0 var(--sp-3);font-size:16px}
+.select{appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 18px) 55%,calc(100% - 13px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.select.sm{min-height:36px;font-size:var(--fs-sm);width:auto;border-radius:var(--r-pill);padding-left:14px}
+.input:hover,.select:hover{border-color:var(--ink)}
+.hint{font-size:var(--fs-xs);color:var(--ink-3)}
+.switch{position:relative;width:52px;height:44px;flex:none}
+.switch::before{content:"";position:absolute;left:0;right:0;top:6px;height:32px;border-radius:var(--r-pill);background:var(--line-field);transition:background var(--dur)}
+.switch::after{content:"";position:absolute;top:9px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:var(--sh-1);transition:transform var(--dur) var(--ease)}
+.switch[aria-checked=true]::before{background:var(--accent)}
+.switch[aria-checked=true]::after{transform:translateX(20px)}
+.av{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:var(--fs-sm);font-weight:var(--fw-bold);flex:none;color:var(--ink);background:color-mix(in srgb,var(--avc,var(--s-other)) 22%,var(--surface))}
+.av.sm{width:32px;height:32px;border-radius:10px;font-size:var(--fs-xs)}
+.meter{height:8px;border-radius:var(--r-pill);background:var(--accent-soft);overflow:hidden}
+.meter>i{display:block;height:100%;border-radius:var(--r-pill);background:var(--accent)}
+.divide>*+*{border-top:1px solid var(--line)}
+.note{display:flex;gap:var(--sp-3);padding:var(--sp-4);border-radius:var(--r-md);background:var(--gold-soft);color:var(--ink);font-size:var(--fs-sm)}
+.note.teal{background:var(--accent-soft)}
+.note .ic{color:var(--warn);margin-top:1px}.note.teal .ic{color:var(--brand)}
+
+/* ---------- app shell ---------- */
+.demo{display:flex;align-items:center;gap:var(--sp-3);padding:6px var(--sp-4);background:var(--ink);color:var(--bg);font-size:var(--fs-xs);min-height:36px}
+.demo b{color:var(--gold)}
+.demo button{margin-left:auto;color:var(--bg);text-decoration:underline;text-underline-offset:3px;min-height:28px;white-space:nowrap}
+.shell{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:calc(100vh - 36px)}
+.side{position:sticky;top:0;height:100vh;padding:var(--sp-5) var(--sp-3);display:flex;flex-direction:column;gap:var(--sp-1);border-right:1px solid var(--line);overflow:auto}
+.logo{display:flex;align-items:center;gap:10px;font-weight:var(--fw-bold);font-size:var(--fs-lg);letter-spacing:-.02em;padding:0 var(--sp-3) var(--sp-5)}
+.logo svg{width:32px;height:32px;flex:none}
+.nav{display:flex;align-items:center;gap:var(--sp-3);min-height:42px;padding:0 var(--sp-3);border-radius:var(--r-sm);color:var(--ink-2);font-weight:var(--fw-medium);font-size:var(--fs-md);text-decoration:none;width:100%}
+.nav:hover{background:var(--surface-2);color:var(--ink)}
+.nav[aria-current=page]{background:var(--surface);color:var(--ink);box-shadow:var(--sh-1);border:1px solid var(--line)}
+.nav[aria-current=page] .ic{color:var(--accent)}
+.nav .count{margin-left:auto;font-size:var(--fs-2xs);font-weight:var(--fw-bold);background:var(--warm);color:#fff;border-radius:var(--r-pill);padding:1px 7px}
+.nav-sep{font-size:var(--fs-xs);color:var(--ink-3);padding:var(--sp-4) var(--sp-3) var(--sp-1)}
+.side-foot{margin-top:auto;padding:var(--sp-3);border-radius:var(--r-md);background:var(--surface-2);font-size:var(--fs-xs)}
+.main{min-width:0}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-3) var(--sp-8);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid transparent}
+.top h1{font-size:var(--fs-xl);font-weight:var(--fw-bold);letter-spacing:-.02em;margin-right:auto;min-width:0}
+.top .logo{padding:0;display:none}
+.page{padding:var(--sp-2) var(--sp-8) var(--sp-16);max-width:1240px}
+.page-h{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap;margin-bottom:var(--sp-5)}
+.page-h p{color:var(--ink-2);max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--sp-5)}
+.c12{grid-column:span 12}.c8{grid-column:span 8}.c7{grid-column:span 7}.c6{grid-column:span 6}.c5{grid-column:span 5}.c4{grid-column:span 4}
+.tabbar{display:none}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .top{padding:var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);gap:0}
+  .top h1{font-size:var(--fs-lg);padding-right:8px}
+  .page{padding:var(--sp-2) var(--sp-4) 120px}
+  .grid{gap:var(--sp-4)}
+  .c12,.c8,.c7,.c6,.c5,.c4{grid-column:span 12}
+  .card{padding:var(--sp-4)}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar a,.tabbar button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:50px;font-size:10.5px;font-weight:var(--fw-medium);color:var(--ink-3);text-decoration:none;border-radius:var(--r-sm)}
+  .tabbar [aria-current=page]{color:var(--brand)}
+  .tabbar .fab{background:var(--brand);color:var(--on-brand);width:50px;height:50px;border-radius:18px;justify-self:center;box-shadow:var(--sh-2)}
+  .hide-m{display:none!important}
+  .btn.sm,.select.sm,.seg button,.tbtn,.demo button{min-height:var(--tap)}
+}
+@media (min-width:861px){.hide-d{display:none!important}}
+
+/* ---------- overlays ---------- */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:50;display:flex;justify-content:flex-end;animation:fade var(--dur) var(--ease)}
+.sheet{background:var(--surface);width:min(460px,100%);height:100%;overflow:auto;padding:var(--sp-6);box-shadow:var(--sh-3);animation:slideL 240ms var(--ease);display:flex;flex-direction:column;gap:var(--sp-4)}
+.sheet-h{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.sheet-h h2{font-size:var(--fs-xl);font-weight:var(--fw-bold);letter-spacing:-.02em}
+.sheet-f{margin-top:auto;display:flex;gap:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line);position:sticky;bottom:calc(-1 * var(--sp-6));background:var(--surface);padding-bottom:var(--sp-2)}
+.scrim.center{align-items:center;justify-content:center;padding:var(--sp-4)}
+.dialog{background:var(--surface);border-radius:var(--r-xl);padding:var(--sp-6);width:min(440px,100%);box-shadow:var(--sh-3);display:flex;flex-direction:column;gap:var(--sp-4);max-height:90vh;overflow:auto}
+.dialog h2{font-size:var(--fs-xl);font-weight:var(--fw-bold);letter-spacing:-.02em;line-height:var(--lh-snug)}
+@media (max-width:860px){
+  .scrim{align-items:flex-end}
+  .sheet{width:100%;height:auto;max-height:92vh;border-radius:var(--r-xl) var(--r-xl) 0 0;padding:var(--sp-5) var(--sp-4);animation:slideU 260ms var(--ease)}
+  .sheet::before{content:"";width:40px;height:4px;border-radius:4px;background:var(--line-strong);align-self:center;flex:none;margin-top:-8px}
+  .sheet-f{bottom:calc(-1 * var(--sp-5))}
+}
+@keyframes fade{from{opacity:0}}
+@keyframes slideL{from{transform:translateX(40px);opacity:0}}
+@keyframes slideU{from{transform:translateY(60px);opacity:0}}
+@keyframes rise{from{transform:translateY(10px);opacity:0}}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:var(--r-pill);font-size:var(--fs-sm);font-weight:var(--fw-medium);z-index:80;box-shadow:var(--sh-3);display:flex;gap:var(--sp-3);align-items:center;max-width:calc(100vw - 32px);animation:rise 220ms var(--ease)}
+.toast button{color:var(--gold);font-weight:var(--fw-bold);text-decoration:underline;white-space:nowrap}
+@media (max-width:860px){.toast{bottom:92px}}
+.tip{position:fixed;z-index:90;pointer-events:none;background:var(--ink);color:var(--bg);padding:8px 10px;border-radius:var(--r-sm);font-size:var(--fs-xs);box-shadow:var(--sh-2);max-width:240px;line-height:1.35}
+.tip b{display:block;font-size:var(--fs-sm)}
+.tip .k{display:inline-block;width:12px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+.menu{position:absolute;right:var(--sp-4);top:40px;z-index:60;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--sh-3);padding:var(--sp-2);width:min(300px,calc(100vw - 32px));color:var(--ink);max-height:80vh;overflow:auto}
+.menu button{display:flex;align-items:center;gap:var(--sp-2);width:100%;min-height:38px;padding:0 var(--sp-3);border-radius:var(--r-xs);font-size:var(--fs-sm);text-decoration:none;color:var(--ink)}
+.menu button:hover{background:var(--surface-2)}
+.menu .nav-sep{padding-top:var(--sp-3)}
+
+/* ---------- charts ---------- */
+.chart text{font-family:var(--font);fill:var(--ink-3);font-size:11px}
+.chart .lab{fill:var(--ink);font-size:12px;font-weight:550}
+.chart .val{fill:var(--ink-2);font-size:12px}
+.chart .gridl{stroke:var(--grid);stroke-width:1}
+.chart .axisl{stroke:var(--axis);stroke-width:1}
+.chart [data-tip]{cursor:pointer;transition:opacity var(--dur)}
+.chart [data-tip]:hover,.chart [data-tip]:focus-visible{opacity:.78}
+.chart .xh{stroke:var(--ink-3);stroke-width:1;opacity:0}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:var(--fs-xs);color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend .ln{width:14px;height:3px;border-radius:2px}
+.tbl{width:100%;border-collapse:collapse;font-size:var(--fs-sm)}
+.tbl th{font-size:var(--fs-xs);color:var(--ink-3);text-align:left;font-weight:var(--fw-medium);padding:6px 8px;border-bottom:1px solid var(--line)}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--line)}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .r{text-align:right}
+.tblwrap{overflow:auto;max-height:340px}
+.tbtn{font-size:var(--fs-xs);color:var(--ink-2);min-height:36px;padding:0 12px;border-radius:var(--r-pill);border:1px solid var(--line-field);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;flex:none}
+.tbtn:hover{color:var(--ink);border-color:var(--line-strong)}
+
+/* ---------- overview ---------- */
+.monthnav{display:inline-flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);padding:2px;box-shadow:var(--sh-1)}
+.monthnav b{min-width:128px;text-align:center;font-size:var(--fs-md)}
+.monthnav .iconbtn{width:var(--tap);height:var(--tap)}
+.monthnav .iconbtn[disabled]{opacity:.3;cursor:default}
+.say{font-size:clamp(27px,3.5vw,46px);line-height:1.14;letter-spacing:-.03em;font-weight:450;color:var(--ink-2);max-width:30ch;text-wrap:balance}
+.say b{font-weight:740;color:var(--ink);white-space:nowrap}
+.say-sub{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-5);margin-top:var(--sp-4);color:var(--ink-2);font-size:var(--fs-md);align-items:center}
+.say-sub>span{display:inline-flex;align-items:flex-start;gap:6px}
+.say-sub>span>.ic{margin-top:3px}
+.flowband{margin:var(--sp-6) 0 var(--sp-8);padding:var(--sp-5) 0 var(--sp-2);border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
+.flowband .cap{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4);color:var(--ink-3);font-size:var(--fs-sm)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .wd{font-size:var(--fs-2xs);color:var(--ink-3);text-align:center;font-weight:var(--fw-bold);padding-bottom:2px}
+.cal button,.cal i{aspect-ratio:1;border-radius:9px;font-size:var(--fs-xs);font-style:normal;display:flex;align-items:flex-start;justify-content:flex-start;padding:5px 6px;font-weight:var(--fw-medium);min-width:0;font-variant-numeric:tabular-nums}
+.cal button{background:var(--seq-0);color:var(--ink-2)}
+.cal button.h1{background:var(--seq-1)}.cal button.h2{background:var(--seq-2);color:var(--ink)}.cal button.h3{background:var(--seq-3);color:#06231f}
+.cal button.h4{background:var(--seq-4);color:#fff}.cal button.h5{background:var(--seq-5);color:#fff}
+[data-theme=dark] .cal button.h1,[data-theme=dark] .cal button.h2,[data-theme=dark] .cal button.h3{color:#eef2ec}
+[data-theme=dark] .cal button.h4,[data-theme=dark] .cal button.h5{color:#06231f}
+.cal button[aria-pressed=true]{outline:3px solid var(--ink);outline-offset:1px}
+.cal button.today{box-shadow:inset 0 0 0 2px var(--warm)}
+.cal i.fut{border:1px dashed var(--line-strong);color:var(--ink-3)}
+.scale{display:flex;align-items:center;gap:4px;font-size:var(--fs-2xs);color:var(--ink-3)}
+.scale i{width:18px;height:10px;border-radius:3px}
+.calwrap{display:grid;grid-template-columns:minmax(0,290px) minmax(0,1fr);gap:var(--sp-5);align-items:start}
+@media (max-width:860px){.calwrap{grid-template-columns:1fr;gap:var(--sp-4)}.flowband{margin:var(--sp-5) 0 var(--sp-6)}}
+.li{display:flex;align-items:center;gap:var(--sp-3);padding:10px 0;min-height:56px;width:100%}
+.li .t{font-weight:var(--fw-medium);line-height:1.3}
+.li .s{font-size:var(--fs-xs);color:var(--ink-3);line-height:1.35}
+.li .a{text-align:right;font-weight:var(--fw-medium);white-space:nowrap}
+.li .a small{display:block;font-size:var(--fs-xs);color:var(--ink-3);font-weight:var(--fw-regular)}
+button.li:hover .t{text-decoration:underline;text-underline-offset:3px}
+.bar-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px var(--sp-3);padding:9px 0;align-items:center}
+.bar-row .track{grid-column:1/-1;height:8px;border-radius:var(--r-pill);background:var(--surface-2)}
+.bar-row .track i{display:block;height:100%;border-radius:var(--r-pill);min-width:3px}
+
+/* ---------- insights ---------- */
+.ins{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--sp-4);padding:var(--sp-5);position:relative}
+
+.ins-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--insc,var(--accent)) 16%,var(--surface));color:var(--ink)}
+.ins h3{font-size:var(--fs-lg)}
+.ins p{color:var(--ink-2);margin-top:4px;max-width:62ch}
+.ins .viz{margin-top:var(--sp-4);padding:var(--sp-4);border-radius:var(--r-md);background:var(--bg);border:1px solid var(--line)}
+.ins .acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-4)}
+@media (max-width:860px){.ins{grid-template-columns:1fr;gap:var(--sp-3);padding:var(--sp-4)}.ins-ic{width:38px;height:38px}}
+
+/* ---------- transactions ---------- */
+.filters{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center;margin-bottom:var(--sp-4)}
+@media (max-width:860px){.filters.scroll{flex-wrap:nowrap;overflow-x:auto;margin:0 calc(-1*var(--sp-4)) var(--sp-4);padding:2px var(--sp-4);scrollbar-width:none}.filters.scroll>*{flex:none}}
+.search{position:relative;flex:1 1 240px;min-width:0}
+.search .ic{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink-3)}
+.search .input{padding-left:42px;border-radius:var(--r-pill)}
+.day-h{display:flex;justify-content:space-between;align-items:baseline;padding:var(--sp-4) var(--sp-5) 6px;font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-3)}
+.tx{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;padding:10px var(--sp-5);width:100%;min-height:60px}
+.tx:hover{background:var(--surface-2)}
+.tx .a{text-align:right;font-weight:var(--fw-medium);white-space:nowrap}
+.tx .a small{display:block;font-size:var(--fs-xs);color:var(--ink-3);font-weight:var(--fw-regular)}
+.tx .meta{display:flex;gap:8px;align-items:center;font-size:var(--fs-xs);color:var(--ink-3);min-width:0}
+.tx .meta .dot{width:8px;height:8px;border-radius:50%}
+@media (max-width:860px){.day-h{padding:var(--sp-4) var(--sp-4) 6px}.tx{padding:10px var(--sp-4)}}
+
+/* ---------- import ---------- */
+.drop{border:2px dashed var(--line-strong);border-radius:var(--r-lg);padding:var(--sp-8) var(--sp-5);text-align:center;background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:var(--sp-3)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.banks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.file{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);align-items:center;padding:var(--sp-4) 0}
+.file .fi{width:40px;height:48px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-size:10px;font-weight:var(--fw-bold);color:var(--ink-2)}
+@media (max-width:860px){.file{grid-template-columns:auto minmax(0,1fr)}.file>.chip{grid-column:2;justify-self:start}.file b.trunc{white-space:normal;word-break:break-all}}
+.pw{grid-column:2/-1;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center}
+.pw{min-width:0}
+.pw .input{flex:1 1 140px;width:auto;min-width:0}
+.rev{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);align-items:center}
+.rev .from{font-size:var(--fs-xs);color:var(--ink-3);display:flex;gap:6px;align-items:center;min-width:0}
+.rev .acts{display:flex;gap:4px}
+.rev .acts .iconbtn{border:1px solid var(--line)}
+.rev .acts .ok{color:var(--pos)}.rev .acts .no{color:var(--neg)}
+.rev .amount{text-align:right;font-weight:var(--fw-bold);white-space:nowrap}
+@media (max-width:860px){.rev{grid-template-columns:auto minmax(0,1fr);padding:var(--sp-4)}.rev .right{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center}}
+@media (min-width:861px){.rev .right{display:flex;align-items:center;gap:var(--sp-5)}}
+
+/* ---------- recurring ---------- */
+.strip{display:grid;grid-template-columns:repeat(30,minmax(0,1fr));gap:3px;align-items:end;height:74px;margin-top:var(--sp-2)}
+.strip div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;height:100%;font-size:9px;color:var(--ink-3)}
+.strip i{display:block;width:100%;max-width:14px;height:12px;border-radius:3px;flex:none}
+.still,.still *{animation:none!important}
+.strip .wk{color:var(--ink);font-weight:var(--fw-bold)}
+
+/* ---------- dashboards ---------- */
+.dash{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-5);align-items:stretch}
+.w{position:relative;display:flex;flex-direction:column}
+.w.s1{grid-column:span 1}.w.s2{grid-column:span 2}.w.s3{grid-column:span 3}.w.s4{grid-column:span 4}
+.w .body{flex:1;display:flex;flex-direction:column;justify-content:center;min-width:0}
+.w.edit{outline:2px dashed var(--line-strong);outline-offset:3px}
+.w.dragging{opacity:.4}
+.w.over{outline:3px solid var(--accent)}
+.w-tools{display:flex;gap:2px;flex-wrap:wrap;margin:calc(-1*var(--sp-2)) calc(-1*var(--sp-2)) var(--sp-2);align-items:center}
+.w-tools .iconbtn{width:32px;height:36px}
+.w-tools .grip{cursor:grab}
+.w-size{position:absolute;right:-6px;bottom:-6px;width:28px;height:28px;border-radius:50%;background:var(--brand);color:var(--on-brand);display:grid;place-items:center;cursor:ew-resize;touch-action:none;box-shadow:var(--sh-2)}
+.bignum{font-size:var(--fs-3xl);font-weight:var(--fw-bold);letter-spacing:-.03em;line-height:1.1}
+.addw{border:2px dashed var(--line-strong);border-radius:var(--r-lg);min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-2);color:var(--ink-2);font-weight:var(--fw-medium);width:100%}
+.addw:hover{border-color:var(--accent);color:var(--brand);background:var(--accent-soft)}
+.tabs{display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center}
+.tab{min-height:40px;padding:0 var(--sp-4);border-radius:var(--r-pill);border:1px solid var(--line-field);font-weight:var(--fw-medium);font-size:var(--fs-sm);color:var(--ink-2);display:inline-flex;align-items:center;gap:6px}
+.tab[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.typegrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.typegrid button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 2px;border-radius:var(--r-sm);border:1px solid var(--line-strong);font-size:var(--fs-2xs);font-weight:var(--fw-medium);color:var(--ink-2);min-height:64px}
+.typegrid button[aria-pressed=true]{border-color:var(--brand);background:var(--accent-soft);color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand)}
+.preview{border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-4);background:var(--bg)}
+@media (max-width:860px){.dash{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-4)}.w.s2,.w.s3,.w.s4{grid-column:span 2}.w.s1{grid-column:span 2}}
+
+/* ---------- ask ---------- */
+.ask-wrap{max-width:820px}
+.askbox{display:flex;gap:var(--sp-2);background:var(--surface);border:1.5px solid var(--line-field);border-radius:var(--r-xl);padding:8px 8px 8px var(--sp-5);box-shadow:var(--sh-2);align-items:center}
+.askbox:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.askbox input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:16px;min-height:var(--tap)}
+.sugg{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-top:var(--sp-3)}
+.sugg button{min-height:44px;padding:6px 14px;border-radius:var(--r-lg);border:1px solid var(--line-field);font-size:var(--fs-sm);color:var(--ink-2);background:var(--surface);text-align:left;line-height:1.3}
+.sugg button:hover{border-color:var(--accent);color:var(--ink)}
+.q{align-self:flex-end;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:20px 20px 4px 20px;max-width:88%;font-weight:var(--fw-medium)}
+.ans{animation:rise 300ms var(--ease)}
+.ans .fig{font-size:var(--fs-4xl);font-weight:var(--fw-bold);letter-spacing:-.03em;line-height:1.05}
+.how{font-size:var(--fs-xs);color:var(--ink-3);border-top:1px solid var(--line);padding-top:var(--sp-3);margin-top:var(--sp-4);display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center}
+@media (max-width:860px){.ans .fig{font-size:var(--fs-3xl)}}
+
+/* ---------- story ---------- */
+.story-stage{display:flex;align-items:center;justify-content:center;gap:var(--sp-4)}
+.story{width:min(400px,100%);aspect-ratio:9/15.5;max-height:calc(100vh - 190px);border-radius:var(--r-xl);overflow:hidden;position:relative;box-shadow:var(--sh-3);background:var(--deep)}
+.story-track{display:flex;height:100%;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.story-track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;padding:56px 28px 32px;display:flex;flex-direction:column;justify-content:space-between;color:var(--sl-ink,#f3f7f4);background:var(--sl-bg,#0c4a43);position:relative;overflow:hidden}
+.slide h2{font-size:30px;line-height:1.12;letter-spacing:-.025em;font-weight:var(--fw-bold)}
+.slide .huge{font-size:58px;line-height:1;letter-spacing:-.04em;font-weight:var(--fw-bold);margin:10px 0}
+.slide p{font-size:var(--fs-lg);line-height:1.4;opacity:.9}
+.slide .kick{font-size:var(--fs-md);font-weight:var(--fw-medium);opacity:.85}
+
+.slide .panel{background:rgba(255,255,255,.14);border-radius:var(--r-md);padding:14px 16px}
+.slide .btn{background:var(--sl-ink,#f3f7f4);color:var(--sl-bg,#0c4a43)}
+.slide .btn.alt{background:transparent;border-color:currentColor;color:inherit}
+.prog{position:absolute;top:14px;left:14px;right:14px;display:flex;gap:4px;z-index:3}
+.prog i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.34)}
+.prog i.on{background:#fff}
+.story-x{position:absolute;top:22px;right:10px;z-index:4;color:#fff}
+.story-x:hover{background:rgba(255,255,255,.18);color:#fff}
+.story-nav{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);display:grid;place-items:center;flex:none}
+@media (max-width:860px){.story-nav{display:none}.story{max-height:calc(100vh - 230px)}.slide .huge{font-size:50px}}
+
+/* ---------- settings ---------- */
+.set{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-5);align-items:start}
+.set .card{display:flex;flex-direction:column;gap:var(--sp-4)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);min-height:var(--tap);padding:var(--sp-2) 0}
+.copy{display:flex;gap:var(--sp-2)}
+.copy .input{font-size:var(--fs-sm)}
+.danger-card{border-color:color-mix(in srgb,var(--neg) 40%,var(--line))}
+@media (max-width:860px){.set{grid-template-columns:1fr}}
+
+/* ---------- empty ---------- */
+.empty{text-align:center;padding:var(--sp-10) var(--sp-5);display:flex;flex-direction:column;align-items:center;gap:var(--sp-3)}
+.empty .art{width:84px;height:84px;border-radius:28px;background:var(--accent-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:var(--sp-2)}
+.empty h2{font-size:var(--fs-2xl);font-weight:var(--fw-bold);letter-spacing:-.02em;line-height:var(--lh-snug)}
+.empty p{color:var(--ink-2);max-width:46ch}
+.starts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-4);width:100%;max-width:880px;margin-top:var(--sp-4);text-align:left}
+.start{display:flex;flex-direction:column;gap:var(--sp-2);padding:var(--sp-5);border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);align-items:flex-start}
+.start:hover{border-color:var(--accent)}
+.start .ic{color:var(--accent)}
+.start b{font-size:var(--fs-lg)}
+@media (max-width:860px){.starts{grid-template-columns:1fr}}
+
+/* ---------- landing + sign-up ---------- */
+.land{min-height:100vh;display:flex;flex-direction:column}
+.land-top{display:flex;align-items:center;gap:var(--sp-2);padding:var(--sp-4) var(--sp-8);max-width:1240px;width:100%;margin:0 auto}
+.land-top .logo{padding:0;margin-right:auto}
+.land-hero{padding:var(--sp-10) var(--sp-8) var(--sp-8);max-width:1240px;width:100%;margin:0 auto}
+.land h1{max-width:17ch;font-size:clamp(38px,5.6vw,76px);line-height:1.02;letter-spacing:-.04em;font-weight:var(--fw-bold)}
+
+.land .lede{font-size:var(--fs-xl);line-height:1.45;color:var(--ink-2);margin:var(--sp-5) 0 var(--sp-6);max-width:44ch}
+.cta{display:flex;gap:var(--sp-3);flex-wrap:wrap}
+.cta .btn{min-height:52px;padding:0 var(--sp-6);font-size:var(--fs-lg)}
+.gbtn{background:#fff;color:#1f1f1f;border:1px solid #aebbb4}
+.gbtn:hover{background:#f1f5f2}
+.invite-note{display:flex;gap:var(--sp-2);align-items:flex-start;font-size:var(--fs-sm);color:var(--ink-3);margin-top:var(--sp-4);max-width:44ch}
+.land-flow{padding:0 var(--sp-8) var(--sp-10);max-width:1240px;width:100%;margin:0 auto}
+.land-flow figure{margin:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-6)}
+.land-flow figcaption{color:var(--ink-3);font-size:var(--fs-sm);margin-bottom:var(--sp-4)}
+.feats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-5);padding:0 var(--sp-8) var(--sp-12);max-width:1240px;width:100%;margin:0 auto}
+.feat{padding:var(--sp-5);border-top:2px solid var(--ink)}
+.feat b{font-size:var(--fs-lg);display:block;margin:var(--sp-2) 0 4px}
+.feat p{color:var(--ink-2)}
+.land-foot{margin-top:auto;padding:var(--sp-5) var(--sp-8);font-size:var(--fs-xs);color:var(--ink-3);text-align:center;border-top:1px solid var(--line)}
+@media (max-width:860px){
+  .land-top{padding:var(--sp-3) var(--sp-4)}
+  .land-hero{padding:var(--sp-5) var(--sp-4) var(--sp-6)}.land-flow{padding:0 var(--sp-4) var(--sp-8)}.land-flow figure{padding:var(--sp-4)}
+  .land .lede{font-size:var(--fs-lg)}
+  .cta .btn{width:100%}
+  .feats{grid-template-columns:1fr;padding:0 var(--sp-4) var(--sp-8);gap:0}
+}
+.flow{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:var(--sp-5) var(--sp-4) var(--sp-10)}
+.flow-top{display:flex;align-items:center;width:100%;max-width:560px;margin-bottom:var(--sp-6);gap:var(--sp-2)}
+.flow-top .logo{padding:0;margin-right:auto}
+.steps{display:flex;gap:6px;width:100%;max-width:560px;margin-bottom:var(--sp-5)}
+.steps i{flex:1;height:4px;border-radius:4px;background:var(--line-strong)}
+.steps i.on{background:var(--accent)}
+.flow-card{width:100%;max-width:560px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:var(--sp-8);box-shadow:var(--sh-2);display:flex;flex-direction:column;gap:var(--sp-5)}
+.flow-card h1{font-size:var(--fs-3xl);line-height:1.1;letter-spacing:-.03em;font-weight:var(--fw-bold)}
+.flow-card .lede{font-size:var(--fs-lg);color:var(--ink-2)}
+.facts{display:flex;flex-direction:column;gap:0}
+.fact{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--sp-3);padding:var(--sp-3) 0}
+.fact .fi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--brand)}
+.fact.no .fi{background:var(--surface-2);color:var(--ink-2)}
+.fact b{display:block}
+.fact span{color:var(--ink-2);font-size:var(--fs-sm)}
+.gmock{border:1px solid var(--line-strong);border-radius:var(--r-md);padding:var(--sp-4);background:var(--bg);font-size:var(--fs-sm)}
+.gmock .gw{font-weight:var(--fw-bold);display:flex;gap:8px;align-items:center}
+.gmock ol{margin:8px 0 0;padding-left:20px;color:var(--ink-2)}
+.gmock kbd{font:inherit;font-weight:var(--fw-bold);background:var(--surface);border:1px solid var(--line-strong);border-radius:6px;padding:1px 6px;color:var(--ink)}
+.acct{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-md);width:100%;min-height:64px}
+.acct:hover{background:var(--surface-2)}
+.ring{width:132px;height:132px;margin:0 auto}
+.scanlist{display:flex;flex-direction:column;gap:var(--sp-2)}
+.scanlist div{display:flex;gap:var(--sp-3);align-items:center;color:var(--ink-3)}
+.scanlist .done{color:var(--ink)}
+.scanlist .done .ic{color:var(--pos)}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (max-width:860px){.flow-card{padding:var(--sp-5);border-radius:var(--r-lg)}.flow-card h1{font-size:var(--fs-2xl)}}
+.ov-head{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-2)}
+.ov-tabs{flex:1 1 auto;min-width:0}
+.ov-ctrls{display:flex;gap:var(--sp-2);align-items:center;flex:none}
+.ov-say{flex:1 1 100%;margin-top:var(--sp-4)}
+.ov-edit{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:flex-end;margin:var(--sp-4) 0}
+.dash>.flowband{grid-column:1/-1;margin:var(--sp-2) 0}
+.w>.body{container-type:inline-size;justify-content:flex-start}
+.w.s1>.body{justify-content:center}
+.w .card-h h3{font-size:var(--fs-lg)}
+.w-tools{cursor:grab}
+.pie{display:flex;gap:var(--sp-5);align-items:center}
+.pie-d{width:208px;flex:none}
+.pie-l{flex:1;min-width:0}
+.pie path{transition:opacity var(--dur)}
+.pie .dim{opacity:.3}
+.pie .pl.dim{opacity:.6}
+.pl{display:grid;grid-template-columns:12px minmax(0,1fr) auto 40px 66px;gap:8px;align-items:center;width:100%;min-height:36px;padding:0 6px;border-radius:var(--r-xs);font-size:var(--fs-sm);text-align:right}
+.pl>span:nth-child(2){text-align:left}
+.pl.head{min-height:24px;font-size:var(--fs-xs);color:var(--ink-3)}
+button.pl:hover,button.pl[aria-pressed=true]{background:var(--surface-2)}
+@container (max-width:520px){.calwrap{grid-template-columns:1fr}.cal{max-width:420px}.pie{flex-direction:column;align-items:stretch}.pie-d{align-self:center}}
+.secs{display:flex;gap:6px;overflow-x:auto;margin:0 calc(-1*var(--sp-4)) var(--sp-3);padding:2px var(--sp-4);scrollbar-width:none}
+.secs::-webkit-scrollbar,.ov-tabs::-webkit-scrollbar{display:none}
+.secs button{flex:none;min-height:var(--tap);padding:0 14px;border-radius:var(--r-pill);border:1px solid var(--line-field);font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-2);background:var(--surface)}
+.secs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);padding:var(--sp-3) 0}
+.mrow-b{display:flex;gap:4px;margin-left:auto}
+.mrow-b .iconbtn{border:1px solid var(--line)}
+.flip{transform:rotate(180deg)}
+.story-ov{width:min(600px,100%);background:var(--surface);border-radius:var(--r-xl);padding:var(--sp-4);box-shadow:var(--sh-3);max-height:96vh;overflow:auto}
+.story-ov .story{max-height:calc(100vh - 210px)}
+@media (max-width:860px){.tbtn{min-height:var(--tap)}
+  .ov-tabs{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*var(--sp-4));padding:2px var(--sp-4)}
+  .ov-tabs .tab{flex:none;min-height:var(--tap)}
+  .ov-say{order:2;margin-top:0}.ov-ctrls{order:3;width:100%;justify-content:space-between}
+  .cal{gap:3px;margin:0 -8px}.pl{min-height:var(--tap)}.flow-top .logo,.logo{min-height:var(--tap)}
+  .flowband{margin:var(--sp-4) 0 var(--sp-5)}
+  .story-ov{padding:var(--sp-3)}.story-ov .story{max-height:calc(100vh - 200px)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<script>
+'use strict';
+/* ============ state ============ */
+const qs=new URLSearchParams(location.search);
+const S={
+  lang:qs.get('lang')||'en',
+  theme:qs.get('theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),
+  cur:qs.get('cur')||'SGD', priv:qs.get('priv')==='1', empty:qs.get('empty')==='1', aiOut:qs.get('ai')==='0',
+  gmail:true, month:'2026-10', day:null, tables:{},
+  txq:'', txf:{type:'all',cat:'all',cur:'all',src:'all',month:'all'}, txLimit:40,
+  overlay:null, menu:false, toast:null,
+  impTab:qs.get('tab')||'files', impStage:Number(qs.get('stage')||0), pwOk:false,
+  dash:0, edit:qs.get('edit')==='1', asks:[], story:Number(qs.get('card')||0), insOff:{},
+  ob:{cur:'SGD',lang:'en'}, scan:0, txEmpty:[], invites:37
+};
+const T=(en,zh)=>S.lang==='zh'?zh:en;
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ============ icons ============ */
+const IC={home:'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',list:'M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01',spark:'M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z',upload:'M12 16V4m0 0l-4 4m4-4l4 4M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3',repeat:'M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3',grid:'M4 4h7v7H4zM13 4h7v4h-7zM13 11h7v9h-7zM4 14h7v6H4z',chat:'M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z',story:'M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zM2 7v10M22 7v10',gear:'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h.1a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v.1a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z',eye:'M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',eyeoff:'M17.9 17.9A10.9 10.9 0 0 1 12 19c-7 0-11-7-11-7a20 20 0 0 1 5.1-5.9M9.9 5.2A10 10 0 0 1 12 5c7 0 11 7 11 7a20 20 0 0 1-2.2 3.2M14.1 14.1a3 3 0 1 1-4.2-4.2M2 2l20 20',sun:'M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zM12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4',moon:'M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z',plus:'M12 5v14M5 12h14',search:'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM21 21l-4.3-4.3',check:'M20 6L9 17l-5-5',x:'M18 6L6 18M6 6l12 12',edit:'M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z',right:'M9 18l6-6-6-6',left:'M15 18l-6-6 6-6',mail:'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM22 6l-10 7L2 6',lock:'M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2zM7 11V7a5 5 0 0 1 10 0v4',shield:'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4',file:'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6',trash:'M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',download:'M12 4v12m0 0l-4-4m4 4l4-4M4 20h16',link:'M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7',copy:'M9 9h11a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2zM5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1',pin:'M12 17v5M5 17h14l-2-4V6h1V3H6v3h1v7z',grip:'M9 5h.01M9 12h.01M9 19h.01M15 5h.01M15 12h.01M15 19h.01',alert:'M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01',up:'M23 6l-9.5 9.5-5-5L1 18M17 6h6v6',cal:'M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM16 2v4M8 2v4M3 10h18',globe:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z',more:'M5 12h.01M12 12h.01M19 12h.01',table:'M3 5h18v14H3zM3 10h18M3 15h18M9 5v14',bar:'M5 20V10M12 20V4M19 20v-7',line:'M3 17l6-6 4 4 8-9',donut:'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM12 3v5.5M18.4 18.4l-3.9-3.9',hash:'M4 9h16M4 15h16M10 3L8 21M16 3l-2 18',user:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',send:'M5 12h14M13 6l6 6-6 6',info:'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',card:'M3 6h18v12H3zM3 10h18',bolt:'M13 2L4 14h7l-1 8 9-12h-7z',resize:'M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4',down:'M6 9l6 6 6-6'};
+const I=(n,c='')=>`<svg class="ic ${c}" viewBox="0 0 24 24" aria-hidden="true"${n==='grip'||n==='more'||n==='list'?' style="stroke-width:2.6"':''}><path d="${IC[n]}"/></svg>`;
+const LOGO=`<svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="#0c4a43"/><path d="M7 11h3.5c5.5 0 5.5 4.5 11 4.5H25" stroke="#f2c14e" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M7 17.5h3.5c5.5 0 5.5 5 11 5H25" stroke="#fffdf8" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>`;
+const GLOGO=`<svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.2C12.4 13.7 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 0 1 9.5 24c0-1.59.28-3.13.76-4.59l-7.98-6.19A23.9 23.9 0 0 0 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>`;
+
+/* ============ sample data ============ */
+const TODAY='2026-10-24', CURM='2026-10', MONTHS=['2026-05','2026-06','2026-07','2026-08','2026-09','2026-10'];
+const RATES={SGD:1,USD:0.77,EUR:0.71,JPY:115.2,TWD:24.6,CNY:5.52};
+const CUR={SGD:{s:'S$',d:2},USD:{s:'US$',d:2},EUR:{s:'€',d:2},JPY:{s:'¥',d:0},TWD:{s:'NT$',d:0},CNY:{s:'CN¥',d:2}};
+const CATS={
+  housing:{en:'Housing',zh:'居住',c:'--s3'},dining:{en:'Dining',zh:'餐飲',c:'--s2'},groceries:{en:'Groceries',zh:'生鮮雜貨',c:'--s6'},
+  transport:{en:'Transport',zh:'交通',c:'--s4'},shopping:{en:'Shopping',zh:'購物',c:'--s5'},travel:{en:'Travel',zh:'旅遊',c:'--s7'},
+  bills:{en:'Bills & subscriptions',sh:'Bills & subs',zh:'帳單與訂閱',c:'--s8'},other:{en:'Health & other',zh:'醫療與其他',c:'--s-other'},
+  salary:{en:'Salary',zh:'薪資',c:'--s1',inc:1},freelance:{en:'Freelance',zh:'接案收入',c:'--s1',inc:1},interest:{en:'Interest',zh:'利息',c:'--s1',inc:1}};
+const EXPCATS=['housing','dining','groceries','transport','shopping','travel','bills','other'];
+const cn=(k,short)=>S.lang==='zh'?CATS[k].zh:(short&&CATS[k].sh)||CATS[k].en;
+const cc=k=>`var(${CATS[k].c})`;
+const SRC={g:['Gmail','Gmail'],s:['Statement','對帳單'],m:['Added by hand','手動新增']};
+const RECUR=[
+  {m:'Tiong Bahru rent',c:'housing',a:2100,cur:'SGD',day:1},
+  {m:'Anytime Fitness',c:'other',a:98,cur:'SGD',day:1},
+  {m:'The New York Times',c:'bills',a:4,cur:'USD',day:2},
+  {m:'Disney+',c:'bills',a:11.98,cur:'SGD',day:2,from:'2026-09'},
+  {m:'iCloud+',c:'bills',a:3.98,cur:'SGD',day:3},
+  {m:'Netflix',c:'bills',a:18.98,cur:'SGD',day:5,rise:{from:'2026-10',a:21.98}},
+  {m:'StarHub Broadband',c:'bills',a:39.9,cur:'SGD',day:8},
+  {m:'Spotify',c:'bills',a:10.98,cur:'SGD',day:12},
+  {m:'Singtel Mobile',c:'bills',a:48.9,cur:'SGD',day:15},
+  {m:'SP Group',c:'bills',a:94,cur:'SGD',day:18,vary:16},
+  {m:'Great Eastern',c:'bills',a:186.4,cur:'SGD',day:26},
+  {m:'Notion',c:'bills',a:10,cur:'USD',day:27},
+  {m:'YouTube Premium',c:'bills',a:13.98,cur:'SGD',day:28}];
+const DB={tx:[]};
+(function gen(){
+  let seed=20261024;const R=()=>{seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+  const pick=l=>{const tot=l.reduce((a,x)=>a+(x[4]||1),0);let r=R()*tot;for(const x of l){r-=(x[4]||1);if(r<=0)return x}return l[0]};
+  let id=1;
+  const add=(d,m,c,a,cur,src,inc)=>{const dec=CUR[cur].d;a=Number(a.toFixed(dec));DB.tx.push({id:id++,d,m,c,a,cur,sgd:Math.round(a/RATES[cur]*100)/100,src,inc:!!inc})};
+  const rnd=(x,cur)=>{const v=x[1]+R()*(x[2]-x[1]);return cur==='JPY'?Math.round(v/10)*10:cur==='TWD'?Math.round(v/5)*5:Math.round(v*10)/10};
+  const DIN=[['Ya Kun Kaya Toast',4.8,9.6,'s',3],['Toast Box',5.2,11,'s',2],['Maxwell Food Centre',4.5,9,'m',3],['Kopitiam',5,12,'s',3],['GrabFood',14,36,'g',3],['foodpanda',13,30,'g',2],['Starbucks',6.9,14.5,'s',2],['Din Tai Fung',38,88,'s',.6],['Paradise Dynasty',34,74,'s',.5],['Tiong Bahru Bakery',9,24,'s',1.2],['PS.Cafe',42,92,'s',.4]];
+  const GRO=[['FairPrice',14,82,'s',4],['Cold Storage',22,98,'s',1.5],['Sheng Siong',12,58,'s',1.5],['RedMart',48,124,'g',1]];
+  const SHP=[['Shopee',12,88,'g',3],['Lazada',15,110,'g',2],['Uniqlo',29,129,'s',1.2],['IKEA',24,190,'s',.8],['Decathlon',18,105,'s',.8],['Amazon.sg',16,130,'g',1.2]];
+  const OTH=[['Guardian',8,40,'s',2],['Watsons',9,36,'s',2],['Raffles Medical',48,118,'s',.7],['Popular Bookstore',9,42,'s',1]];
+  const JP_D=[['Ichiran Shibuya',1180,2400,'s',2],['Lawson',380,1200,'s',3],['Sushi Zanmai Tsukiji',3800,9600,'s',1.2],['Blue Bottle Coffee Aoyama',650,1400,'s',2],['Torikizoku Shinjuku',2800,5400,'s',1.2],['Afuri Ramen Ebisu',1280,2600,'s',1.5]];
+  const JP_S=[['Uniqlo Ginza',3990,12900,'s'],['Don Quijote Shibuya',2400,9800,'s'],['Loft Shibuya',1800,6400,'s']];
+  const TW_D=[['Din Tai Fung Xinyi',1180,2200,'s',1],['Yongkang Beef Noodle',280,560,'s',2],['Raohe Night Market',150,450,'m',2],['Fong Da Coffee',120,320,'m',1]];
+  for(const mo of MONTHS){
+    const [y,m]=mo.split('-').map(Number), dim=new Date(y,m,0).getDate(), last=mo===CURM?24:dim;
+    for(let day=1;day<=last;day++){
+      const d=`${mo}-${String(day).padStart(2,'0')}`, wd=new Date(y,m-1,day).getDay(), we=wd===0||wd===6;
+      for(const r of RECUR){ if(r.day!==day||(r.from&&mo<r.from))continue; let a=r.a; if(r.rise&&mo>=r.rise.from)a=r.rise.a; if(r.vary)a=Math.round((a+(R()-.5)*r.vary)*100)/100; add(d,r.m,r.c,a,r.cur,r.c==='housing'?'s':'g'); }
+      if(day===20)add(d,'Lumen Labs Pte Ltd','salary',6800,'SGD','s',1);
+      if(day===1)add(d,'DBS Multiplier interest','interest',34+Math.round(R()*900)/100,'SGD','s',1);
+      const tokyo=mo==='2026-09'&&day>=11&&day<=16, taipei=mo==='2026-06'&&day>=5&&day<=8;
+      if(tokyo){
+        const n=2+(R()<.5?1:0);for(let i=0;i<n;i++){const x=pick(JP_D);add(d,x[0],'dining',rnd(x,'JPY'),'JPY',x[3])}
+        add(d,'JR East Suica','transport',[1000,2000,3000][Math.floor(R()*3)],'JPY','s');
+        if(R()<.6){const x=pick(JP_S);add(d,x[0],'shopping',rnd(x,'JPY'),'JPY',x[3])}
+        if(day===11)add(d,'Hotel Gracery Shinjuku','travel',96500,'JPY','g');
+        if(day===13)add(d,'teamLab Planets','travel',7600,'JPY','g');
+        if(day===14)add(d,'Shibuya Sky','travel',5000,'JPY','g');
+        continue;
+      }
+      if(taipei){
+        const n=2+(R()<.5?1:0);for(let i=0;i<n;i++){const x=pick(TW_D);add(d,x[0],'dining',rnd(x,'TWD'),'TWD',x[3])}
+        add(d,'EasyCard top-up','transport',[200,300,500][Math.floor(R()*3)],'TWD','m');
+        if(R()<.5)add(d,'Eslite Bookstore','shopping',rnd(['',480,1600],'TWD'),'TWD','s');
+        if(day===5)add(d,'Kimpton Da An Taipei','travel',14800,'TWD','g');
+        continue;
+      }
+      const nd=R()<.14?0:R()<(we?.5:.72)?1:2;for(let i=0;i<nd;i++){const x=pick(DIN);add(d,x[0],'dining',rnd(x),'SGD',x[3])}
+      if(!we||R()<.5)add(d,'SimplyGo','transport',Math.round((2.1+R()*3.6)*100)/100,'SGD','s');
+      if(R()<(we?.55:.3))add(d,R()<.82?'Grab':'Gojek','transport',rnd(['',8.5,27]),'SGD','g');
+      if(R()<.3){const x=pick(GRO);add(d,x[0],'groceries',rnd(x),'SGD',x[3])}
+      if(R()<.15){const x=pick(SHP);add(d,x[0],'shopping',rnd(x),'SGD',x[3])}
+      if(R()<.07){const x=pick(OTH);add(d,x[0],'other',rnd(x),'SGD',x[3])}
+    }
+  }
+  add('2026-05-12','Scoot','travel',312.4,'SGD','g');add('2026-08-03','Scoot','travel',438.2,'SGD','g');
+  add('2026-06-14','Northwind Studio','freelance',600,'USD','s',1);add('2026-08-09','Northwind Studio','freelance',850,'USD','s',1);add('2026-10-12','Northwind Studio','freelance',450,'USD','s',1);
+  add('2026-07-18','Amazon.com','shopping',42.5,'USD','g');add('2026-10-06','Taobao','shopping',268,'CNY','g');
+  add('2026-10-09','EVA Air','travel',486.3,'SGD','g');add('2026-10-10','Agoda Taipei','travel',9800,'TWD','g');
+  add('2026-10-17','Burnt Ends','dining',386,'SGD','s');
+  add('2026-10-19','Shopee','shopping',64.9,'SGD','g');add('2026-10-19','Shopee','shopping',64.9,'SGD','s');
+  DB.tx.sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id);
+})();
+
+/* ============ helpers: money, dates, aggregates ============ */
+const D=sgd=>sgd*RATES[S.cur];
+function fmtv(v,cur,o={}){const c=CUR[cur],d=o.dec!=null?o.dec:c.d,abs=Math.abs(v);let s;
+  if(o.compact){s=abs>=1e6?(abs/1e6).toFixed(1).replace('.0','')+'M':abs>=1e4?Math.round(abs/1e3)+'K':abs>=1e3?(abs/1e3).toFixed(1).replace('.0','')+'K':String(Math.round(abs))}
+  else s=abs.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  return (v<0?'−':o.sign&&v>0?'+':'')+c.s+s}
+const ft=(sgd,o={})=>S.priv?CUR[S.cur].s+'•••':fmtv(D(sgd),S.cur,o);           /* plain text in display currency (SVG, attributes) */
+const ftd=(v,o={})=>S.priv?CUR[S.cur].s+'•••':fmtv(v,S.cur,o);                 /* already in display units */
+const mh=(sgd,o={})=>`<span class="amt num">${fmtv(D(sgd),S.cur,o)}</span>`;   /* html, blurred by privacy switch */
+const m0=(sgd,o={})=>mh(sgd,{dec:0,...o});
+const orig=t=>`<span class="amt num">${fmtv(t.a,t.cur)}</span>`;
+const MO_EN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],MO_FULL=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const WD_EN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],WD_ZH=['日','一','二','三','四','五','六'];
+const dt=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d||1)};
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const fd=(s,wd)=>{const d=dt(s);return S.lang==='zh'?`${d.getMonth()+1}月${d.getDate()}日${wd?' 週'+WD_ZH[d.getDay()]:''}`:`${wd?WD_EN[d.getDay()]+' ':''}${d.getDate()} ${MO_EN[d.getMonth()]}`};
+const mName=(m,short)=>{const[y,mm]=m.split('-').map(Number);return S.lang==='zh'?(short?`${mm}月`:`${y}年${mm}月`):(short?MO_EN[mm-1]:`${MO_FULL[mm-1]} ${y}`)};
+const mWord=m=>{const mm=Number(m.split('-')[1]);return S.lang==='zh'?`${mm}月`:MO_FULL[mm-1]};
+const prevM=m=>{const d=dt(m);d.setMonth(d.getMonth()-1);return iso(d).slice(0,7)};
+const dim=m=>{const[y,mm]=m.split('-').map(Number);return new Date(y,mm,0).getDate()};
+const TX=()=>S.empty?S.txEmpty:DB.tx;
+const sum=l=>l.reduce((a,t)=>a+t.sgd,0);
+/* kept = rounded income minus rounded spending, so the three headline figures always add up on screen */
+const keptD=(In,E)=>Math.round(D(In))-Math.round(D(E));
+const kh=(In,E)=>`<span class="amt num">${fmtv(Math.abs(keptD(In,E)),S.cur,{dec:0})}</span>`;
+const inM=(l,m)=>l.filter(t=>t.d.startsWith(m));
+const exps=l=>l.filter(t=>!t.inc), incs=l=>l.filter(t=>t.inc);
+function group(l,kf){const mp=new Map();for(const t of l){const k=kf(t);const o=mp.get(k)||{k,v:0,n:0};o.v+=t.sgd;o.n++;mp.set(k,o)}return[...mp.values()].sort((a,b)=>b.v-a.v)}
+const pct=(a,b)=>b?Math.round((a-b)/b*100):0;
+const initials=m=>m.replace(/[^A-Za-z0-9 ]/g,'').split(' ').filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase()||'•';
+const av=(t,sm)=>`<span class="av ${sm?'sm':''}" style="--avc:${cc(t.c)}" aria-hidden="true">${initials(t.m)}</span>`;
+const daysBetween=(a,b)=>Math.round((dt(b)-dt(a))/864e5);
+function monthStats(m){const tx=inM(TX(),m),E=sum(exps(tx)),In=sum(incs(tx));return{tx,E,In,net:In-E,n:exps(tx).length}}
+/* spend up to the same day-of-month, for a fair comparison with a month in progress */
+function toDay(m,day){return sum(exps(inM(TX(),m)).filter(t=>Number(t.d.slice(8))<=day))}
+function forecast(){ /* month-end forecast for the current month */
+  const tx=exps(inM(TX(),CURM)),spent=sum(tx),day=Number(TODAY.slice(8)),left=dim(CURM)-day;
+  const recNames=new Set(RECUR.map(r=>r.m));
+  const variable=sum(tx.filter(t=>!recNames.has(t.m)&&t.c!=='travel'&&t.sgd<300));
+  const due=RECUR.filter(r=>r.day>day).reduce((a,r)=>a+(r.rise?r.rise.a:r.a)/RATES[r.cur],0);
+  const perDay=variable/day;
+  return{spent,due,perDay,left,total:spent+due+perDay*left}}
+function recurring(){ /* each recurring charge with last amount, change and next date */
+  const day=Number(TODAY.slice(8));
+  return RECUR.map(r=>{const hist=TX().filter(t=>t.m===r.m).sort((a,b)=>a.d<b.d?-1:1);if(!hist.length)return null;const lastT=hist[hist.length-1],prevT=hist[hist.length-2];
+    const nd=dt(CURM);if(r.day<=day)nd.setMonth(nd.getMonth()+1);nd.setDate(r.day);const next=iso(nd);
+    return{...r,last:lastT,sgd:lastT.sgd,change:prevT&&!r.vary?Math.round((lastT.sgd-prevT.sgd)*100)/100:0,prev:prevT,n:hist.length,next,inDays:daysBetween(TODAY,next),isNew:hist.length<=2,hist}}).filter(Boolean).sort((a,b)=>a.inDays-b.inDays)}
+/* ============ charts (inline SVG, values in display currency) ============ */
+const GUT=()=>S.cur==="JPY"||S.cur==="TWD"?52:44;
+const vw=()=>window.innerWidth, mob=()=>vw()<=860;
+function cw(span){if(mob())return vw()-64;const content=Math.min(vw()-248,1240)-64,n=12/span;return(content-20*(n-1))/n-40}
+const CH={};let chn=0;
+const tipA=(b,rest)=>`data-tip="${esc(b)}|${esc(rest||'')}"`;
+function nice(max){if(max<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(max))),f=max/p;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=4?4:f<=5?5:f<=8?8:10)*p}
+const topRect=(x,y,w,h,r)=>{r=Math.min(r,h,w/2);return`M${x} ${y+h}V${y+r}Q${x} ${y} ${x+r} ${y}H${x+w-r}Q${x+w} ${y} ${x+w} ${y+r}V${y+h}Z`};
+const botRect=(x,y,w,h,r)=>{r=Math.min(r,h,w/2);return`M${x} ${y}V${y+h-r}Q${x} ${y+h} ${x+r} ${y+h}H${x+w-r}Q${x+w} ${y+h} ${x+w} ${y+h-r}V${y}Z`};
+function yAxis(max,x0,x1,y0,y1,n=2,gut){let s='';for(let i=0;i<=n;i++){const v=max*i/n,y=y1-(y1-y0)*i/n;s+=`<line class="${i?'gridl':'axisl'}" x1="${x0}" x2="${x1}" y1="${y}" y2="${y}"/>`;if(i)s+=gut?`<text x="${x0-6}" y="${y+4}" text-anchor="end" class="num">${ftd(v,{compact:1})}</text>`:`<text x="${x0}" y="${y-5}" class="num">${ftd(v,{compact:1})}</text>`}return s}
+const svgO=(w,h,label,extra='')=>`<svg class="chart" viewBox="0 0 ${w} ${h}" width="100%" role="img" aria-label="${esc(label)}" ${extra}>`;
+
+/* cumulative spend: this month against the month before, with a dashed forecast */
+function paceChart(m,w,h,tone){
+  const pm=prevM(m),isCur=m===CURM,lastDay=isCur?Number(TODAY.slice(8)):dim(m),days=Math.max(dim(m),dim(pm));
+  const cum=(mo,to)=>{const by=new Array(to+1).fill(0);for(const t of exps(inM(TX(),mo))){const d=Number(t.d.slice(8));if(d<=to)by[d]+=t.sgd}let a=0;return by.slice(1).map(v=>D(a+=v))};
+  const a=cum(m,lastDay),b=cum(pm,dim(pm)),fc=isCur?D(forecast().total):null;
+  const max=nice(Math.max(a[a.length-1]||0,b[b.length-1]||0,fc||0)*1.04),pl=GUT(),pr=70,pt=14,pb=22;
+  const X=d=>pl+(d-1)/(days-1)*(w-pl-pr),Y=v=>pt+(1-v/max)*(h-pt-pb);
+  const path=arr=>arr.map((v,i)=>`${i?'L':'M'}${X(i+1).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+  const cA=tone==='hero'?'var(--gold)':'var(--s1)',cB=tone==='hero'?'rgba(246,241,228,.5)':'var(--s-other)',ring=tone==='hero'?'var(--deep)':'var(--surface)';
+  const id='c'+(chn++);CH[id]={x0:X(1),dx:(w-pl-pr)/(days-1),n:days,names:[mName(m,1),mName(pm,1)],colors:[cA,cB],rows:Array.from({length:days},(_,i)=>({t:T(`Day ${i+1}`,`第 ${i+1} 天`),v:[a[i]!=null?ftd(a[i],{dec:0}):'–',b[i]!=null?ftd(b[i],{dec:0}):'–']}))};
+  let s=svgO(w,h,T(`Cumulative spending in ${mName(m)} against ${mName(pm)}`,`${mName(m)}與${mName(pm)}累計支出比較`),`data-ch="${id}"`)+yAxis(max,pl,w-pr,pt,h-pb,2,1);
+  for(const d of [1,8,15,22,29])if(d<=days)s+=`<text x="${X(d)}" y="${h-5}" text-anchor="middle" class="num">${d}</text>`;
+  s+=`<path d="${path(b)}" fill="none" stroke="${cB}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  if(a.length){
+    s+=`<path d="${path(a)}L${X(a.length)} ${Y(0)}L${X(1)} ${Y(0)}Z" fill="${cA}" opacity=".1"/><path d="${path(a)}" fill="none" stroke="${cA}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const ex=X(a.length),ey=Y(a[a.length-1]);
+    if(fc){const fy=Y(fc),fx=X(dim(m));s+=`<path d="M${ex} ${ey}L${fx} ${fy}" stroke="${cA}" stroke-width="2" stroke-dasharray="2 5" stroke-linecap="round" fill="none"/><circle cx="${fx}" cy="${fy}" r="4" fill="${ring}" stroke="${cA}" stroke-width="2"/><text x="${fx+8}" y="${fy-3}" class="lab num">${ftd(fc,{compact:1})}</text><text x="${fx+8}" y="${fy+10}">${T('forecast','預估')}</text>`}
+    else s+=`<text x="${ex+8}" y="${ey+4}" class="lab num">${ftd(a[a.length-1],{compact:1})}</text>`;
+    s+=`<circle cx="${ex}" cy="${ey}" r="5" fill="${cA}" stroke="${ring}" stroke-width="2"/>`;
+    const by=Y(b[b.length-1]);if(!fc||Math.abs(by-Y(fc))>26)s+=`<text x="${X(dim(pm))+8}" y="${by+4}" class="num">${ftd(b[b.length-1],{compact:1})}</text>`;
+  }
+  return s+`<line class="xh" y1="${pt}" y2="${h-pb}"/></svg>`}
+
+/* income against expenses, six months */
+function incExpChart(sel,w,h){
+  const data=MONTHS.map(m=>{const s=monthStats(m);return{m,i:D(s.In),e:D(s.E)}}),max=nice(Math.max(...data.map(d=>Math.max(d.i,d.e)))),pl=GUT(),pr=30,pt=22,pb=24;
+  const bw=Math.min(22,(w-pl-pr)/6/3),band=(w-pl-pr)/6,Y=v=>pt+(1-v/max)*(h-pt-pb);
+  let s=svgO(w,h,T('Income and expenses for the last six months','近六個月收入與支出'))+yAxis(max,pl,w-pr,pt,h-pb,2,1);
+  data.forEach((d,k)=>{const cx=pl+band*(k+.5),on=d.m===sel;
+    [['i','--s1',T('Income','收入'),-bw-1],['e','--s2',T('Expenses','支出'),1]].forEach(([key,col,name,off])=>{const y=Y(d[key]);
+      s+=`<path d="${topRect(cx+off,y,bw,h-pb-y,4)}" style="fill:var(${col})" opacity="${on?1:.55}" ${tipA(ftd(d[key]),name+', '+mName(d.m))}/>`;
+      if(on)s+=`<text x="${cx+off+bw/2}" y="${y-6}" text-anchor="${key==='i'?'end':'start'}" class="lab num">${ftd(d[key],{compact:1})}</text>`});
+    s+=`<text x="${cx}" y="${h-6}" text-anchor="middle" ${on?'class="lab"':''}>${mName(d.m,1)}</text>`});
+  return s+'</svg>'}
+
+/* spending per month, stacked by category */
+function stackChart(sel,w,h){
+  const data=MONTHS.map(m=>{const g=group(exps(inM(TX(),m)),t=>t.c);return{m,tot:D(sum(exps(inM(TX(),m)))),parts:EXPCATS.map(k=>({k,v:D((g.find(x=>x.k===k)||{v:0}).v)})).filter(p=>p.v>0)}});
+  const max=nice(Math.max(...data.map(d=>d.tot))),pl=GUT(),pr=2,pt=22,pb=24,band=(w-pl-pr)/6,bw=Math.min(28,band*.5),Y=v=>pt+(1-v/max)*(h-pt-pb);
+  let s=svgO(w,h,T('Spending per month by category','每月各類別支出'))+yAxis(max,pl,w-pr,pt,h-pb,2,1);
+  data.forEach((d,k)=>{const x=pl+band*(k+.5)-bw/2,on=d.m===sel;let acc=0;
+    d.parts.forEach((p,i)=>{const y1=Y(acc+p.v),y0=Y(acc),hh=Math.max(0,y0-y1-2),last=i===d.parts.length-1;acc+=p.v;if(hh<=0)return;
+      s+=`<path d="${last?topRect(x,y1,bw,hh,4):`M${x} ${y1}h${bw}v${hh}h${-bw}z`}" style="fill:${cc(p.k)}" opacity="${on?1:.6}" ${tipA(ftd(p.v),cn(p.k)+', '+mName(d.m))}/>`});
+    s+=`<text x="${x+bw/2}" y="${Y(d.tot)-6}" text-anchor="middle" class="${on?'lab':''} num">${ftd(d.tot,{compact:1})}</text><text x="${x+bw/2}" y="${h-6}" text-anchor="middle" ${on?'class="lab"':''}>${mName(d.m,1)}</text>`});
+  return s+'</svg>'}
+
+/* money flow: income sources → income → categories and what was kept */
+function sankey(m,w){
+  const tx=inM(TX(),m),iG=group(incs(tx),t=>t.c),eG=group(exps(tx),t=>t.c),In=sum(incs(tx)),E=sum(exps(tx)),total=Math.max(In,E);
+  if(!total)return'';
+  const left=iG.map(g=>({label:cn(g.k),v:g.v,col:'var(--s1)'}));if(E>In)left.push({label:T('From savings','動用存款'),v:E-In,col:'var(--s-other)'});
+  const right=eG.map(g=>({label:cn(g.k,1),v:g.v,col:cc(g.k),k:g.k}));if(In>E)right.push({label:T('Kept','留下來'),v:In-E,col:'var(--s1)',kept:1});
+  const sm=w<560,h=sm?410:400,gap=sm?15:17,gapL=sm?34:26,nw=sm?10:14,padL=sm?0:128,padR=sm?142:230;
+  const sc=(h-gap*(right.length-1))/total,xL=padL,xR=w-padR-nw,xM=(xL+xR)/2;
+  let y=0;right.forEach(n=>{n.h=Math.max(1.5,n.v*sc);n.y=y;y+=n.h+gap});
+  const mH=total*sc,mY=(h-mH)/2,lH=mH+gapL*(left.length-1);let ly=(h-lH)/2;left.forEach(n=>{n.h=Math.max(1.5,n.v*sc);n.y=ly;ly+=n.h+gapL});
+  const rib=(x0,a0,a1,x1,b0,b1,col,op,tip)=>{const xm=(x0+x1)/2;return`<path d="M${x0} ${a0}C${xm} ${a0} ${xm} ${b0} ${x1} ${b0}L${x1} ${b1}C${xm} ${b1} ${xm} ${a1} ${x0} ${a1}Z" style="fill:${col}" opacity="${op}" ${tip}/>`};
+  let s=svgO(w,h,T(`Money flow for ${mName(m)}: income into spending categories`,`${mName(m)}金流：收入流向各支出類別`)),acc=mY;
+  left.forEach(n=>{s+=rib(xL+nw,n.y,n.y+n.h,xM,acc,acc+n.v*sc,n.col,.22,tipA(ft(n.v),n.label));acc+=n.v*sc});
+  acc=mY;right.forEach(n=>{s+=rib(xM+nw,acc,acc+n.v*sc,xR,n.y,n.y+n.h,n.col,n.kept?.3:.38,tipA(ft(n.v)+', '+Math.round(n.v/total*100)+'%',n.label));acc+=n.v*sc});
+  left.forEach(n=>{s+=`<rect x="${xL}" y="${n.y}" width="${nw}" height="${n.h}" rx="3" style="fill:${n.col}"/>`;
+    const ty=n.y+(n.h>34?16:n.h/2+4);s+=sm?`<text x="${xL+nw+7}" y="${ty}" class="lab">${esc(n.label)}</text><text x="${xL+nw+7}" y="${ty+14}" class="val num">${ft(n.v,{dec:0})}</text>`
+        :`<text x="${xL-10}" y="${n.y+n.h/2-(n.h>30?3:-4)}" text-anchor="end" class="lab">${esc(n.label)}</text>${n.h>30?`<text x="${xL-10}" y="${n.y+n.h/2+13}" text-anchor="end" class="val num">${ft(n.v,{dec:0})}</text>`:''}`});
+  s+=`<rect x="${xM}" y="${mY}" width="${nw}" height="${mH}" rx="3" style="fill:var(--ink)" ${tipA(ft(total,{dec:0}),T('Money in','流入金額'))}/>`;
+  right.forEach(n=>{s+=`<rect x="${xR}" y="${n.y}" width="${nw}" height="${n.h}" rx="3" style="fill:${n.col}"/><text x="${xR+nw+8}" y="${n.y+n.h/2+4}"><tspan class="lab">${esc(n.label)}</tspan> <tspan class="val num">${n.kept?ftd(keptD(In,E),{dec:0}):ft(n.v,{dec:0})}${sm?'':', '+Math.round(n.v/total*100)+'%'}</tspan></text>`});
+  return s+'</svg>'}
+
+/* generic single-series columns (supports negatives) */
+function colChart(pts,w,h,col='var(--s1)',hi=-1){
+  const vals=pts.map(p=>D(p.v)),mx=nice(Math.max(...vals,0)||1),mn=Math.min(...vals,0)<0?-nice(-Math.min(...vals)):0,pl=GUT(),pr=2,pt=22,pb=24,band=(w-pl-pr)/pts.length,bw=Math.min(24,band*.55),Y=v=>pt+(mx-v)/(mx-mn)*(h-pt-pb);
+  let s=svgO(w,h,pts.map(p=>p.label).join(', '));
+  for(const v of mn<0?[mn,0,mx]:[0,mx/2,mx]){s+=`<line class="${v===0?'axisl':'gridl'}" x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}"/>`;if(v)s+=`<text x="${pl-6}" y="${Y(v)+4}" text-anchor="end" class="num">${ftd(v,{compact:1})}</text>`}
+  pts.forEach((p,i)=>{const v=vals[i],x=pl+band*(i+.5)-bw/2,y=Y(Math.max(v,0)),hh=Math.abs(Y(v)-Y(0));
+    s+=`<path d="${v>=0?topRect(x,y,bw,hh,4):botRect(x,Y(0),bw,hh,4)}" style="fill:${col}" opacity="${hi<0||hi===i?1:.5}" ${tipA(ftd(v),p.label)}/>`;
+    if(pts.length<=8)s+=`<text x="${x+bw/2}" y="${h-6}" text-anchor="middle">${esc(p.label)}</text>`;
+    if(i===hi||(hi<0&&i===pts.length-1))s+=`<text x="${x+bw/2}" y="${(v>=0?y:Y(0))-6}" text-anchor="middle" class="lab num">${ftd(v,{compact:1})}</text>`});
+  return s+'</svg>'}
+/* generic single-series line */
+function lineChart(pts,w,h,col='var(--s1)'){
+  const vals=pts.map(p=>D(p.v)),mx=nice(Math.max(...vals,0)||1),mn=Math.min(...vals,0)<0?-nice(-Math.min(...vals)):0,pl=GUT(),pr=56,pt=16,pb=24,X=i=>pl+(pts.length>1?i/(pts.length-1):0)*(w-pl-pr),Y=v=>pt+(mx-v)/(mx-mn)*(h-pt-pb);
+  const id='c'+(chn++);CH[id]={x0:X(0),dx:pts.length>1?(w-pl-pr)/(pts.length-1):1,n:pts.length,names:[''],colors:[col],rows:pts.map((p,i)=>({t:p.label,v:[ftd(vals[i])]}))};
+  let s=svgO(w,h,pts.map(p=>p.label).join(', '),`data-ch="${id}"`);
+  for(const v of mn<0?[mn,0,mx]:[0,mx/2,mx]){s+=`<line class="${v===0?'axisl':'gridl'}" x1="${pl}" x2="${w-pr}" y1="${Y(v)}" y2="${Y(v)}"/>`;if(v)s+=`<text x="${pl-6}" y="${Y(v)+4}" text-anchor="end" class="num">${ftd(v,{compact:1})}</text>`}
+  const d=vals.map((v,i)=>`${i?'L':'M'}${X(i).toFixed(1)} ${Y(v).toFixed(1)}`).join('');
+  s+=`<path d="${d}L${X(pts.length-1)} ${Y(0)}L${X(0)} ${Y(0)}Z" style="fill:${col}" opacity=".1"/><path d="${d}" fill="none" style="stroke:${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  pts.forEach((p,i)=>{s+=`<text x="${X(i)}" y="${h-6}" text-anchor="middle">${esc(p.label)}</text>`});
+  const n=pts.length-1;s+=`<circle cx="${X(n)}" cy="${Y(vals[n])}" r="5" style="fill:${col};stroke:var(--surface)" stroke-width="2"/><text x="${X(n)+9}" y="${Y(vals[n])+4}" class="lab num">${ftd(vals[n],{compact:1})}</text>`;
+  return s+`<line class="xh" y1="${pt}" y2="${h-pb}"/></svg>`}
+/* donut: at most five parts plus Other, gaps not strokes */
+function donut(items,size=168,centre,hi){
+  const tot=items.reduce((a,p)=>a+p.v,0)||1,r=size/2-4,ri=r*.64,c=size/2;let a0=-Math.PI/2,s=svgO(size,size,items.map(p=>p.label).join(', '),`style="max-width:${size}px"`);
+  const P=(rad,a)=>`${(c+rad*Math.cos(a)).toFixed(2)} ${(c+rad*Math.sin(a)).toFixed(2)}`;
+  items.forEach(p=>{const a1=a0+p.v/tot*Math.PI*2,g=items.length>1?.018:0,x0=a0+g,x1=Math.max(a1-g,x0+.001),big=x1-x0>Math.PI?1:0;
+    if(p.v/tot>=.9999)s+=`<circle cx="${c}" cy="${c}" r="${(r+ri)/2}" fill="none" style="stroke:${p.col}" stroke-width="${r-ri}"/>`;
+    else s+=`<path d="M${P(r,x0)}A${r} ${r} 0 ${big} 1 ${P(r,x1)}L${P(ri,x1)}A${ri} ${ri} 0 ${big} 0 ${P(ri,x0)}Z" style="fill:${p.col}" ${p.k?`data-hl="${p.k}" data-act="hicat" data-arg="${p.k}" class="${hi&&hi!==p.k?'dim':''}"`:''} ${tipA(ft(p.v)+', '+Math.round(p.v/tot*100)+'%',p.label)}/>`;a0=a1});
+  return s+`<text x="${c}" y="${c-2}" text-anchor="middle" class="lab num" style="font-size:${size>190?22:17}px;font-weight:680">${centre?centre[0]:ft(tot,{compact:1})}</text><text x="${c}" y="${c+(size>190?19:15)}" text-anchor="middle">${centre?esc(centre[1]):T('total','合計')}</text></svg>`}
+/* small: one outlier among usual amounts */
+function dotStrip(vals,hiV,w){const mx=Math.max(...vals,hiV)*1.05,h=54,X=v=>8+v/mx*(w-16);vals=vals.slice().sort((a,b)=>a-b);const med=vals[Math.floor(vals.length/2)];
+  let s=svgO(w,h,T('Each dot is one dining bill; the highlighted one is far above the rest','每個點代表一筆餐飲消費，標示的那筆遠高於其他'))+`<line class="axisl" x1="8" x2="${w-8}" y1="30" y2="30"/>`;
+  vals.forEach(v=>{s+=`<circle cx="${X(v)}" cy="30" r="4" style="fill:var(--s-other)" opacity=".45"/>`});
+  s+=`<line x1="${X(med)}" x2="${X(med)}" y1="18" y2="42" style="stroke:var(--ink-3)" stroke-width="1.5"/><text x="${X(med)+5}" y="15">${T('your usual','平常')} ${ft(med,{dec:0})}</text>`;
+  return s+`<circle cx="${X(hiV)}" cy="30" r="7" style="fill:var(--s2);stroke:var(--bg)" stroke-width="2"/><text x="${X(hiV)}" y="15" text-anchor="end" class="lab num">${ft(hiV,{dec:0})}</text></svg>`}
+/* small: stepped price history */
+function stepChart(hist,w){const h=70,vals=hist.map(t=>t.sgd),mn=Math.min(...vals)*.9,mx=Math.max(...vals)*1.06,X=i=>8+i/(hist.length-1)*(w-70),Y=v=>12+(mx-v)/(mx-mn)*(h-34);
+  let d='';vals.forEach((v,i)=>{d+=i?`H${X(i)}V${Y(v)}`:`M${X(0)} ${Y(v)}`});
+  let s=svgO(w,h,T('Monthly price history','每月價格紀錄'))+`<path d="${d}" fill="none" style="stroke:var(--s8)" stroke-width="2" stroke-linejoin="round"/>`;
+  hist.forEach((t,i)=>{s+=`<circle cx="${X(i)}" cy="${Y(vals[i])}" r="${i===hist.length-1?5:3.5}" style="fill:var(--s8);stroke:var(--bg)" stroke-width="2"/><text x="${X(i)}" y="${h-4}" text-anchor="${i?'middle':'start'}">${mName(t.d.slice(0,7),1)}</text>`});
+  const n=hist.length-1;return s+`<text x="${X(n)+10}" y="${Y(vals[n])+4}" class="lab num">${ft(vals[n])}</text><text x="${X(0)}" y="${Y(vals[0])-8}" class="num">${ft(vals[0])}</text></svg>`}
+const legend=items=>`<div class="legend">${items.map(([c,l,ln])=>`<span><i class="${ln?'ln':'dot'}" style="background:${c}"></i>${l}</span>`).join('')}</div>`;
+/* a chart card body with a table twin for keyboard and screen-reader users */
+function withTable(id,chart,head,rows){const on=S.tables[id];return{btn:`<button class="tbtn" data-act="table" data-arg="${id}" aria-pressed="${!!on}">${I(on?'bar':'table','sm')}${on?T('Chart','圖表'):T('Table','表格')}</button>`,
+  body:on?`<div class="tblwrap"><table class="tbl"><thead><tr>${head.map((x,i)=>`<th class="${i?'r':''}">${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((x,i)=>`<td class="${i?'r num':''}">${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:chart}}
+/* ============ shell ============ */
+const NAV=()=>[['overview','home',T('Overview','總覽')],['insights','spark',T('Insights','洞察')],['transactions','list',T('Transactions','交易')],['import','upload',T('Import','匯入')],['recurring','repeat',T('Recurring','定期扣款')],['ask','chat',T('Ask your money','問問你的錢')],['review','story',T('Month in review','月度回顧')],['settings','gear',T('Settings','設定')]];
+const route=()=>(location.hash.replace(/^#\/?/,'')||'landing').split('?')[0];
+const go=r=>{location.hash='#/'+r};
+function controls(){return`
+  <select class="select sm" data-on="cur" aria-label="${T('Display currency','顯示幣別')}">${Object.keys(CUR).map(c=>`<option ${c===S.cur?'selected':''}>${c}</option>`).join('')}</select>
+  <button class="iconbtn txt" data-act="lang" aria-label="${T('Switch to Traditional Chinese','切換為英文')}" lang="${S.lang==='en'?'zh-Hant':'en'}">${S.lang==='en'?'中文':'EN'}</button>
+  <button class="iconbtn ${S.priv?'on':''}" data-act="priv" aria-pressed="${S.priv}" aria-label="${T('Hide amounts','隱藏金額')}" title="${T('Hide amounts','隱藏金額')}">${I(S.priv?'eyeoff':'eye')}</button>
+  <button class="iconbtn" data-act="theme" aria-label="${S.theme==='dark'?T('Switch to light theme','切換為淺色主題'):T('Switch to dark theme','切換為深色主題')}">${I(S.theme==='dark'?'sun':'moon')}</button>`}
+function protoMenu(){if(!S.menu)return'';const b=(act,arg,l)=>`<button data-act="${act}" data-arg="${arg}">${l}</button>`;return`<div class="menu" role="menu">
+  <div class="nav-sep">${T('Before the app','進入應用程式之前')}</div>
+  ${b('goto','landing',T('Landing page','首頁'))}${b('goto','invite',T('Invite accepted','接受邀請'))}${b('goto','signin',T('Google sign-in','Google 登入'))}${b('goto','onboard',T('Currency and language','幣別與語言'))}${b('goto','gmail',T('Gmail access explained','Gmail 存取說明'))}${b('goto','scan',T('First scan','首次掃描'))}${b('goto','full',T('All 100 places taken','100 個名額已滿'))}
+  <div class="nav-sep">${T('States','狀態')}</div>
+  ${b('firstday','',T('The 1st of the month: review opens by itself','每月 1 日：回顧自動開啟'))}${b('toggle','empty',(S.empty?'✓ ':'')+T('Brand-new account, no data','全新帳戶（無資料）'))}${b('toggle','aiOut',(S.aiOut?'✓ ':'')+T('Free AI allowance used up','免費 AI 額度用完'))}${b('toggle','gmail',(!S.gmail?'✓ ':'')+T('Gmail not connected','尚未連結 Gmail'))}
+  </div>`}
+function shell(r){const nav=NAV(),cur=nav.find(n=>n[0]===r)||nav[0],nIns=insightsList().length,nRev=S.gmail&&!S.empty?S.review.length:0;
+  const cnt=k=>k==='insights'&&nIns?`<span class="count">${nIns}</span>`:k==='import'&&nRev?`<span class="count">${nRev}</span>`:'';
+  return`<a class="skip" href="#main" data-act="skip">${T('Skip to content','跳到主要內容')}</a>
+  <div class="demo" style="position:relative"><span><b>${T('Demo','示範模式')}</b> <span class="hide-m">${T('Sample data, as if today were 24 October 2026. Nothing here touches a real account.','範例資料，假設今天是 2026 年 10 月 24 日，不會碰到任何真實帳戶。')}</span><span class="hide-d">${T('Sample data, 24 Oct 2026','範例資料，2026/10/24')}</span></span><button data-act="menu" aria-expanded="${S.menu}">${T('Prototype screens','原型畫面')}</button>${protoMenu()}</div>
+  <div class="shell"><aside class="side"><a class="logo" href="#/overview" style="text-decoration:none;color:inherit">${LOGO}<span>Finance Tracker</span></a>
+    <nav aria-label="${T('Main','主選單')}">${nav.map(n=>`<a class="nav" href="#/${n[0]}" ${n[0]===cur[0]?'aria-current="page"':''}>${I(n[1])}<span>${n[2]}</span>${cnt(n[0])}</a>`).join('')}</nav>
+    <div class="side-foot"><div class="row"><span class="av sm" style="--avc:var(--s1)">KL</span><div class="grow"><b class="trunc" style="display:block">Kai Lin</b><span class="muted trunc" style="display:block">kai.lin@gmail.com</span></div></div></div></aside>
+  <div class="main"><header class="top"><h1 class="trunc">${cur[2]}</h1>${controls()}</header>
+  <main id="main" class="page" tabindex="-1">${(PAGES[cur[0]]||PAGES.overview)()}</main></div></div>
+  <nav class="tabbar" aria-label="${T('Main','主選單')}">
+    ${[nav[0],nav[2]].map(n=>`<a href="#/${n[0]}" ${n[0]===cur[0]?'aria-current="page"':''}>${I(n[1],'lg')}<span>${n[2]}</span></a>`).join('')}
+    <button class="fab" data-act="txnew" aria-label="${T('Add a transaction','新增交易')}">${I('plus','lg')}</button>
+    <a href="#/insights" ${cur[0]==='insights'?'aria-current="page"':''}>${I('spark','lg')}<span>${nav[1][2]}</span></a>
+    <button data-act="more" ${['overview','transactions','insights'].includes(cur[0])?'':'aria-current="page"'}>${I('more','lg')}<span>${T('More','更多')}</span></button></nav>`}
+const pageHead=(lede,right='')=>`<div class="page-h"><p>${lede}</p>${right?`<div class="row wrap">${right}</div>`:''}</div>`;
+const empty=(icon,h,p,btns='')=>`<div class="empty"><div class="art">${I(icon,'lg')}</div><h2>${h}</h2><p>${p}</p>${btns?`<div class="row wrap" style="justify-content:center;margin-top:8px">${btns}</div>`:''}</div>`;
+
+/* ============ insights (computed from the same transactions as every chart) ============ */
+function insightsList(){
+  if(S.empty||!TX().length)return[];const out=[],w=mob()?vw()-64-34:Math.min(vw()-248,1240)-64-140;
+  const big=TX().find(t=>t.m==='Burnt Ends'&&t.d.startsWith(CURM));
+  if(big){const din=TX().filter(t=>t.c==='dining'&&t.cur==='SGD'&&t.d>='2026-08'&&t.id!==big.id).map(t=>t.sgd).sort((a,b)=>a-b),med=din[Math.floor(din.length/2)],nxt=din[din.length-1],x=(big.sgd/nxt).toFixed(1).replace('.0','');
+    out.push({id:'unusual',icon:'alert',col:'var(--s2)',tag:T('Unusually large','異常高額'),title:T(`${big.m} was your largest dining bill in three months`,`${big.m} 是你三個月來最高的一筆餐飲消費`),
+      body:T(`${mh(big.sgd)} on ${fd(big.d,1)}. That is ${x} times the next largest (${mh(nxt)}), and your usual dining bill is around ${mh(med)}. If it was a celebration, there is nothing to do.`,`${fd(big.d,1)}消費 ${mh(big.sgd)}。是第二高那筆（${mh(nxt)}）的 ${x} 倍，而你平常的餐飲消費約 ${mh(med)}。如果是慶祝聚餐，就不用處理。`),
+      viz:()=>dotStrip(din,big.sgd,Math.min(w,620)),acts:[['txedit',big.id,T('Open the transaction','查看這筆交易')],['insoff','unusual',T('Looks right','沒問題')]]})}
+  const nf=recurring().find(r=>r.m==='Netflix');
+  if(nf&&nf.change>0){out.push({id:'price',icon:'up',col:'var(--s8)',tag:T('Price went up','漲價'),title:T(`Netflix now costs ${fmtv(D(nf.change),S.cur)} more each month`,`Netflix 每月多收 ${fmtv(D(nf.change),S.cur)}`),
+      body:T(`It rose from ${mh(nf.prev.sgd)} to ${mh(nf.sgd)} on ${fd(nf.last.d)}. Over a year that is ${mh(nf.change*12)} extra. The next charge is on ${fd(nf.next)}.`,`${fd(nf.last.d)}起從 ${mh(nf.prev.sgd)} 調漲為 ${mh(nf.sgd)}，一年多付 ${mh(nf.change*12)}。下次扣款日是 ${fd(nf.next)}。`),
+      viz:()=>`<div style="max-width:460px">${stepChart(nf.hist,Math.min(w,460))}</div>`,acts:[['goto','recurring',T('See all recurring charges','查看所有定期扣款')],['insoff','price',T('Got it','知道了')]]})}
+  const sh=TX().filter(t=>t.m==='Shopee'&&t.d==='2026-10-19'&&t.a===64.9);
+  if(sh.length>1){out.push({id:'dup',icon:'copy',col:'var(--s5)',tag:T('Possible duplicate','可能重複'),title:T(`Shopee charged ${fmtv(D(sh[0].sgd),S.cur)} twice on ${fd(sh[0].d)}`,`Shopee 在 ${fd(sh[0].d)}扣了兩筆 ${fmtv(D(sh[0].sgd),S.cur)}`),
+      body:T('One came from a Gmail receipt and one from your DBS statement. They may be the same purchase recorded twice, or two real orders.','一筆來自 Gmail 收據，一筆來自 DBS 對帳單。可能是同一筆消費被記了兩次，也可能真的買了兩次。'),
+      viz:()=>`<div class="divide">${sh.map(t=>`<div class="li">${av(t,1)}<div class="grow"><div class="t">${t.m}</div><div class="s">${fd(t.d,1)}, ${T('from ','來源：')}${T(...SRC[t.src])}</div></div><div class="a">${mh(t.sgd)}</div></div>`).join('')}</div>`,
+      acts:[['dupfix',sh[1].id,T('Same purchase, remove one','同一筆，移除其中一筆')],['insoff','dup',T('Both are real','兩筆都是真的')]]})}
+  const f=forecast(),pe=monthStats(prevM(CURM)).E,more=f.total-pe;
+  out.push({id:'forecast',icon:'line',col:'var(--s1)',tag:T('Month-end forecast','月底預估'),title:T(`October is heading for about ${fmtv(D(f.total),S.cur,{dec:0})}`,`10 月支出預估約 ${fmtv(D(f.total),S.cur,{dec:0})}`),
+    body:T(`That would be ${mh(Math.abs(more),{dec:0})} ${more>0?'more':'less'} than September. It adds what you have spent (${mh(f.spent,{dec:0})}), bills still due this month (${mh(f.due,{dec:0})}) and ${f.left} more days at your everyday pace of ${mh(f.perDay,{dec:0})} a day.`,`比 9 月${more>0?'多':'少'} ${mh(Math.abs(more),{dec:0})}。算法：已支出 ${mh(f.spent,{dec:0})}，加上本月尚未扣款的帳單 ${mh(f.due,{dec:0})}，再加上剩下 ${f.left} 天按日常步調每天 ${mh(f.perDay,{dec:0})}。`),
+    viz:()=>paceChart(CURM,Math.min(w,620),170),acts:[['goto','overview',T('Open the overview','開啟總覽')],['insoff','forecast',T('Got it','知道了')]]});
+  return out.filter(i=>!S.insOff[i.id])}
+function insightsPage(){const list=insightsList();
+  if(S.empty)return empty('spark',T('Insights appear once there is something to compare','有資料可以比較時，洞察就會出現'),T('After your first import, Finance Tracker points out large charges, price rises, possible duplicates and where the month is heading.','第一次匯入之後，Finance Tracker 會主動提醒高額消費、訂閱漲價、可能的重複扣款，以及本月的走勢。'),`<a class="btn primary" href="#/import">${T('Import transactions','匯入交易')}</a>`);
+  if(!list.length)return empty('check',T('Nothing needs your attention','目前沒有需要注意的事'),T('New insights appear here after each scan or upload.','每次掃描或上傳後，新的洞察會出現在這裡。'),`<button class="btn ghost" data-act="insreset">${T('Show dismissed insights','顯示已略過的洞察')}</button>`);
+  return pageHead(T('Things Finance Tracker noticed without being asked. Each one shows the numbers behind it.','Finance Tracker 主動發現的事，每一則都附上背後的數字。'))+
+  `<div class="stack" style="gap:var(--sp-4);max-width:900px">${list.map(i=>`<article class="card ins" style="--insc:${i.col}"><div class="ins-ic">${I(i.icon)}</div><div style="min-width:0"><span class="chip">${i.tag}</span><h3 style="margin-top:8px">${i.title}</h3><p>${i.body}</p><div class="viz"><div style="max-width:640px">${i.viz()}</div></div><div class="acts">${i.acts.map((a,k)=>`<button class="btn sm ${k?'ghost':'primary'}" data-act="${a[0]}" data-arg="${a[1]}">${a[2]}</button>`).join('')}</div></div></article>`).join('')}</div>`}
+
+/* ============ overview ============ */
+function calendar(m){
+  const tx=exps(inM(TX(),m)),by={};tx.forEach(t=>{by[t.d]=(by[t.d]||0)+t.sgd});
+  const first=(dt(m).getDay()+6)%7,n=dim(m),wd=S.lang==='zh'?['一','二','三','四','五','六','日']:['M','T','W','T','F','S','S'];
+  let s=`<div class="cal" role="group" aria-label="${T('Spending by day','每日支出')}">${wd.map(x=>`<div class="wd" aria-hidden="true">${x}</div>`).join('')}${'<span></span>'.repeat(first)}`;
+  for(let d=1;d<=n;d++){const k=`${m}-${String(d).padStart(2,'0')}`,v=by[k]||0;
+    if(k>TODAY){s+=`<i class="fut" aria-hidden="true">${d}</i>`;continue}
+    const lvl=v<=0?0:v<30?1:v<80?2:v<200?3:v<500?4:5;
+    s+=`<button class="h${lvl} ${k===TODAY?'today':''}" data-act="day" data-arg="${k}" aria-pressed="${S.day===k}" aria-label="${fd(k,1)}: ${v?ft(v):T('nothing spent','沒有支出')}" ${tipA(v?ft(v):T('Nothing spent','沒有支出'),fd(k,1))}>${d}</button>`}
+  return s+'</div>'}
+function dayDetail(){const k=S.day,tx=exps(TX().filter(t=>t.d===k));
+  return`<div><div class="row between"><b>${fd(k,1)}</b><span class="a">${mh(sum(tx))}</span></div>
+  ${tx.length?`<div class="divide" style="margin-top:4px">${tx.slice(0,5).map(t=>`<button class="li" data-act="txedit" data-arg="${t.id}">${av(t,1)}<span class="grow"><span class="t trunc" style="display:block">${t.m}</span><span class="s">${cn(t.c,1)}</span></span><span class="a">${mh(t.sgd)}</span></button>`).join('')}</div>${tx.length>5?`<p class="xs muted">${T(`and ${tx.length-5} more`,`還有 ${tx.length-5} 筆`)}</p>`:''}`:`<p class="small muted" style="padding:16px 0">${T('Nothing spent this day.','這天沒有支出。')}</p>`}</div>`}
+function emptyOverview(){return`<div class="empty" style="padding-top:var(--sp-8)"><h2>${T('Welcome, Kai. Your dashboard is one import away.','歡迎，Kai。匯入一次，儀表板就會出現。')}</h2><p>${T('Pick whichever is easiest. You can use all three, and Finance Tracker skips anything it has already seen.','選一個最方便的方式開始。三種可以一起用，重複的資料會自動略過。')}</p>
+  <div class="starts">
+    <button class="start" data-act="goto" data-arg="gmail">${I('mail','lg')}<b>${T('Scan Gmail for receipts','掃描 Gmail 收據')}</b><span class="ink2">${T('Read-only. Finds purchases, invoices and renewal notices from the last 12 months. About two minutes.','唯讀。找出過去 12 個月的消費、發票與續訂通知，大約兩分鐘。')}</span></button>
+    <button class="start" data-act="imptab" data-arg="files">${I('file','lg')}<b>${T('Upload a bank statement','上傳銀行對帳單')}</b><span class="ink2">${T('PDF or CSV from DBS/POSB, OCBC, UOB, Citibank, Standard Chartered or HSBC. Several at once is fine.','支援 DBS/POSB、OCBC、UOB、花旗、渣打、匯豐的 PDF 或 CSV，可一次上傳多份。')}</span></button>
+    <button class="start" data-act="txnew">${I('edit','lg')}<b>${T('Add a transaction by hand','手動新增一筆交易')}</b><span class="ink2">${T('For cash and anything without a receipt. Any currency.','適合現金或沒有收據的消費，任何幣別都可以。')}</span></button>
+  </div><p class="small muted" style="margin-top:var(--sp-4)">${T('Want to see it full first?','想先看看有資料的樣子？')} <button class="btn quiet sm" data-act="toggle" data-arg="empty">${T('Load the sample data','載入範例資料')}</button></p></div>`}
+
+/* ============ transactions ============ */
+function txFiltered(){const f=S.txf,q=S.txq.trim().toLowerCase();return TX().filter(t=>(f.type==='all'||(f.type==='inc')===t.inc)&&(f.cat==='all'||t.c===f.cat)&&(f.cur==='all'||t.cur===f.cur)&&(f.src==='all'||t.src===f.src)&&(f.month==='all'||t.d.startsWith(f.month))&&(!q||t.m.toLowerCase().includes(q)||cn(t.c).toLowerCase().includes(q)||String(t.a).includes(q)))}
+function txRow(t){return`<button class="tx" data-act="txedit" data-arg="${t.id}">${av(t)}<span style="min-width:0"><span class="trunc" style="display:block;font-weight:var(--fw-medium)">${esc(t.m)}</span><span class="meta"><i class="dot" style="background:${cc(t.c)}"></i><span class="trunc">${cn(t.c,1)}</span><span class="hide-m">${T(...SRC[t.src])}</span></span></span><span class="a ${t.inc?'pos':''}">${t.inc?'+':''}${mh(t.sgd)}${t.cur!==S.cur?`<small>${orig(t)}</small>`:''}</span></button>`}
+function txList(){const l=txFiltered(),E=sum(exps(l)),In=sum(incs(l));
+  if(!l.length)return`<div class="card">${empty('search',T('No transactions match','沒有符合的交易'),T('Try a shorter search, or clear the filters.','試試較短的關鍵字，或清除篩選條件。'),`<button class="btn ghost" data-act="txclear">${T('Clear search and filters','清除搜尋與篩選')}</button>`)}</div>`;
+  const shown=l.slice(0,S.txLimit);let s='',last='';
+  for(const t of shown){if(t.d!==last){const day=exps(l.filter(x=>x.d===t.d));s+=`<div class="day-h"><span>${fd(t.d,1)}</span><span>${day.length?mh(sum(day)):''}</span></div>`;last=t.d}s+=txRow(t)}
+  return`<p class="small ink2" style="margin-bottom:var(--sp-3)" aria-live="polite">${T(`${l.length} transactions, ${mh(E)} spent${In?`, ${mh(In)} received`:''}`,`${l.length} 筆交易，支出 ${mh(E)}${In?`，收入 ${mh(In)}`:''}`)}</p>
+  <div class="card" style="padding:0 0 var(--sp-2);overflow:hidden">${s}</div>${l.length>shown.length?`<div style="text-align:center;margin-top:var(--sp-4)"><button class="btn ghost" data-act="txmore">${T(`Show 40 more of ${l.length-shown.length}`,`再顯示 40 筆（還有 ${l.length-shown.length} 筆）`)}</button></div>`:''}`}
+function transactionsPage(){
+  if(S.empty&&!TX().length)return empty('list',T('No transactions yet','還沒有任何交易'),T('Scan Gmail or upload a statement and they arrive here, each with its original amount and currency. Or add the first one by hand.','掃描 Gmail 或上傳對帳單後，交易會出現在這裡，並保留原始金額與幣別。也可以先手動新增第一筆。'),`<button class="btn primary" data-act="txnew">${I('plus')}${T('Add a transaction','新增交易')}</button><a class="btn ghost" href="#/import">${T('Import instead','改用匯入')}</a>`);
+  const f=S.txf,sel=(k,opts,label)=>`<select class="select sm" data-on="txf" data-arg="${k}" aria-label="${label}">${opts.map(o=>`<option value="${o[0]}" ${f[k]===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select>`;
+  const used=[...new Set(TX().map(t=>t.cur))],active=S.txq||Object.values(f).some(v=>v!=='all');
+  return`<div class="filters"><div class="search">${I('search')}<input class="input" type="search" data-on="txq" value="${esc(S.txq)}" placeholder="${T('Search merchant, category or amount','搜尋商家、類別或金額')}" aria-label="${T('Search transactions','搜尋交易')}"></div>
+    <button class="btn primary hide-m" data-act="txnew">${I('plus')}${T('Add transaction','新增交易')}</button></div>
+  <div class="filters scroll">${sel('type',[['all',T('Expenses and income','支出與收入')],['exp',T('Expenses','支出')],['inc',T('Income','收入')]],T('Type','類型'))}
+    ${sel('cat',[['all',T('All categories','所有類別')],...Object.keys(CATS).map(k=>[k,cn(k)])],T('Category','類別'))}
+    ${sel('month',[['all',T('All months','所有月份')],...MONTHS.slice().reverse().map(m=>[m,mName(m)])],T('Month','月份'))}
+    ${sel('cur',[['all',T('All currencies','所有幣別')],...used.map(c=>[c,c])],T('Original currency','原始幣別'))}
+    ${sel('src',[['all',T('All sources','所有來源')],...Object.keys(SRC).map(k=>[k,T(...SRC[k])])],T('Source','來源'))}
+    ${active?`<button class="btn quiet sm" data-act="txclear">${T('Clear','清除')}</button>`:''}</div>
+  <div id="txlist">${txList()}</div>`}
+const convHint=d=>{const conv=Number(d.a)>0?Number(d.a)/RATES[d.cur]:0;return d.cur!=="SGD"&&conv?T(`About ${fmtv(conv,"SGD")} at today's rate. The original ${d.cur} amount is kept.`,`依今日匯率約 ${fmtv(conv,"SGD")}，原始 ${d.cur} 金額會保留。`):T("Kept in the currency you paid in; totals convert to your display currency.","保留你付款時的幣別，總計會換算成顯示幣別。")};
+function txSheet(o){const d=o.draft,isNew=!o.id,conv=d.a>0?d.a/RATES[d.cur]:0,old=o.id&&TX().find(t=>t.id===o.id),catChanged=old&&old.c!==d.c,same=old?TX().filter(t=>t.m===old.m&&t.id!==old.id).length:0;
+  const cats=Object.keys(CATS).filter(k=>!!CATS[k].inc===!!d.inc);
+  return`<div class="sheet-h"><h2 id="ov-title">${isNew?T('Add a transaction','新增交易'):T('Edit transaction','編輯交易')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div>
+  <div class="seg fill" role="group" aria-label="${T('Type','類型')}"><button data-act="txtype" data-arg="0" aria-pressed="${!d.inc}">${T('Expense','支出')}</button><button data-act="txtype" data-arg="1" aria-pressed="${!!d.inc}">${T('Income','收入')}</button></div>
+  <div class="row" style="align-items:flex-end"><label class="field grow"><span>${T('Amount','金額')}</span><input class="input num" inputmode="decimal" data-autofocus data-on="txd" data-arg="a" value="${d.a||''}" placeholder="0.00" style="font-size:22px;font-weight:var(--fw-bold);min-height:54px"></label>
+    <label class="field" style="width:110px"><span>${T('Currency','幣別')}</span><select class="select" data-on="txdc" style="min-height:54px">${Object.keys(CUR).map(c=>`<option ${c===d.cur?'selected':''}>${c}</option>`).join('')}</select></label></div>
+  <p class="hint" id="txconv">${convHint(d)}</p>
+  <label class="field"><span>${d.inc?T('From','來源'):T('Merchant','商家')}</span><input class="input" data-on="txd" data-arg="m" value="${esc(d.m)}" placeholder="${T('For example, FairPrice','例如 FairPrice')}"></label>
+  <label class="field"><span>${T('Date','日期')}</span><input class="input" type="date" data-on="txd" data-arg="d" value="${d.d}" max="${TODAY}"></label>
+  <label class="field"><span>${T('Category','類別')}</span><select class="select" data-on="txdcat">${cats.map(k=>`<option value="${k}" ${k===d.c?'selected':''}>${cn(k)}</option>`).join('')}</select></label>
+  ${catChanged?`<div class="note teal">${I('info')}<div><b>${T(`${old.m} will be filed under ${cn(d.c)} from now on.`,`之後 ${old.m} 都會歸到「${cn(d.c)}」。`)}</b>${same?`<label class="row" style="margin-top:8px;gap:8px;min-height:32px"><input type="checkbox" data-on="txpast" ${o.past?'checked':''} style="width:20px;height:20px">${T(`Also change the ${same} earlier ones`,`同時修改之前的 ${same} 筆`)}</label>`:''}</div></div>`:''}
+  ${o.err?`<p class="neg small" role="alert">${I('alert','sm')} ${o.err}</p>`:''}
+  ${old?`<p class="hint">${T('Source','來源')}: ${T(...SRC[old.src])}</p>`:''}
+  <div class="sheet-f">${!isNew?`<button class="btn danger-ghost" data-act="txdel">${I('trash')}${T('Delete','刪除')}</button>`:''}<button class="btn primary grow" data-act="txsave">${isNew?T('Add transaction','新增交易'):T('Save changes','儲存變更')}</button></div>`}
+/* ============ import ============ */
+S.review=[
+  {id:'r1',m:'Grab',a:18.4,cur:'SGD',d:'2026-10-24',c:'transport',sub:'Your Grab E-Receipt'},
+  {id:'r2',m:'foodpanda',a:22.7,cur:'SGD',d:'2026-10-23',c:'dining',sub:'Your order from Nasi Lemak Ayam Taliwang'},
+  {id:'r3',m:'Amazon.com',a:36.2,cur:'USD',d:'2026-10-23',c:'shopping',sub:'Your Amazon.com order has shipped'},
+  {id:'r4',m:'Lazada',a:45.9,cur:'SGD',d:'2026-10-22',c:'shopping',sub:'Order confirmed'},
+  {id:'r5',m:'Klook',a:6400,cur:'JPY',d:'2026-10-22',c:'travel',sub:'Booking confirmed: Tokyo Skytree'},
+  {id:'r6',m:'Uniqlo',a:59.9,cur:'SGD',d:'2026-10-21',c:'shopping',sub:'Thank you for shopping with us',low:1},
+  {id:'r7',m:'Great Eastern',a:186.4,cur:'SGD',d:'2026-10-26',c:'bills',sub:'Premium due on 26 Oct',notice:1}];
+const FILES=()=>[
+  {n:'DBS_Altitude_Card_Oct2026.pdf',bank:'DBS',kind:T('credit card','信用卡'),tx:34,dup:6,total:1842.65},
+  {n:'OCBC_360_Account_Oct2026.pdf',bank:'OCBC',kind:T('deposit account','存款帳戶'),tx:18,dup:3,total:2964.1,locked:1},
+  {n:'UOB_One_Card_Sep2026.csv',bank:'UOB',kind:T('credit card','信用卡'),tx:27,dup:27,total:1310.4},
+  {n:'IMG_2041.pdf',bad:1}];
+function importPage(){
+  const tabs=`<div class="seg" role="group" aria-label="${T('Import source','匯入來源')}"><button data-act="imptab" data-arg="files" aria-pressed="${S.impTab==='files'}">${I('file','sm')}${T('Statements','對帳單')}</button><button data-act="imptab" data-arg="gmail" aria-pressed="${S.impTab==='gmail'}">${I('mail','sm')}${T('Gmail finds','Gmail 找到的')}${S.gmail&&!S.empty&&S.review.length?` <span class="chip teal" style="height:20px;padding:0 7px">${S.review.length}</span>`:''}</button></div>`;
+  return`<div style="max-width:900px">${pageHead(T('Two ways in, no typing. Anything already in your transactions is skipped.','兩種匯入方式，都不用打字。已經存在的交易會自動略過。'),tabs)}${S.impTab==='files'?importFiles():importGmail()}</div>`}
+function importFiles(){const st=S.impStage,files=FILES(),ready=files.filter(f=>!f.bad&&(!f.locked||S.pwOk)),nNew=ready.reduce((a,f)=>a+f.tx-f.dup,0),nDup=ready.reduce((a,f)=>a+f.dup,0);
+  if(st===0)return`<div class="drop" id="drop">${I('upload','lg')}<b style="font-size:var(--fs-lg)">${T('Drop statements here','把對帳單拖到這裡')}</b><span class="ink2">${T('PDF or CSV, several at once. Credit card and deposit account statements.','PDF 或 CSV，可一次多份。支援信用卡與存款帳戶對帳單。')}</span>
+    <button class="btn primary" data-act="impstage" data-arg="1">${T('Choose files','選擇檔案')}</button>
+    <div class="banks">${['DBS/POSB','OCBC','UOB','Citibank','Standard Chartered','HSBC'].map(b=>`<span class="chip line">${b}</span>`).join('')}</div></div>
+    <div class="note teal" style="margin-top:var(--sp-4)">${I('shield')}<div><b>${T('The file itself is never stored.','檔案本身不會被儲存。')}</b> ${T('Finance Tracker reads the transactions out of it, shows them to you, and keeps only the ones you import.','Finance Tracker 只讀出其中的交易給你確認，並只保留你決定匯入的那些。')}</div></div>
+    <p class="hint" style="margin-top:var(--sp-3)">${T('Prototype: choosing or dropping any file loads four sample statements.','原型：選擇或拖入任何檔案，都會載入四份範例對帳單。')}</p>`;
+  if(st===3)return`<div class="card">${empty('check',T(`${nNew} transactions imported`,`已匯入 ${nNew} 筆交易`),T(`${nDup} were already in your transactions and were skipped. The files were not kept.`,`另有 ${nDup} 筆已存在，已略過。檔案沒有被保留。`),`<a class="btn primary" href="#/transactions">${T('See them in Transactions','到交易清單查看')}</a><button class="btn ghost" data-act="impstage" data-arg="0">${T('Upload more','再上傳')}</button>`)}</div>`;
+  const fileRow=f=>`<div class="file"><div class="fi">${f.n.split('.').pop().toUpperCase()}</div><div style="min-width:0"><b class="trunc" style="display:block">${f.n}</b>
+      ${f.bad?`<span class="small neg">${I('alert','sm')} ${T('Not recognised as a statement from a supported bank. It may be a scan or photo.','無法辨識為支援銀行的對帳單，可能是掃描檔或照片。')}</span>`
+      :f.locked&&!S.pwOk?`<span class="small ink2">${I('lock','sm')} ${T(`${f.bank} ${f.kind}, locked with a password`,`${f.bank} ${f.kind}，有密碼保護`)}</span>`
+      :`<span class="small ink2">${T(`${f.bank} ${f.kind}, ${f.tx} transactions`,`${f.bank} ${f.kind}，${f.tx} 筆交易`)}${f.dup===f.tx?T(', all already imported','，全部已匯入過'):f.dup?T(`, ${f.dup} already imported`,`，其中 ${f.dup} 筆已匯入過`):''}</span>`}</div>
+    ${f.bad?`<span class="chip warm">${T('Skipped','已略過')}</span>`:f.locked&&!S.pwOk?`<span class="chip gold">${T('Needs password','需要密碼')}</span>`:`<span class="chip teal">${I('check','sm')}${T('Read','已讀取')}</span>`}
+    ${f.locked&&!S.pwOk?`<div class="pw"><input class="input" type="password" id="pw" aria-label="${T(`Password for ${f.n}`,`${f.n} 的密碼`)}" placeholder="${T('PDF password','PDF 密碼')}"><button class="btn ghost" data-act="pw">${T('Unlock','解鎖')}</button><span class="hint" style="flex-basis:100%">${T('Banks often use your date of birth or part of your NRIC. The password is used once and not stored.','銀行通常使用你的生日或部分身分證號。密碼只用一次，不會儲存。')}</span></div>`:''}</div>`;
+  const rows=[['21 Oct','GRAB*A-7XK2PQ SINGAPORE','Grab',14.6,0],['20 Oct','NTUC FAIRPRICE TIONG BAHRU','FairPrice',52.35,0],['19 Oct','SHOPEE SINGAPORE MP','Shopee',64.9,1],['18 Oct','SP DIGITAL PTE LTD','SP Group',97.12,1],['17 Oct','BURNT ENDS SINGAPORE','Burnt Ends',386,1],['16 Oct','UNIQLO ION ORCHARD','Uniqlo',79.8,0],['15 Oct','SINGTEL MOBILE','Singtel Mobile',48.9,1],['14 Oct','COLD STORAGE GREAT WORLD','Cold Storage',38.2,0]];
+  return`<div class="card"><div class="card-h"><div><h3>${T(`${files.length} files read`,`已讀取 ${files.length} 個檔案`)}</h3><div class="sub">${T('Nothing is imported until you say so.','在你確認之前，不會匯入任何東西。')}</div></div><button class="btn quiet sm" data-act="impstage" data-arg="0">${T('Start again','重新開始')}</button></div><div class="divide">${files.map(fileRow).join('')}</div></div>
+  <div class="card" style="margin-top:var(--sp-4)"><div class="card-h"><div><h3>${T('Preview','預覽')}: DBS_Altitude_Card_Oct2026.pdf</h3><div class="sub">${I('check','sm')} <span style="vertical-align:top">${T(`34 transactions add up to ${mh(1842.65)}, the same as the total on the statement.`,`34 筆交易合計 ${mh(1842.65)}，與對帳單上的總額相同。`)}</span></div></div></div>
+    <div class="tblwrap" style="max-height:none"><table class="tbl"><thead><tr><th>${T('Date','日期')}</th><th class="hide-m">${T('On the statement','對帳單上的名稱')}</th><th>${T('Merchant','商家')}</th><th class="r">${T('Amount','金額')}</th><th class="r">${T('Status','狀態')}</th></tr></thead><tbody>
+    ${rows.map(r=>`<tr style="${r[4]?'color:var(--ink-3)':''}"><td style="white-space:nowrap">${S.lang==='zh'?r[0].replace(/(\d+) Oct/,'10月$1日'):r[0]}</td><td class="hide-m">${r[1]}</td><td>${r[2]}</td><td class="r num">${mh(r[3])}</td><td class="r">${r[4]?`<span class="chip">${T('Duplicate','重複')}</span>`:`<span class="chip teal">${T('New','新的')}</span>`}</td></tr>`).join('')}
+    </tbody></table></div><p class="hint" style="margin-top:8px">${T('Showing 8 of 34.','顯示 34 筆中的 8 筆。')}</p></div>
+  <div class="row wrap" style="margin-top:var(--sp-4);justify-content:space-between"><span class="ink2">${T(`${nNew} new, ${nDup} duplicates skipped`,`${nNew} 筆新交易，略過 ${nDup} 筆重複`)}${files.some(f=>f.locked)&&!S.pwOk?T('. The locked file is left out until you unlock it.','。上鎖的檔案在解鎖前不會匯入。'):''}</span><button class="btn primary" data-act="impstage" data-arg="3">${T(`Import ${nNew} transactions`,`匯入 ${nNew} 筆交易`)}</button></div>`}
+function importGmail(){
+  if(!S.gmail||S.empty)return`<div class="card">${empty('mail',T('Gmail is not connected','尚未連結 Gmail'),T('Connect it and Finance Tracker finds receipts, invoices and renewal notices for you to review. Access is read-only, and you can disconnect at any time.','連結之後，Finance Tracker 會找出收據、發票與續訂通知讓你確認。權限為唯讀，隨時可以中斷連結。'),`<button class="btn primary" data-act="goto" data-arg="gmail">${T('See what Gmail access means','先了解 Gmail 存取權限')}</button>`)}</div>`;
+  if(!S.review.length)return`<div class="card">${empty('check',T('All reviewed','全部確認完了'),T('The next scan reads only mail that arrived after 24 Oct, 09:12.','下次掃描只會讀取 10 月 24 日 09:12 之後收到的郵件。'),`<button class="btn ghost" data-act="rescan">${T('Scan now','立即掃描')}</button>`)}</div>`;
+  return`<div class="row wrap between" style="margin-bottom:var(--sp-3)"><span class="ink2">${T(`Found in 38 new emails since the last scan. Nothing is saved until you accept it.`,`從上次掃描後的 38 封新郵件中找到。在你接受之前不會儲存任何內容。`)}</span><button class="btn primary" data-act="revall">${I('check')}${T(`Accept all ${S.review.length}`,`全部接受（${S.review.length} 筆）`)}</button></div>
+  <div class="card divide" style="padding:0">${S.review.map(r=>`<div class="rev">${av(r)}<div style="min-width:0"><b class="trunc" style="display:block">${r.m}</b><div class="from">${I('mail','sm')}<span class="trunc">${esc(r.sub)}</span></div>
+      <div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip"><i class="dot" style="background:${cc(r.c)};width:8px;height:8px;border-radius:50%"></i>${cn(r.c,1)}</span><span class="chip line">${fd(r.d)}</span>${r.low?`<span class="chip gold">${I('alert','sm')}${T('Check the amount','請確認金額')}</span>`:''}${r.notice?`<span class="chip line">${T('Renewal notice, not charged yet','續訂通知，尚未扣款')}</span>`:''}</div></div>
+    <div class="right"><div class="amount">${mh(r.a/RATES[r.cur])}${r.cur!==S.cur?`<div class="xs muted" style="font-weight:400"><span class="amt num">${fmtv(r.a,r.cur)}</span></div>`:''}</div>
+      <div class="acts"><button class="iconbtn ok" data-act="revok" data-arg="${r.id}" aria-label="${T('Accept','接受')} ${r.m}" title="${T('Accept','接受')}">${I('check')}</button><button class="iconbtn" data-act="revedit" data-arg="${r.id}" aria-label="${T('Edit','編輯')} ${r.m}" title="${T('Edit','編輯')}">${I('edit')}</button><button class="iconbtn no" data-act="revno" data-arg="${r.id}" aria-label="${T('Reject','拒絕')} ${r.m}" title="${T('Reject','拒絕')}">${I('x')}</button></div></div></div>`).join('')}</div>
+  <p class="hint" style="margin-top:var(--sp-3)">${T('Only the merchant, amount, currency and date are kept. The emails stay in Gmail and are never copied.','只會保留商家、金額、幣別與日期。郵件仍留在 Gmail，不會被複製。')}</p>`}
+
+/* ============ recurring ============ */
+function recurringPage(){
+  if(S.empty)return empty('repeat',T('No recurring charges found yet','還沒發現定期扣款'),T('Once a charge repeats for three months, it appears here with its next date, so renewals never arrive as a surprise.','同一筆費用連續出現三個月後，就會連同下次扣款日一起列在這裡，續訂不再突然出現。'),`<a class="btn primary" href="#/import">${T('Import transactions','匯入交易')}</a>`);
+  const rec=recurring(),soon=rec.filter(r=>r.inDays<=30),wk=rec.filter(r=>r.inDays<=7),mo=sum(rec);
+  const days=Array.from({length:30},(_,i)=>{const d=dt(TODAY);d.setDate(d.getDate()+i+1);return iso(d)});
+  return pageHead(T('Subscriptions and regular bills found in your transactions, in the order they are due.','從你的交易中找出的訂閱與固定帳單，依扣款日排序。'))+`
+  <div class="grid"><section class="card c4"><div class="eyebrow">${T('Due in the next 7 days','未來 7 天內到期')}</div><div class="bignum" style="margin-top:6px">${mh(sum(wk))}</div><div class="sub">${T(`${wk.length} charges, next on ${fd(rec[0].next,1)}`,`${wk.length} 筆，最近一筆在 ${fd(rec[0].next,1)}`)}</div></section>
+  <section class="card c4"><div class="eyebrow">${T('Each month','每月')}</div><div class="bignum" style="margin-top:6px">${mh(mo)}</div><div class="sub">${T(`${rec.length} recurring charges, rent included`,`${rec.length} 筆定期扣款（含房租）`)}</div></section>
+  <section class="card c4"><div class="eyebrow">${T('Over a year','一年合計')}</div><div class="bignum" style="margin-top:6px">${mh(mo*12,{dec:0})}</div><div class="sub">${T('At current prices','以目前價格計算')}</div></section>
+  <section class="card c12"><div class="card-h"><div><h3>${T('The next 30 days','未來 30 天')}</h3><div class="sub">${T('One square per charge, on the day it is due','每個方塊代表一筆扣款，落在到期日')}</div></div></div>
+    <div class="strip" role="img" aria-label="${T('Timeline of charges due in the next 30 days','未來 30 天扣款時間軸')}">${days.map(d=>{const due=soon.filter(r=>r.next===d),day=dt(d).getDate();return`<div>${due.map(r=>`<i style="background:${cc(r.c)}" ${tipA(ft(r.sgd),r.m+', '+fd(d,1))}></i>`).join('')}<span class="${day===1?'wk':''}">${day===1?mName(d.slice(0,7),1):dt(d).getDay()===1&&day>3?day:''}</span></div>`}).join('')}</div></section>
+  <section class="card c12" style="padding:0"><div class="divide">${rec.map(r=>`<div class="rev">${av(r)}<div style="min-width:0"><b class="trunc" style="display:block">${r.m}</b><div class="small ink2">${T(`Monthly on day ${r.day}`,`每月 ${r.day} 日`)}${r.vary?T(', amount varies','，金額不固定'):''}</div>
+      <div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip"><i class="dot" style="background:${cc(r.c)};width:8px;height:8px;border-radius:50%"></i>${cn(r.c,1)}</span>${r.isNew?`<span class="chip teal">${T(`New in ${mWord(r.from)}`,`${mWord(r.from)}新增`)}</span>`:''}${r.change>0?`<span class="chip warm">${I('up','sm')}${T(`Up ${fmtv(D(r.change),S.cur)} since ${mWord(r.prev.d.slice(0,7))}`,`比 ${mWord(r.prev.d.slice(0,7))}漲 ${fmtv(D(r.change),S.cur)}`)}</span>`:''}</div></div>
+    <div class="right"><div class="amount">${mh(r.sgd)}${r.cur!==S.cur?`<div class="xs muted" style="font-weight:400"><span class="amt num">${fmtv(r.last.a,r.cur)}</span></div>`:''}</div><div class="small" style="text-align:right;min-width:120px"><b>${fd(r.next,1)}</b><div class="muted">${r.inDays===1?T('tomorrow','明天'):T(`in ${r.inDays} days`,`${r.inDays} 天後`)}</div></div></div></div>`).join('')}</div></section></div>`}
+
+/* The overview is the user's dashboard: a list of widgets (ready-made ones and charts they configure), per tab. */
+const DEFAULT_W=()=>[{k:'flow',size:4},{k:'pace',size:2},{k:'insights',size:2},{k:'catpie',size:2},{k:'calendar',size:2},{k:'incexp',size:2},{k:'stack',size:2},{k:'merchants',size:2},{k:'renewals',size:2}];
+S.dashes=[{name:null,w:DEFAULT_W()},{name:T('Travel','旅遊'),w:[
+  {k:'chart',type:'number',measure:'spending',group:'category',period:'m6',size:1,f:{cat:'travel'},title:T('Travel spending','旅遊支出')},
+  {k:'chart',type:'number',measure:'spending',group:'category',period:'m6',size:1,f:{cur:'JPY'},title:T('Paid in yen','以日圓支付')},
+  {k:'chart',type:'bar',measure:'spending',group:'currency',period:'m6',size:2},
+  {k:'chart',type:'line',measure:'spending',group:'month',period:'m6',size:2,f:{cat:'travel'},title:T('Travel by month','每月旅遊支出')},
+  {k:'chart',type:'donut',measure:'spending',group:'category',period:'m6',size:2,f:{cur:'JPY'},title:T('What the yen went on','日圓花在哪裡')}]}];
+S.sec=0;S.hiCat=null;
+const dashName=i=>i===0?T('Overview','總覽'):S.dashes[i].name;
+const BUILT={
+  flow:{name:()=>T('Money flow','金流圖'),short:()=>T('Flow','金流')},
+  pace:{name:()=>T('Spending pace','支出步調'),short:()=>T('Pace','步調')},
+  insights:{name:()=>T('Worth a look','值得看一眼'),short:()=>T('Insights','洞察')},
+  catpie:{name:()=>T('Spending by category','各類別支出'),short:()=>T('Categories','類別')},
+  calendar:{name:()=>T('Spending by day','每日支出'),short:()=>T('Calendar','日曆')},
+  incexp:{name:()=>T('Income against expenses','收入與支出'),short:()=>T('Income','收支')},
+  stack:{name:()=>T('Spending per month','每月支出'),short:()=>T('Months','各月')},
+  merchants:{name:()=>T('Top merchants','消費最多的商家'),short:()=>T('Merchants','商家')},
+  renewals:{name:()=>T('Coming up','即將扣款'),short:()=>T('Coming up','即將扣款')}};
+const W_M=()=>({spending:T('Spending','支出'),income:T('Income','收入'),net:T('Net','淨額')}),W_G=()=>({category:T('category','類別'),merchant:T('merchant','商家'),month:T('month','月份'),currency:T('currency','幣別')}),
+  W_P=()=>({m0:T('The month shown','目前顯示的月份'),m1:T('The month before','前一個月'),m3:T('3 months up to it','截至該月的 3 個月'),m6:T('6 months up to it','截至該月的 6 個月')}),W_T=()=>({bar:T('Bar','長條'),line:T('Line','折線'),donut:T('Donut','環圈'),number:T('Number','數字'),table:T('Table','表格')});
+const wTitle=c=>c.k!=='chart'?BUILT[c.k].name():c.title||(c.type==='number'?W_M()[c.measure]:T(`${W_M()[c.measure]} by ${W_G()[c.group]}`,`各${W_G()[c.group]}${W_M()[c.measure]}`));
+const wShort=c=>c.k!=='chart'?BUILT[c.k].short():wTitle(c);
+/* periods are relative to the month the stepper shows; a pinned Ask answer keeps the months it was asked about */
+const pMonths=c=>{if(c.months)return c.months;const i=MONTHS.indexOf(S.month),p=c.period;return p==='m0'?[S.month]:p==='m1'?[prevM(S.month)]:MONTHS.slice(Math.max(0,i+1-(p==='m3'?3:6)),i+1)};
+const pLabel=c=>{const ms=pMonths(c);return ms.length===1?mName(ms[0]):T(`${mName(ms[0],1)} to ${mName(ms[ms.length-1],1)}`,`${mName(ms[0],1)}至${mName(ms[ms.length-1],1)}`)};
+function wData(c,months=pMonths(c)){
+  let tx=TX().filter(t=>months.includes(t.d.slice(0,7)));const f=c.f||{};
+  if(f.cat)tx=tx.filter(t=>t.c===f.cat);if(f.cur)tx=tx.filter(t=>t.cur===f.cur);if(f.m)tx=tx.filter(t=>t.m===f.m);
+  if(c.measure==='spending')tx=exps(tx);else if(c.measure==='income')tx=incs(tx);
+  const val=t=>c.measure==='net'&&!t.inc?-t.sgd:t.sgd,kf={category:t=>t.c,merchant:t=>t.m,month:t=>t.d.slice(0,7),currency:t=>t.cur}[c.group],mp=new Map();
+  if(c.group==='month')months.forEach(m=>mp.set(m,0));
+  tx.forEach(t=>mp.set(kf(t),(mp.get(kf(t))||0)+val(t)));
+  const base=c.measure==='spending'?'var(--s2)':'var(--s1)';
+  let rows=[...mp].map(([k,v])=>({k,v,label:c.group==='category'?cn(k,1):c.group==='month'?mName(k,1):k,col:c.group==='category'&&c.measure!=='income'?cc(k):base}));
+  if(c.group!=='month')rows.sort((a,b)=>b.v-a.v);
+  return{rows,total:rows.reduce((a,r)=>a+r.v,0),base}}
+function wBody(c,w){const d=wData(c);
+  if(!d.rows.length||d.rows.every(r=>!r.v))return`<p class="small muted">${T('No transactions in this period.','這段期間沒有交易。')}</p>`;
+  if(c.type==='number'){let cmp='';const ms=pMonths(c);if(ms.length===1){const pm=prevM(ms[0]),part=ms[0]===CURM;let pv=wData(c,[pm]).total;if(part&&c.measure==='spending'&&!c.f)pv=toDay(pm,Number(TODAY.slice(8)));if(MONTHS.includes(pm)){const df=d.total-pv;cmp=`<div class="sub">${df>=0?'+':'−'}${mh(Math.abs(df),{dec:0})} ${part&&c.measure==='spending'&&!c.f?T(`against the same point in ${mWord(pm)}`,`（與${mWord(pm)}同期相比）`):T(`against ${mWord(pm)}`,`（與${mWord(pm)}相比）`)}</div>`}}
+    const big=c.measure==='net'&&!c.f?`<span class="amt num">${fmtv(keptD(wData({...c,measure:'income'}).total,wData({...c,measure:'spending'}).total),S.cur,{dec:0})}</span>`:mh(d.total,{dec:0});return`<div class="bignum">${big}</div>${cmp}`}
+  if(c.type==='line'||(c.type==='bar'&&c.group==='month')){const dd=wData({...c,group:'month'});return c.type==='line'?lineChart(dd.rows,w,190,dd.base):colChart(dd.rows,w,190,dd.base)}
+  if(c.type==='donut'){const pos=d.rows.filter(r=>r.v>0),top=pos.slice(0,5),rest=pos.slice(5).reduce((a,r)=>a+r.v,0);if(c.group!=='category')top.forEach((r,i)=>r.col=`var(--s${i+1})`);if(rest>0)top.push({label:T('Other','其他'),v:rest,col:'var(--s-other)'});const tt=top.reduce((a,r)=>a+r.v,0);
+    return`<div class="row wrap" style="gap:var(--sp-5);justify-content:center"><div style="width:168px;flex:none">${donut(top)}</div><div class="grow" style="min-width:150px">${top.map(r=>`<div class="row between small" style="padding:4px 0"><span class="row" style="gap:8px;min-width:0"><i class="dot" style="background:${r.col}"></i><span class="trunc">${esc(r.label)}</span></span><span class="num">${Math.round(r.v/tt*100)}%</span></div>`).join('')}</div></div>`}
+  if(c.type==='table')return`<table class="tbl"><thead><tr><th>${W_G()[c.group].replace(/^./,x=>x.toUpperCase())}</th><th class="r">${T('Amount','金額')}</th><th class="r">${T('Share','占比')}</th></tr></thead><tbody>${d.rows.slice(0,6).map(r=>`<tr><td>${esc(r.label)}</td><td class="r num">${mh(r.v)}</td><td class="r num">${d.total?Math.round(r.v/d.total*100):0}%</td></tr>`).join('')}</tbody></table>`;
+  const top=d.rows.slice(0,6),mx=Math.max(...top.map(r=>Math.abs(r.v)))||1;
+  return top.map(r=>`<div class="bar-row"><span class="trunc small">${esc(r.label)}</span><span class="num small">${mh(r.v,{dec:0})}</span><span class="track"><i style="width:${Math.abs(r.v)/mx*100}%;background:${r.v<0?'var(--s2)':r.col}"></i></span></div>`).join('')}
+const contentW=()=>Math.min(vw()-248,1240)-64;
+const wW=size=>mob()?vw()-64:(contentW()-60)/4*size+20*(size-1)-40;
+/* categories as a donut: the legend carries name, amount, share and change, so colour is never the only cue */
+function catPie(m){
+  const s=monthStats(m),pm=prevM(m),hasPrev=MONTHS.includes(pm),cats=group(exps(s.tx),t=>t.c),pc=group(exps(inM(TX(),pm)),t=>t.c),sel=cats.find(c=>c.k===S.hiCat);
+  const items=cats.map(c=>({k:c.k,label:cn(c.k),v:c.v,col:cc(c.k)}));
+  const centre=sel?[ft(sel.v,{compact:1}),cn(sel.k,1)]:[ft(s.E,{compact:1}),T('spent','支出')];
+  const chg=c=>{const d=c.v-(pc.find(x=>x.k===c.k)||{v:0}).v;return(d>=0?'+':'−')+fmtv(Math.abs(D(d)),S.cur,{dec:0})};
+  const t=withTable('cat',`<div class="pie"><div class="pie-d">${donut(items,208,centre,S.hiCat)}</div><div class="pie-l" role="group" aria-label="${T('Categories','類別')}">
+    <div class="pl head" aria-hidden="true"><span></span><span>${T('Category','類別')}</span><span>${T('Amount','金額')}</span><span>${T('Share','占比')}</span>${hasPrev?`<span>${T(`vs ${mName(pm,1)}`,`較${mName(pm,1)}`)}</span>`:''}</div>
+    ${cats.map(c=>`<button class="pl ${S.hiCat&&S.hiCat!==c.k?'dim':''}" data-act="hicat" data-arg="${c.k}" data-hl="${c.k}" aria-pressed="${S.hiCat===c.k}"><i class="dot" style="background:${cc(c.k)}"></i><span class="trunc">${cn(c.k,1)}</span><span class="num">${mh(c.v,{dec:0})}</span><span class="num">${Math.round(c.v/s.E*100)}%</span>${hasPrev?`<span class="num muted"><span class="amt">${chg(c)}</span></span>`:''}</button>`).join('')}
+    ${sel?`<button class="btn quiet sm" style="margin-top:6px" data-act="txcat" data-arg="${sel.k}">${T(`See the ${cn(sel.k,1)} transactions`,`查看「${cn(sel.k,1)}」的交易`)}</button>`:''}</div></div>`,
+    [T('Category','類別'),T('Amount','金額'),T('Share','占比'),...(hasPrev?[T(`Change against ${mWord(pm)}`,`與${mWord(pm)}相比`)]:[])],cats.map(c=>[cn(c.k),ft(c.v),Math.round(c.v/s.E*100)+'%',...(hasPrev?[S.priv?'•••':chg(c)]:[])]));
+  return t}
+/* title, subtitle, optional header control and body for any widget */
+function wParts(c,w){const m=S.month,pm=prevM(m),hasPrev=MONTHS.includes(pm),isCur=m===CURM;
+  if(c.k==='chart')return{sub:pLabel(c)+(c.pinned?T(', pinned from Ask','，從提問釘選'):''),body:wBody(c,w)};
+  if(c.k==='flow'){const s=monthStats(m),cats=group(exps(s.tx),t=>t.c),t=withTable('flow',sankey(m,w),[T('Category','類別'),T('Amount','金額'),T('Share of money in','占收入比例')],[...cats.map(x=>[cn(x.k),ft(x.v),Math.round(x.v/Math.max(s.In,s.E)*100)+'%']),...(s.net>0?[[T('Kept','留下來'),ft(s.net),Math.round(s.net/s.In*100)+'%']]:[])]);
+    return{sub:T('Each band is as thick as its amount. Hover or tap a band for the figure.','色帶越寬，金額越大。滑過或點一下色帶可看金額。'),right:t.btn,body:t.body}}
+  if(c.k==='pace')return{sub:T('Running total through the month','當月累計支出'),body:paceChart(m,w,230)+`<div style="margin-top:10px">${legend([['var(--s1)',mName(m,1),1],['var(--s-other)',hasPrev?mName(pm,1):'',1]].filter(x=>x[1]))}</div>`};
+  if(c.k==='insights'){const ins=insightsList().slice(0,3);return{sub:ins.length?T('Noticed in your October transactions','從 10 月的交易中發現'):T('Nothing new right now','目前沒有新發現'),right:`<a class="btn quiet sm" href="#/insights">${T('All insights','全部洞察')}</a>`,
+    body:`<div class="divide">${ins.map(i=>`<a class="li" href="#/insights" style="text-decoration:none;color:inherit"><span class="ins-ic" style="--insc:${i.col};width:38px;height:38px;border-radius:12px;flex:none">${I(i.icon)}</span><span class="grow"><span class="s">${i.tag}</span><span class="t" style="display:block">${i.title}</span></span>${I('right','sm')}</a>`).join('')}</div>`}}
+  if(c.k==='catpie'){const t=catPie(m);return{sub:T('Tap a slice or a row to pick it out','點一下扇形或列可以單獨標示'),right:t.btn,body:t.body}}
+  if(c.k==='calendar'){const scale=[0,1,2,3,4,5].map(i=>`<i style="background:var(--seq-${i})"></i>`).join('');
+    return{sub:T('Stronger colour means more spent. Pick a day to see what was bought.','顏色越濃代表花越多，點一天看當天買了什麼。'),body:`<div class="calwrap"><div>${calendar(m)}<div class="scale" style="margin-top:12px"><span>${ft(0,{dec:0})}</span>${scale}<span>${ft(500,{dec:0})}+</span></div></div>${dayDetail()}</div>`}}
+  if(c.k==='incexp'){const t=withTable('ie',incExpChart(m,w,230),[T('Month','月份'),T('Income','收入'),T('Expenses','支出'),T('Kept','留下來')],MONTHS.map(x=>{const q=monthStats(x);return[mName(x),ft(q.In),ft(q.E),ft(q.net)]}));
+    return{sub:T('Last six months','近六個月'),right:t.btn,body:t.body+(S.tables.ie?'':`<div style="margin-top:10px">${legend([['var(--s1)',T('Income','收入')],['var(--s2)',T('Expenses','支出')]])}</div>`)}}
+  if(c.k==='stack'){const t=withTable('st',stackChart(m,w,230),[T('Month','月份'),...EXPCATS.map(k=>cn(k,1))],MONTHS.map(x=>{const g=group(exps(inM(TX(),x)),y=>y.c);return[mName(x,1),...EXPCATS.map(k=>ft((g.find(y=>y.k===k)||{v:0}).v,{dec:0}))]}));
+    return{sub:T('Split by category','依類別區分'),right:t.btn,body:t.body+(S.tables.st?'':`<div style="margin-top:10px">${legend(EXPCATS.map(k=>[cc(k),cn(k,1)]))}</div>`)}}
+  if(c.k==='merchants'){const s=monthStats(m),mer=group(exps(s.tx),t=>t.m).slice(0,6),mmax=mer.length?mer[0].v:1;
+    return{sub:mName(m),body:`<div class="divide">${mer.map(g=>{const t=s.tx.find(x=>x.m===g.k);return`<button class="li" data-act="txmer" data-arg="${esc(g.k)}">${av(t)}<span class="grow"><span class="t trunc" style="display:block">${esc(g.k)}</span><span class="track" style="display:block;height:6px;border-radius:6px;background:var(--surface-2);margin-top:6px"><i style="display:block;height:100%;border-radius:6px;width:${g.v/mmax*100}%;background:var(--s2)"></i></span></span><span class="a">${mh(g.v)}<small>${T(`${g.n} ${g.n>1?'payments':'payment'}`,`${g.n} 筆`)}</small></span></button>`}).join('')}</div>`}}
+  const ren=recurring().filter(r=>r.inDays<=30);
+  return{sub:T(`${ren.length} renewals in the next 30 days, ${mh(sum(ren),{dec:0})} in all`,`未來 30 天有 ${ren.length} 筆續訂，共 ${mh(sum(ren),{dec:0})}`),right:`<a class="btn quiet sm" href="#/recurring">${T('See all','查看全部')}</a>`,
+    body:`<div class="divide">${ren.slice(0,6).map(r=>`<div class="li">${av(r)}<div class="grow"><div class="t trunc">${r.m}</div><div class="s">${fd(r.next,1)}, ${r.inDays===1?T('tomorrow','明天'):T(`in ${r.inDays} days`,`${r.inDays} 天後`)}</div></div><div class="a">${mh(r.sgd)}${r.change>0?`<small class="neg">${T('up','漲')} ${fmtv(D(r.change),S.cur)}</small>`:''}</div></div>`).join('')}</div>`}}
+function wCard(c,i,ed,n){const flow=c.k==='flow',w=flow&&!ed?(mob()?vw()-32:contentW()):wW(c.size),p=wParts(c,w);
+  const head=`<div class="card-h" style="margin-bottom:var(--sp-3)"><div style="min-width:0"><h3>${esc(wTitle(c))}</h3><div class="sub">${p.sub}</div></div>${p.right||''}</div>`;
+  if(flow&&!ed)return`<section class="flowband s4" aria-label="${BUILT.flow.name()}"><div class="cap"><span>${T('Money flow.','金流圖。')} ${p.sub}</span>${p.right}</div>${p.body}</section>`;
+  const tools=ed?`<div class="w-tools" title="${T('Drag to reorder','拖曳調整順序')}"><button class="iconbtn" data-act="wmove" data-arg="${i}:-1" ${i?'':'disabled'} aria-label="${T('Move earlier','往前移')}">${I('left')}</button><button class="iconbtn" data-act="wmove" data-arg="${i}:1" ${i<n-1?'':'disabled'} aria-label="${T('Move later','往後移')}">${I('right')}</button><button class="iconbtn" data-act="wsize" data-arg="${i}" aria-label="${T('Change width','調整寬度')}" title="${T('Change width','調整寬度')}">${I('resize')}</button><span class="grow"></span>${c.k==='chart'?`<button class="iconbtn" data-act="chartedit" data-arg="${i}" aria-label="${T('Chart settings','圖表設定')}">${I('gear')}</button>`:''}<button class="iconbtn" data-act="wdel" data-arg="${i}" aria-label="${T('Remove','移除')} ${esc(wTitle(c))}">${I('trash')}</button></div>`:'';
+  return`<section class="card w s${c.size} ${ed?'edit':''}" data-i="${i}" ${ed?'draggable="true"':''}>${tools}${head}<div class="body">${p.body}</div>${ed?`<span class="w-size" data-size="${i}" title="${T('Drag to resize','拖曳調整大小')}" aria-hidden="true">${I('resize','sm')}</span>`:''}</section>`}
+function overviewPage(){
+  if(S.empty&&!TX().length)return emptyOverview();
+  if(S.dash>=S.dashes.length)S.dash=0;
+  const m=S.month,s=monthStats(m),pm=prevM(m),isCur=m===CURM,hasPrev=MONTHS.includes(pm),ps=monthStats(pm),mi=MONTHS.indexOf(m),d=S.dashes[S.dash],ed=S.edit,main=S.dash===0;
+  if(!S.day||!S.day.startsWith(m)){const by={};exps(s.tx).forEach(t=>{if(t.c!=='housing')by[t.d]=(by[t.d]||0)+t.sgd});S.day=isCur?TODAY:(Object.entries(by).sort((a,b)=>b[1]-a[1])[0]||[m+'-01'])[0]}
+  const say=S.lang==='zh'
+    ?`${mWord(m)}${isCur?'到目前為止':''}，收入 <b>${m0(s.In)}</b>，支出 <b>${m0(s.E)}</b>，${s.net>=0?`還留下 <b>${kh(s.In,s.E)}</b>。`:`比收入多花了 <b>${kh(s.In,s.E)}</b>。`}`
+    :`${isCur?'So far in':'In'} ${mWord(m)}, <b>${m0(s.In)}</b> came in and <b>${m0(s.E)}</b> went out. ${s.net>=0?`<b>${kh(s.In,s.E)}</b> is still yours.`:`That is <b>${kh(s.In,s.E)}</b> more than came in.`}`;
+  let sub='';
+  if(hasPrev){const day=isCur?Number(TODAY.slice(8)):31,a=isCur?toDay(m,day):s.E,b=isCur?toDay(pm,day):ps.E,df=a-b;
+    sub+=`<span>${I(df>0?'up':'check','sm')}<span>${isCur?T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than by ${day} ${mWord(pm)}`,`比 ${mWord(pm)}${day} 日同期${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`):T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than in ${mWord(pm)}`,`比 ${mWord(pm)}${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`)}</span></span>`}
+  if(isCur)sub+=`<span>${I('line','sm')}<span>${T(`On course for about ${mh(forecast().total,{dec:0})} by 31 October`,`照這個步調，到 10 月 31 日約 ${mh(forecast().total,{dec:0})}`)}</span></span>`;
+  const tabs=`<div class="tabs ov-tabs" role="group" aria-label="${T('Dashboards','儀表板')}">${S.dashes.map((x,i)=>`<button class="tab" data-act="dash" data-arg="${i}" aria-pressed="${i===S.dash}">${esc(dashName(i))}</button>`).join('')}<button class="tab" data-act="dashnew" aria-label="${T('New dashboard','新增儀表板')}">${I('plus','sm')}${T('New','新增')}</button></div>`;
+  const ctrls=`<div class="ov-ctrls"><div class="monthnav"><button class="iconbtn" data-act="month" data-arg="-1" ${mi<=0?'disabled':''} aria-label="${T('Previous month','上個月')}">${I('left')}</button><b aria-live="polite">${mName(m)}</b><button class="iconbtn" data-act="month" data-arg="1" ${mi>=MONTHS.length-1?'disabled':''} aria-label="${T('Next month','下個月')}">${I('right')}</button></div>
+    ${ed?`<button class="btn primary" data-act="edit">${T('Done','完成')}</button>`:`<button class="btn ghost" data-act="edit">${I('edit')}${T('Edit','編輯')}</button>`}</div>`;
+  const sayBlock=main?`<div class="ov-say"><p class="say">${say}</p><div class="say-sub">${sub}</div></div>`:`<div class="ov-say"><p class="say" style="font-size:var(--fs-2xl)"><b>${esc(d.name)}</b></p></div>`;
+  let h=`<div class="ov-head">${tabs}${ctrls}${ed?'':sayBlock}</div>`;
+  if(ed)h+=`<div class="ov-edit">${main?'':`<label class="field" style="flex:1 1 220px;max-width:360px"><span>${T('Dashboard name','儀表板名稱')}</span><input class="input" data-on="dashname" value="${esc(d.name)}"></label>`}
+      <button class="btn ghost" data-act="chartnew">${I('plus')}${T('Add chart','新增圖表')}</button>${main?`<button class="btn ghost" data-act="resetdash">${T('Reset to default','恢復預設')}</button>`:`<button class="btn danger-ghost" data-act="deldash">${I('trash')}${T('Delete dashboard','刪除儀表板')}</button>`}</div>
+    <p class="hint hide-m" style="margin-bottom:var(--sp-5)">${T('Drag a chart to reorder it, or use the arrow buttons. Drag the round corner handle to resize.','拖曳圖表可以調整順序，也可以用箭頭按鈕。拖曳右下角的圓形把手可以調整大小。')}</p>`;
+  if(!d.w.length)return h+`<div class="card">${empty('grid',T('This dashboard has no charts yet','這個儀表板還沒有圖表'),T('Add a chart and choose what it measures, how it is grouped, the period and the type.','新增一張圖表，選擇要看的數值、分組方式、期間與圖表類型。'),`<button class="btn primary" data-act="chartnew">${I('plus')}${T('Add the first chart','新增第一張圖表')}</button>`)}</div>`;
+  if(mob()&&ed)return h+`<div class="card divide" style="padding:0 var(--sp-4)">${d.w.map((c,i)=>`<div class="mrow"><div class="grow"><b class="trunc" style="display:block">${esc(wTitle(c))}</b><span class="hint">${c.k==='chart'?W_T()[c.type]+T(', ','，')+pLabel(c):T('Ready-made','內建圖表')}</span></div>
+      <div class="mrow-b"><button class="iconbtn" data-act="wmove" data-arg="${i}:-1" ${i?'':'disabled'} aria-label="${T('Move up','往上移')}">${I('down','flip')}</button><button class="iconbtn" data-act="wmove" data-arg="${i}:1" ${i<d.w.length-1?'':'disabled'} aria-label="${T('Move down','往下移')}">${I('down')}</button>${c.k==='chart'?`<button class="iconbtn" data-act="chartedit" data-arg="${i}" aria-label="${T('Chart settings','圖表設定')}">${I('gear')}</button>`:''}<button class="iconbtn" data-act="wdel" data-arg="${i}" aria-label="${T('Remove','移除')} ${esc(wTitle(c))}">${I('trash')}</button></div></div>`).join('')}</div>
+      <p class="hint" style="margin-top:var(--sp-3)">${T('On a phone, charts show one at a time in this order. Widths apply on larger screens.','在手機上，圖表會依這個順序一次顯示一張。寬度設定適用於較大的螢幕。')}</p>`;
+  if(mob()){const fl=d.w.findIndex(c=>c.k==='flow'),rest=d.w.map((c,i)=>[c,i]).filter(x=>x[0].k!=='flow');if(S.sec>=rest.length)S.sec=0;const cur=rest[S.sec];
+    return h+(fl>=0?wCard(d.w[fl],fl,false,d.w.length):'')+(rest.length?`<div class="secs" role="tablist" aria-label="${T('Charts','圖表')}">${rest.map((x,k)=>`<button role="tab" aria-selected="${k===S.sec}" data-act="sec" data-arg="${k}">${esc(wShort(x[0]))}</button>`).join('')}</div><div role="tabpanel">${wCard(cur[0],cur[1],false,d.w.length)}</div>`:'')}
+  return h+`<div class="dash" id="dash">${d.w.map((c,i)=>wCard(c,i,ed,d.w.length)).join('')}${ed?`<button class="addw" style="grid-column:span 2" data-act="chartnew">${I('plus','lg')}${T('Add chart','新增圖表')}</button>`:''}</div>`}
+function chartSheet(o){const c=o.cfg,seg=(key,opts)=>`<div class="seg fill" role="group">${Object.entries(opts).map(([k,l])=>`<button data-act="cfg" data-arg="${key}:${k}" aria-pressed="${c[key]===k}" ${key==='group'&&c.type==='line'&&k!=='month'?'disabled style="opacity:.4"':''}>${l.replace(/^./,x=>x.toUpperCase())}</button>`).join('')}</div>`;
+  const ti={bar:'bar',line:'line',donut:'donut',number:'hash',table:'table'};
+  return`<div class="sheet-h"><h2 id="ov-title">${o.idx==null?T('Add a chart','新增圖表'):T('Chart settings','圖表設定')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div>
+  ${o.idx==null&&Object.keys(BUILT).some(k=>!S.dashes[S.dash].w.find(x=>x.k===k))?`<div class="field"><span>${T('Ready-made charts','內建圖表')}</span><div class="row wrap" style="gap:6px">${Object.keys(BUILT).filter(k=>!S.dashes[S.dash].w.find(x=>x.k===k)).map(k=>`<button class="tab" data-act="addbuilt" data-arg="${k}">${I('plus','sm')}${BUILT[k].name()}</button>`).join('')}</div></div><div class="field"><span>${T('Or build your own','或自己設定一張')}</span></div>`:''}
+  <div class="preview"><div class="small" style="font-weight:var(--fw-bold)">${esc(wTitle(c))}</div><div class="hint" style="margin-bottom:10px">${pLabel(c)}</div>${wBody(c,mob()?vw()-66:378)}</div>
+  <div class="field"><span>${T('Type','類型')}</span><div class="typegrid">${Object.entries(W_T()).map(([k,l])=>`<button data-act="cfg" data-arg="type:${k}" aria-pressed="${c.type===k}">${I(ti[k])}${l}</button>`).join('')}</div></div>
+  <div class="field"><span>${T('Measure','數值')}</span>${seg('measure',W_M())}</div>
+  ${c.type==='number'?'':`<div class="field"><span>${T('Group by','分組方式')}</span>${seg('group',W_G())}${c.type==='line'?`<span class="hint">${T('A line shows change over time, so it groups by month.','折線圖呈現隨時間的變化，因此固定依月份分組。')}</span>`:''}</div>`}
+  <label class="field"><span>${T('Period','期間')}</span><select class="select" data-on="cfgperiod">${Object.entries(W_P()).map(([k,l])=>`<option value="${k}" ${c.period===k?'selected':''}>${l}</option>`).join('')}</select></label>
+  <div class="field"><span>${T('Width','寬度')}</span>${`<div class="seg fill" role="group">${[1,2,3,4].map(n=>`<button data-act="cfg" data-arg="size:${n}" aria-pressed="${c.size===n}">${['',T('Small','小'),T('Medium','中'),T('Wide','寬'),T('Full','滿版')][n]}</button>`).join('')}</div>`}</div>
+  <div class="sheet-f">${o.idx==null?`<button class="btn ghost" data-act="close">${T('Cancel','取消')}</button>`:`<button class="btn danger-ghost" data-act="wdelc">${I('trash')}${T('Remove','移除')}</button>`}<button class="btn primary grow" data-act="chartsave">${o.idx==null?T('Add to dashboard','加入儀表板'):T('Save chart','儲存圖表')}</button></div>`}
+
+/* ============ ask your money ============ */
+const ASK_Q=()=>[['japan',T('How much did I spend on dining in Japan in September?','我 9 月在日本吃飯花了多少？')],['subs',T('Which bills and subscriptions cost me the most per year?','哪些帳單和訂閱一年下來最貴？')],['grab','我這三個月在 Grab 花了多少？'],['groceries',T('Am I spending more on groceries than in May?','我的生鮮雜貨支出比 5 月多嗎？')]];
+function answer(key){
+  if(key==='japan'){const cfg={k:'chart',months:['2026-09'],type:'bar',measure:'spending',group:'merchant',period:'m1',size:2,f:{cat:'dining',cur:'JPY'},title:T('Dining in Japan, September','9 月在日本的餐飲'),pinned:1},tx=TX().filter(t=>t.d.startsWith('2026-09')&&t.c==='dining'&&t.cur==='JPY'),tot=sum(tx),jpy=tx.reduce((a,t)=>a+t.a,0),big=tx.slice().sort((a,b)=>b.a-a.a)[0];
+    return{cfg,fig:mh(tot),text:T(`on dining in Japan in September: ${tx.length} meals, <span class="amt num">${fmtv(jpy,'JPY')}</span> in yen. The biggest was ${big.m} on ${fd(big.d)}, <span class="amt num">${fmtv(big.a,'JPY')}</span>.`,`是你 9 月在日本的餐飲支出：共 ${tx.length} 餐，日圓原幣 <span class="amt num">${fmtv(jpy,'JPY')}</span>。最高的一筆是 ${fd(big.d)}的 ${big.m}，<span class="amt num">${fmtv(big.a,'JPY')}</span>。`),how:[T('Category: Dining','類別：餐飲'),T('Paid in JPY','以日圓付款'),T('1 to 30 Sep 2026','2026 年 9 月 1 日至 30 日'),T(`${tx.length} transactions`,`${tx.length} 筆交易`)]}}
+  if(key==='subs'){const cfg={k:'chart',months:[CURM],type:'bar',measure:'spending',group:'merchant',period:'m0',size:2,f:{cat:'bills'},title:T('Bills and subscriptions by merchant','各商家的帳單與訂閱'),pinned:1},rec=recurring().filter(r=>r.c==='bills').sort((a,b)=>b.sgd-a.sgd),tot=sum(rec)*12;
+    return{fig:mh(tot,{dec:0}),text:T(`a year for your ${rec.length} bills and subscriptions at current prices. ${rec[0].m} is the largest at ${mh(rec[0].sgd*12,{dec:0})} a year, then ${rec[1].m} at ${mh(rec[1].sgd*12,{dec:0})}.`,`是你 ${rec.length} 筆帳單與訂閱以目前價格計算的一年總額。最高的是 ${rec[0].m}，一年 ${mh(rec[0].sgd*12,{dec:0})}，其次是 ${rec[1].m}，一年 ${mh(rec[1].sgd*12,{dec:0})}。`),
+      chart:rec.slice(0,6).map(r=>`<div class="bar-row"><span class="trunc small">${r.m}</span><span class="num small">${mh(r.sgd*12,{dec:0})}</span><span class="track"><i style="width:${r.sgd/rec[0].sgd*100}%;background:var(--s8)"></i></span></div>`).join(''),cfg,how:[T('Category: Bills & subscriptions','類別：帳單與訂閱'),T('Latest monthly price × 12','最近一次月費 × 12'),T(`${rec.length} recurring charges`,`${rec.length} 筆定期扣款`)]}}
+  if(key==='grab'){const cfg={k:'chart',months:MONTHS.slice(-3),type:'bar',measure:'spending',group:'month',period:'m3',size:2,f:{m:'Grab'},title:T('Grab rides by month','每月 Grab 車資'),pinned:1},tx=TX().filter(t=>t.m==='Grab'&&t.d>='2026-08'),tot=sum(tx);
+    return{cfg,fig:mh(tot),text:T(`on Grab rides from August to October so far, across ${tx.length} trips. That is about ${mh(tot/tx.length)} a ride. GrabFood orders are counted under Dining, not here.`,`是你 8 月到 10 月至今的 Grab 車資，共 ${tx.length} 趟，平均每趟約 ${mh(tot/tx.length)}。GrabFood 訂單算在餐飲，不包含在內。`),how:[T('Merchant: Grab','商家：Grab'),T('1 Aug to 24 Oct 2026','2026 年 8 月 1 日至 10 月 24 日'),T(`${tx.length} transactions`,`${tx.length} 筆交易`)]}}
+  if(key==='groceries'){const cfg={k:'chart',months:MONTHS,type:'line',measure:'spending',group:'month',period:'m6',size:2,f:{cat:'groceries'},title:T('Groceries by month','每月生鮮雜貨'),pinned:1},v=m=>sum(TX().filter(t=>t.c==='groceries'&&t.d.startsWith(m))),a=v('2026-05'),b=v(CURM),more=b>a;
+    return{cfg,fig:(more?T('Yes, ','是，'):T('No, ','否，'))+mh(Math.abs(b-a),{dec:0})+' '+(more?T('more','更多'):T('less','更少')),text:T(`Groceries are at ${mh(b,{dec:0})} so far in October, against ${mh(a,{dec:0})} for all of May. October still has a week to run.`,`10 月至今的生鮮雜貨是 ${mh(b,{dec:0})}，5 月整月是 ${mh(a,{dec:0})}。10 月還有一週。`),how:[T('Category: Groceries','類別：生鮮雜貨'),T('May to October 2026','2026 年 5 月至 10 月')],lead:1}}
+  return{none:1}}
+function askPage(){const out=S.aiOut,qs2=ASK_Q();
+  const box=out?`<div class="note" role="status">${I('bolt')}<div><b>${T("Today's free questions are used up","今天的免費提問額度已用完")}</b><div style="margin-top:4px">${T('Ask your money runs on a free AI allowance that resets at 8:00 am Singapore time. Everything else works as usual, and your earlier answers are still below.','「問問你的錢」使用免費的 AI 額度，每天新加坡時間早上 8:00 重設。其他功能都照常運作，先前的回答也還在下方。')}</div><div class="row wrap" style="margin-top:12px"><button class="btn sm primary" data-act="buildchart">${T('Build a chart yourself','自己建立圖表')}</button><a class="btn sm ghost" href="#/transactions">${T('Search transactions','搜尋交易')}</a></div></div></div>`
+    :`<form class="askbox" data-form="ask"><input id="askin" aria-label="${T('Your question','你的問題')}" placeholder="${T('Ask in English or Chinese','用中文或英文提問')}" autocomplete="off"><button class="btn primary" type="submit" aria-label="${T('Ask','提問')}">${T('Ask','提問')}</button></form>
+     <div class="sugg" aria-label="${T('Example questions','範例問題')}">${qs2.map(q=>`<button data-act="ask" data-arg="${q[0]}" lang="${q[0]==='grab'?'zh-Hant':S.lang==='zh'?'zh-Hant':'en'}">${q[1]}</button>`).join('')}</div>`;
+  const hist=S.asks.map((a,i)=>{const r=answer(a.key);
+    return`<div class="stack" style="gap:var(--sp-3)"><div class="q">${esc(a.q)}</div>${r.none?`<div class="card ans"><p>${T('The prototype answers only the four example questions. In the real app, the answer and its chart appear here; if a question cannot be answered from your transactions, it says so and suggests a search instead.','原型只回答四個範例問題。正式版會在這裡顯示答案與圖表；如果問題無法從你的交易中回答，會直接說明並建議改用搜尋。')}</p></div>`
+      :`<div class="card ans"><div class="fig">${r.fig}</div><p style="margin-top:8px;max-width:60ch">${r.text}</p><div style="margin-top:var(--sp-4)">${r.chart||wBody(r.cfg,mob()?vw()-64:740)}</div>
+        <div class="how"><span>${T('Worked out from','計算依據')}</span>${r.how.map(h=>`<span class="chip line">${h}</span>`).join('')}</div>
+        <div class="row wrap" style="margin-top:var(--sp-4)"><button class="btn sm primary" data-act="pin" data-arg="${i}" ${a.pinned?'disabled':''}>${I('pin','sm')}${a.pinned?T('Pinned','已釘選'):T('Pin to dashboard','釘選到儀表板')}</button><button class="btn sm ghost" data-act="askshow" data-arg="${a.key}">${T('Show the transactions','顯示這些交易')}</button></div></div>`}</div>`}).reverse().join('');
+  return`<div class="ask-wrap">${pageHead(T('Ask a question about your spending and get the figure, a chart, and how it was worked out.','針對你的支出提問，得到數字、圖表，以及計算方式。'))}${box}
+  <div class="stack" style="gap:var(--sp-6);margin-top:var(--sp-8)">${hist||(S.empty?`<p class="muted">${T('There are no transactions to ask about yet. Import some first.','還沒有可以提問的交易，請先匯入。')}</p>`:'')}</div></div>`}
+
+/* ============ month in review ============ */
+function slides(){const m=prevM(CURM),pm=prevM(m),s=monthStats(m),p=monthStats(pm),cats=group(exps(s.tx),t=>t.c),pc=group(exps(p.tx),t=>t.c),top=cats[0];
+  const diffs=EXPCATS.map(k=>({k,d:(cats.find(c=>c.k===k)||{v:0}).v-(pc.find(c=>c.k===k)||{v:0}).v})).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d)),ch=diffs[0];
+  const news=recurring().filter(r=>r.from===m),curs=[...new Set(exps(s.tx).map(t=>t.cur))];
+  const avg3=k=>MONTHS.slice(1,4).reduce((a,x)=>a+sum(exps(inM(TX(),x)).filter(t=>t.c===k)),0)/3;
+  const watch=['dining','groceries','transport','shopping','other'].map(k=>({k,v:(cats.find(c=>c.k===k)||{v:0}).v,a:avg3(k)})).sort((a,b)=>(b.v-b.a)-(a.v-a.a))[0];
+  const bar=`<div style="display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden">${cats.map(c=>`<i style="flex:${c.v};background:${cc(c.k)}"></i>`).join('')}</div>`;
+  return[
+   {bg:'#0c4a43',h:`<div><div class="kick">${T('Month in review','月度回顧')}</div><h2 style="font-size:44px;margin-top:10px">${mName(m)}</h2></div><p>${T('Seven cards, about a minute. Swipe, tap the sides, or use the arrow keys.','七張卡片，大約一分鐘。可以滑動、點兩側，或用方向鍵。')}</p>`},
+   {bg:'#f2c14e',ink:'#17201d',h:`<div><div class="kick">${T('You spent','你花了')}</div><div class="huge">${m0(s.E)}</div><p>${T(`across ${s.n} payments in ${curs.length} currencies.`,`共 ${s.n} 筆，使用 ${curs.length} 種幣別。`)}</p></div><div class="panel"><b>${s.E>p.E?'+':'−'}${mh(Math.abs(s.E-p.E),{dec:0})}</b> ${T(`against ${mWord(pm)}, ${Math.abs(pct(s.E,p.E))}% ${s.E>p.E?'more':'less'}`,`（與${mWord(pm)}相比${s.E>p.E?'增加':'減少'} ${Math.abs(pct(s.E,p.E))}%）`)}</div>`},
+   {bg:'#173f73',h:`<div><div class="kick">${T('Biggest category','最大類別')}</div><h2 style="margin-top:8px">${cn(top.k)}</h2><div class="huge">${m0(top.v)}</div><p>${T(`${Math.round(top.v/s.E*100)}% of everything you spent.`,`占總支出的 ${Math.round(top.v/s.E*100)}%。`)}</p></div><div class="panel">${bar}<div style="margin-top:10px;font-size:13px">${cats.slice(0,4).map(c=>`${cn(c.k,1)} ${Math.round(c.v/s.E*100)}%`).join(T(', ','、'))}</div></div>`},
+   {bg:'#3d2f9e',h:`<div><div class="kick">${T('Biggest change','變化最大')}</div><h2 style="margin-top:8px">${cn(ch.k)}</h2><div class="huge">${ch.d>0?'+':'−'}${m0(Math.abs(ch.d))}</div><p>${T(`against ${mWord(pm)}.`,`（與${mWord(pm)}相比）`)} ${ch.k==='travel'?T('Six days in Tokyo will do that.','在東京待六天就是這樣。'):''}</p></div>${ch.k==='travel'?`<div class="panel">${T('Paid in yen','以日圓支付')}: <b><span class="amt num">${fmtv(exps(s.tx).filter(t=>t.cur==='JPY').reduce((a,t)=>a+t.a,0),'JPY')}</span></b></div>`:''}`},
+   {bg:'#fbfcfa',ink:'#17201d',h:`<div><div class="kick">${T('New subscriptions','新增的訂閱')}</div><h2 style="margin-top:8px">${news.length?T(`${news.length} started in ${mWord(m)}`,`${mWord(m)}新增 ${news.length} 筆`):T('None this month','這個月沒有')}</h2></div><div>${news.map(r=>`<div class="panel" style="background:#e0e8e3;display:flex;justify-content:space-between;gap:12px"><b>${r.m}</b><span>${mh(r.sgd)} ${T('a month','/ 月')}</span></div>`).join('')}<p style="margin-top:14px">${news.length?T(`That adds ${mh(sum(news)*12,{dec:0})} a year.`,`一年會多出 ${mh(sum(news)*12,{dec:0})}。`):''}</p></div>`},
+   {bg:'#8f2f17',h:`<div><div class="kick">${T('One thing to watch','值得留意')}</div><h2 style="margin-top:8px">${cn(watch.k)}</h2><div class="huge">${m0(watch.v)}</div><p>${watch.v>watch.a?T(`${mh(watch.v-watch.a,{dec:0})} above your average for June to August.`,`比 6 至 8 月的平均多 ${mh(watch.v-watch.a,{dec:0})}。`):T('In line with your average for June to August.','與 6 至 8 月的平均相當。')}</p></div><div class="panel">${T('Average for June to August','6 至 8 月平均')}: <b>${mh(watch.a,{dec:0})}</b></div>`},
+   {bg:'#0c4a43',h:`<div><h2 style="font-size:38px">${T(`That was ${mWord(m)}.`,`這就是你的 ${mWord(m)}。`)}</h2><p style="margin-top:12px">${T(`${m0(s.In)} in, ${m0(s.E)} out, ${kh(s.In,s.E)} ${s.net>=0?'kept':'over'}.`,`收入 ${m0(s.In)}，支出 ${m0(s.E)}，${s.net>=0?'留下':'超支'} ${kh(s.In,s.E)}。`)}</p></div><div class="stack"><button class="btn block" data-act="storyopen">${T(`Open the ${mWord(m)} overview`,`開啟${mWord(m)}總覽`)}</button><button class="btn alt block" data-act="story" data-arg="0">${T('Watch again','再看一次')}</button></div>`}]}
+function reviewStage(){const sl=slides();return`<div class="story-stage"><button class="story-nav" data-act="storystep" data-arg="-1" aria-label="${T('Previous card','上一張')}">${I('left')}</button>
+  <div class="story" role="region" aria-roledescription="${T('story','故事')}" aria-label="${T('September in review','9 月回顧')}"><div class="prog" aria-hidden="true">${sl.map((_,i)=>`<i class="${i<=S.story?'on':''}"></i>`).join('')}</div>
+    <div class="story-track" id="track" tabindex="0" aria-label="${T('Story cards. Use the left and right arrow keys.','故事卡片，可用左右方向鍵切換。')}">${sl.map((x,i)=>`<section class="slide" style="--sl-bg:${x.bg};--sl-ink:${x.ink||'#f3f7f4'}" aria-label="${T(`Card ${i+1} of ${sl.length}`,`第 ${i+1} 張，共 ${sl.length} 張`)}">${x.h}</section>`).join('')}</div></div>
+  <button class="story-nav" data-act="storystep" data-arg="1" aria-label="${T('Next card','下一張')}">${I('right')}</button></div>`}
+function reviewPage(){
+  if(S.empty)return empty('story',T('Your first review arrives on the 1st','第一份回顧會在 1 日出現'),T('At the end of each month, Finance Tracker turns it into a short story: what you spent, the biggest category, what changed, new subscriptions and one thing to watch.','每個月結束時，Finance Tracker 會整理成一段短短的故事：總支出、最大類別、最大變化、新增的訂閱，以及一件值得留意的事。'));
+  return`${reviewStage()}
+  <p class="small muted" style="text-align:center;margin-top:var(--sp-4)">${T('Every figure here is the same one the September overview shows.','這裡的每個數字都與 9 月總覽上的一致。')}</p>`}
+
+/* ============ settings ============ */
+function settingsPage(){const row=(l,ctrl,h='')=>`<div class="set-row"><div><div style="font-weight:var(--fw-medium)">${l}</div>${h?`<div class="hint">${h}</div>`:''}</div>${ctrl}</div>`;
+  return`<div class="set">
+  <section class="card"><h3>${T('Gmail','Gmail')}</h3>${S.gmail?`<div class="row">${GLOGO}<div class="grow"><b>kai.lin@gmail.com</b><div class="hint">${T('Read-only. Last scan today at 09:12, 38 new emails read.','唯讀。上次掃描：今天 09:12，讀取了 38 封新郵件。')}</div></div><span class="chip teal">${T('Connected','已連結')}</span></div>
+      <div class="row wrap"><button class="btn ghost sm" data-act="rescan">${T('Scan now','立即掃描')}</button><button class="btn danger-ghost sm" data-act="confirm" data-arg="gmailoff">${T('Disconnect Gmail','中斷 Gmail 連結')}</button></div>`
+    :`<p class="ink2">${T('Not connected. Finance Tracker is not reading any mail. Transactions you already imported are still here.','尚未連結。Finance Tracker 目前不會讀取任何郵件，已匯入的交易仍然保留。')}</p><div><button class="btn primary sm" data-act="goto" data-arg="gmail">${T('Connect Gmail','連結 Gmail')}</button></div>`}</section>
+  <section class="card"><h3>${T('Your invite link','你的邀請連結')}</h3><p class="ink2 small">${T('Finance Tracker is invite-only. Anyone who opens your link can create an account.','Finance Tracker 採邀請制，開啟你連結的人就可以建立帳戶。')}</p>
+    <div class="copy"><input class="input" readonly value="financetracker.app/join/kai-7Q2M" aria-label="${T('Invite link','邀請連結')}"><button class="btn ghost" data-act="copy">${I('copy')}${T('Copy','複製')}</button></div></section>
+  <section class="card"><h3>${T('Display','顯示')}</h3><div class="divide">
+    ${row(T('Language','語言'),`<div class="seg"><button data-act="setlang" data-arg="en" aria-pressed="${S.lang==='en'}">English</button><button data-act="setlang" data-arg="zh" aria-pressed="${S.lang==='zh'}" lang="zh-Hant">繁體中文</button></div>`)}
+    ${row(T('Display currency','顯示幣別'),`<select class="select sm" data-on="cur" aria-label="${T('Display currency','顯示幣別')}">${Object.keys(CUR).map(c=>`<option ${c===S.cur?'selected':''}>${c}</option>`).join('')}</select>`,T('Rates updated today at 08:00. Original amounts are never changed.','匯率於今天 08:00 更新，原始金額不會被更動。'))}
+    ${row(T('Theme','主題'),`<div class="seg"><button data-act="settheme" data-arg="light" aria-pressed="${S.theme==='light'}">${I('sun','sm')}${T('Light','淺色')}</button><button data-act="settheme" data-arg="dark" aria-pressed="${S.theme==='dark'}">${I('moon','sm')}${T('Dark','深色')}</button></div>`)}
+    ${row(T('Hide amounts','隱藏金額'),`<button class="switch" role="switch" aria-checked="${S.priv}" data-act="priv" aria-label="${T('Hide amounts','隱藏金額')}"></button>`,T('Blurs every amount on screen, for trains and shared screens.','模糊畫面上所有金額，適合在捷運上或分享螢幕時使用。'))}</div></section>
+  <section class="card"><h3>${T('Your data','你的資料')}</h3>
+    ${row(T('Export transactions','匯出交易'),`<button class="btn ghost sm" data-act="export">${I('download','sm')}${T('Download CSV','下載 CSV')}</button>`,T(`All ${TX().length} transactions with original amounts and currencies.`,`全部 ${TX().length} 筆交易，包含原始金額與幣別。`))}
+    <div class="hint">${T('Signed in with Google as Kai Lin.','以 Google 帳戶 Kai Lin 登入。')} <button class="btn quiet sm" data-act="goto" data-arg="landing">${T('Sign out','登出')}</button></div></section>
+  <section class="card danger-card" style="grid-column:1/-1"><h3>${T('Delete account','刪除帳戶')}</h3><div class="row wrap between"><p class="ink2" style="max-width:60ch">${T('Removes your account, every transaction, dashboard and insight, and the Gmail connection. This cannot be undone, so export first if you want a copy.','會移除你的帳戶、所有交易、儀表板與洞察，以及 Gmail 連結。此動作無法復原，如需備份請先匯出。')}</p><button class="btn danger-ghost" data-act="confirm" data-arg="delete">${T('Delete account and all data','刪除帳戶與所有資料')}</button></div></section></div>`}
+const PAGES={overview:overviewPage,insights:insightsPage,transactions:transactionsPage,import:importPage,recurring:recurringPage,ask:askPage,review:reviewPage,settings:settingsPage};
+/* ============ landing and sign-up flow ============ */
+const flowTop=()=>`<div class="flow-top"><a class="logo" href="#/landing" style="text-decoration:none;color:inherit">${LOGO}<span>Finance Tracker</span></a><button class="iconbtn txt" data-act="lang" lang="${S.lang==='en'?'zh-Hant':'en'}" aria-label="${T('Switch to Traditional Chinese','切換為英文')}">${S.lang==='en'?'中文':'EN'}</button><button class="iconbtn" data-act="theme" aria-label="${T('Switch theme','切換主題')}">${I(S.theme==='dark'?'sun':'moon')}</button></div>`;
+const flowWrap=(step,inner)=>`<div class="flow">${flowTop()}${step?`<div class="steps" role="img" aria-label="${T(`Step ${step} of 5`,`第 ${step} 步，共 5 步`)}">${[1,2,3,4,5].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>`:''}<main id="main" class="flow-card" tabindex="-1">${inner}</main></div>`;
+function landingPage(){const w=mob()?vw()-64:Math.min(vw(),1240)-64-50,was=S.empty;S.empty=false;const fig=sankey(CURM,w),st=monthStats(CURM);S.empty=was;
+  return`<div class="land"><header class="land-top"><span class="logo">${LOGO}<span>Finance Tracker</span></span><button class="iconbtn txt" data-act="lang" lang="${S.lang==='en'?'zh-Hant':'en'}" aria-label="${T('Switch to Traditional Chinese','切換為英文')}">${S.lang==='en'?'中文':'EN'}</button><button class="iconbtn" data-act="theme" aria-label="${T('Switch theme','切換主題')}">${I(S.theme==='dark'?'sun':'moon')}</button></header>
+  <main id="main" tabindex="-1"><section class="land-hero"><h1>${T('See where your money went, without typing it in.','不用記帳，也能看清楚錢花到哪裡。')}</h1>
+    <p class="lede">${T('Finance Tracker reads the receipts in your Gmail and the statements from your Singapore bank, then draws the month as one picture. It is free and never asks for your bank login.','Finance Tracker 讀取你 Gmail 裡的收據和新加坡銀行的對帳單，把一整個月畫成一張圖。完全免費，也不會要求你的銀行登入資料。')}</p>
+    <div class="cta"><a class="btn primary" href="#/overview">${T('Try the demo','試用示範版')}</a><a class="btn gbtn" href="#/signin">${GLOGO}${T('Sign in with Google','使用 Google 登入')}</a></div>
+    <p class="invite-note">${I('lock','sm')}<span>${T('Accounts are by invite for now. To create one, open the invite link someone sent you. The demo is open to everyone and uses sample data only.','目前採邀請制。要建立帳戶，請開啟別人傳給你的邀請連結。示範版開放給所有人，只使用範例資料。')}</span></p></section>
+  <section class="land-flow"><figure><figcaption>${T(`This is the demo's October: ${mh(st.In,{dec:0})} in on the left, where it went on the right. Hover or tap a band.`,`這是示範版的 10 月：左邊是收入 ${mh(st.In,{dec:0})}，右邊是錢的去向。滑過或點一下色帶看看。`)}</figcaption>${fig}</figure></section>
+  <section class="feats"><div class="feat">${I('mail','lg')}<b>${T('Receipts and statements in, no typing','收據與對帳單自動匯入')}</b><p>${T('Gmail receipts plus PDF and CSV statements from DBS/POSB, OCBC, UOB, Citibank, Standard Chartered and HSBC. Duplicates are skipped.','Gmail 收據，加上 DBS/POSB、OCBC、UOB、花旗、渣打、匯豐的 PDF 與 CSV 對帳單。重複的會自動略過。')}</p></div>
+    <div class="feat">${I('globe','lg')}<b>${T('Six currencies, one total','六種幣別，一個總數')}</b><p>${T('Spend in JPY, USD or TWD and still compare months in SGD. Every transaction keeps its original amount.','用日圓、美元或新台幣消費，仍然能以新幣比較每個月。每筆交易都保留原始金額。')}</p></div>
+    <div class="feat">${I('chat','lg')}<b>${T('Ask it a question','直接問它')}</b><p>${T('"How much did I spend on dining in Japan in September?" gets a figure, a chart and the working behind it.','「我 9 月在日本吃飯花了多少？」會得到數字、圖表，以及計算過程。')}</p></div></section></main>
+  <footer class="land-foot">${T('Gmail access is read-only. Only merchant, amount, currency and date are kept; emails and statement files are never stored.','Gmail 權限為唯讀。只保留商家、金額、幣別與日期，不會儲存郵件或對帳單檔案。')}</footer></div>`}
+function invitePage(){return flowWrap(1,`<div><span class="chip teal">${I('check','sm')}${T('Invite link accepted','邀請連結有效')}</span></div><h1>${T('Wei Jie invited you to Finance Tracker','Wei Jie 邀請你使用 Finance Tracker')}</h1>
+  <p class="lede">${T('It is invite-only for now, and this link lets you create an account.','目前採邀請制，這個連結可以讓你建立帳戶。')}</p>
+  <a class="btn gbtn block" href="#/signin" style="min-height:52px">${GLOGO}${T('Sign in with Google','使用 Google 登入')}</a>
+  <p class="hint">${T('Google is the only way to sign in. At this step it shares your name and email address, nothing from your mailbox.','只能使用 Google 登入。這一步只會提供你的姓名與電子郵件地址，不包含信箱內容。')}</p>
+  <a class="btn quiet" href="#/overview">${T('Just looking? Try the demo','只是看看？試用示範版')}</a>`)}
+function fullPage(){return flowWrap(0,`<div><span class="chip gold">${I('info','sm')}${T('No places left','名額已滿')}</span></div><h1>${T('All 100 places are taken','100 個名額都滿了')}</h1>
+  <p class="lede">${T('Your invite link is valid, but Finance Tracker can only take 100 people while Google has not reviewed it. No account was created and nothing about you was saved.','你的邀請連結是有效的，但在通過 Google 審核之前，Finance Tracker 只能容納 100 人。系統沒有建立帳戶，也沒有儲存任何關於你的資料。')}</p>
+  <a class="btn primary block" href="#/overview">${T('Try the demo','試用示範版')}</a><p class="hint">${T('The demo has every screen and chart, with sample data.','示範版包含所有畫面與圖表，使用範例資料。')}</p>`)}
+function signinPage(){return flowWrap(2,`<div class="row">${GLOGO}<span class="ink2">${T('Sign in with Google','使用 Google 登入')}</span></div><h1>${T('Choose an account','選擇帳戶')}</h1><p class="ink2">${T('to continue to Finance Tracker','以繼續使用 Finance Tracker')}</p>
+  <button class="acct" data-act="goto" data-arg="onboard"><span class="av" style="--avc:var(--s1)">KL</span><span class="grow"><b style="display:block">Kai Lin</b><span class="small muted">kai.lin@gmail.com</span></span>${I('right')}</button>
+  <button class="acct" data-act="goto" data-arg="onboard"><span class="av">${I('user')}</span><span class="grow">${T('Use another account','使用其他帳戶')}</span></button>
+  <p class="hint">${T('Prototype stand-in for Google\'s own screen.','這是原型中代替 Google 畫面的示意。')}</p>`)}
+function onboardPage(){return flowWrap(3,`<h1>${T('Two quick choices','先選兩件事')}</h1><p class="lede">${T('Both are set for Singapore already. Change them now or later in Settings.','已經依新加坡預先設定好了，現在或之後在「設定」都可以更改。')}</p>
+  <label class="field"><span>${T('Show totals in','總計顯示幣別')}</span><select class="select" data-on="cur">${Object.keys(CUR).map(c=>`<option value="${c}" ${c===S.cur?'selected':''}>${c} ${CUR[c].s}</option>`).join('')}</select><span class="hint">${T('Transactions keep the currency you paid in. Totals convert at the daily rate.','交易會保留你付款時的幣別，總計依每日匯率換算。')}</span></label>
+  <div class="field"><span>${T('Language','語言')}</span><div class="seg fill"><button data-act="setlang" data-arg="en" aria-pressed="${S.lang==='en'}">English</button><button data-act="setlang" data-arg="zh" aria-pressed="${S.lang==='zh'}" lang="zh-Hant">繁體中文</button></div></div>
+  <a class="btn primary block" href="#/gmail">${T('Continue','繼續')}</a>`)}
+function gmailPage(){const f=(ic,b,s,no)=>`<div class="fact ${no?'no':''}"><div class="fi">${I(ic)}</div><div><b>${b}</b><span>${s}</span></div></div>`;
+  return flowWrap(4,`<h1>${T('What Gmail access means, before Google asks','在 Google 詢問之前，先說明 Gmail 權限')}</h1>
+  <p class="lede">${T('Finance Tracker asks to read your mail so it can find what you bought. Here is exactly what that covers.','Finance Tracker 需要讀取你的郵件，才能找出你買了什麼。以下是這個權限的確切範圍。')}</p>
+  <div class="facts divide">
+    ${f('eye',T('It can read, and nothing else','只能讀取，不能做其他事'),T('It cannot send, delete, move or label any email.','無法寄信、刪除、移動或標記任何郵件。'))}
+    ${f('search',T('It looks for receipts, invoices and renewal notices','只找收據、發票與續訂通知'),T('It searches for those and reads only the matches.','只搜尋這些郵件，並只讀取符合的那些。'))}
+    ${f('list',T('It keeps four things from each one','每封只保留四項資料'),T('Merchant, amount, currency and date. The emails are never copied or stored.','商家、金額、幣別與日期。郵件本身不會被複製或儲存。'))}
+    ${f('check',T('You approve every find','每一筆都由你確認'),T('Nothing is saved to your transactions until you accept it.','在你接受之前，不會存入你的交易。'))}
+    ${f('x',T('You can stop it at any time','隨時可以停止'),T('Disconnect in Settings and the reading stops at once. Deleting your account removes everything.','在「設定」中斷連結後會立刻停止讀取。刪除帳戶會移除所有資料。'),1)}</div>
+  <div class="gmock"><div class="gw">${I('alert')}${T('Google will show a warning on the next screen','下一個畫面 Google 會顯示警告')}</div>
+    <p style="margin-top:6px" class="ink2">${T('It says "Google hasn\'t verified this app". That is expected: Google\'s review is a paid process meant for public apps, and Finance Tracker is a small invite-only project. To carry on:','內容是「Google 尚未驗證這個應用程式」。這是預期中的情況：Google 的審核是針對公開應用程式的付費流程，而 Finance Tracker 是小型的邀請制專案。繼續的方法：')}</p>
+    <ol><li>${T('Choose <kbd>Advanced</kbd>','點選 <kbd>進階</kbd>')}</li><li>${T('Choose <kbd>Go to Finance Tracker</kbd>','點選 <kbd>前往 Finance Tracker</kbd>')}</li><li>${T('Check that the only permission listed is <kbd>Read your email</kbd>, then allow it','確認列出的權限只有 <kbd>讀取你的電子郵件</kbd>，再按允許')}</li></ol></div>
+  <div class="stack"><a class="btn primary block" href="#/scan" data-act="startscan">${T('Continue to Google','前往 Google')}</a><a class="btn ghost block" href="#/overview" data-act="skipgmail">${T('Skip for now','先跳過')}</a>
+  <p class="hint" style="text-align:center">${T('Skipping is fine. Statement upload and manual entry work without Gmail, and you can connect it later in Settings.','跳過也沒關係。不連結 Gmail 也能上傳對帳單和手動記錄，之後可以在「設定」中連結。')}</p></div>`)}
+function scanInner(){const p=Math.min(100,S.scan),done=p>=100,r=52,c=2*Math.PI*r,emails=Math.round(1284*p/100),found=Math.round(212*p/100);
+  const st=(t,at)=>`<div class="${p>=at?'done':''}">${p>=at?I('check'):`<svg class="ic ${p>at-34?'spin':''}" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/></svg>`}<span>${t}</span></div>`;
+  return`<h1>${done?T(`${found} purchases found`,`找到 ${found} 筆消費`):T('Reading your receipts','正在讀取你的收據')}</h1>
+  <p class="lede">${done?T('None of them is saved yet. Review them one by one, or accept them all and adjust later.','這些都還沒儲存。你可以逐筆確認，或全部接受之後再調整。'):T('The first scan covers the last 12 months and takes about two minutes. You can leave this page; it carries on.','第一次掃描涵蓋過去 12 個月，大約需要兩分鐘。可以離開這個頁面，掃描會繼續進行。')}</p>
+  <svg class="ring" viewBox="0 0 132 132" role="img" aria-label="${p}%"><circle cx="66" cy="66" r="${r}" fill="none" style="stroke:var(--accent-soft)" stroke-width="10"/><circle cx="66" cy="66" r="${r}" fill="none" style="stroke:var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p/100)}" transform="rotate(-90 66 66)"/><text x="66" y="64" text-anchor="middle" style="font:680 26px var(--font);fill:var(--ink)">${found}</text><text x="66" y="84" text-anchor="middle" style="font:12px var(--font);fill:var(--ink-3)">${T('found','已找到')}</text></svg>
+  <p class="small ink2" style="text-align:center" aria-live="polite">${T(`${emails.toLocaleString()} of 1,284 matching emails read`,`已讀取 ${emails.toLocaleString()} / 1,284 封符合的郵件`)}</p>
+  <div class="scanlist">${st(T('Searching for receipts, invoices and renewal notices','搜尋收據、發票與續訂通知'),20)}${st(T('Reading merchant, amount, currency and date','讀取商家、金額、幣別與日期'),70)}${st(T('Sorting into categories and spotting subscriptions','分類並找出訂閱'),100)}</div>
+  ${done?`<div class="stack"><button class="btn primary block" data-act="scandone" data-arg="review">${T(`Review ${found} finds`,`確認這 ${found} 筆`)}</button><button class="btn ghost block" data-act="scandone" data-arg="all">${T('Accept all and open my dashboard','全部接受並開啟儀表板')}</button></div>`:`<a class="btn ghost block" href="#/overview">${T('Carry on in the background','在背景繼續')}</a>`}`}
+const scanPage=()=>flowWrap(5,`<div id="scanbox" class="stack" style="gap:var(--sp-5)">${scanInner()}</div>`);
+const FLOWS={landing:landingPage,invite:invitePage,full:fullPage,signin:signinPage,onboard:onboardPage,gmail:gmailPage,scan:scanPage};
+
+/* ============ overlays ============ */
+function overlayHtml(){const o=S.overlay;if(!o)return'';const still=S._ov?'still':'';
+  if(o.kind==='confirm'){const del=o.what==='delete';return`<div class="scrim center ${still}" data-act="scrim"><div class="dialog" tabindex="-1" role="alertdialog" aria-modal="true" aria-labelledby="ov-title">
+    <h2 id="ov-title">${del?T('Delete your account and all data?','要刪除帳戶與所有資料嗎？'):T('Disconnect Gmail?','要中斷 Gmail 連結嗎？')}</h2>
+    <p class="ink2">${del?T(`This removes ${TX().length} transactions, ${S.dashes.length} dashboards, your insights and the Gmail connection. It cannot be undone.`,`這會移除 ${TX().length} 筆交易、${S.dashes.length} 個儀表板、你的洞察以及 Gmail 連結，而且無法復原。`):T('Finance Tracker stops reading your mail straight away. Transactions you already imported stay, and you can reconnect whenever you like.','Finance Tracker 會立刻停止讀取你的郵件。已匯入的交易會保留，之後隨時可以重新連結。')}</p>
+    ${del?`<label class="field"><span>${T('Type DELETE to confirm','請輸入 DELETE 以確認')}</span><input class="input" data-autofocus data-on="delc" autocomplete="off" autocapitalize="characters"></label>`:''}
+    <div class="row wrap" style="justify-content:flex-end"><button class="btn ghost" data-act="close">${del?T('Keep my account','保留帳戶'):T('Keep connected','保持連結')}</button><button class="btn danger" id="delbtn" data-act="${del?'dodelete':'gmailoff'}" ${del?'disabled':''}>${del?T('Delete everything','全部刪除'):T('Disconnect Gmail','中斷 Gmail 連結')}</button></div></div></div>`}
+  if(o.kind==='story')return`<div class="scrim center ${still}" data-act="scrim"><div class="story-ov" role="dialog" aria-modal="true" aria-labelledby="ov-title" tabindex="-1"><div class="row between" style="margin-bottom:10px"><b id="ov-title">${T('Your September review is ready','你的 9 月回顧出爐了')}</b><button class="btn sm ghost" data-act="close">${T('Not now','先不要')}</button></div>${reviewStage()}<p class="small" style="text-align:center;margin-top:10px">${T('It opens by itself on the 1st of each month, and stays under Month in review.','每月 1 日會自動開啟，之後也能在「月度回顧」找到。')}</p></div></div>`;
+  const inner=o.kind==='tx'?txSheet(o):o.kind==='chart'?chartSheet(o):`<div class="sheet-h"><h2 id="ov-title">${T('More','更多')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div><nav>${NAV().map(n=>`<a class="nav" href="#/${n[0]}" style="min-height:48px" ${n[0]===route()?'aria-current="page"':''}>${I(n[1])}<span>${n[2]}</span></a>`).join('')}</nav>`;
+  return`<div class="scrim ${still}" data-act="scrim"><div class="sheet" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="ov-title">${inner}</div></div>`}
+
+/* ============ render ============ */
+const root=document.getElementById('app'),tipEl=document.getElementById('tip'),toastEl=document.getElementById('toast');
+const keyOf=el=>el&&el!==document.body?(el.id?'#'+el.id:el.dataset&&(el.dataset.act||el.dataset.on)?`[data-${el.dataset.act?'act':'on'}="${el.dataset.act||el.dataset.on}"]${el.dataset.arg!=null?`[data-arg="${el.dataset.arg}"]`:''}`:null):null;
+function render(){
+  const key=keyOf(document.activeElement),r=route();
+  for(const k in CH)delete CH[k];chn=0;
+  document.documentElement.dataset.theme=S.theme;document.documentElement.lang=S.lang==='zh'?'zh-Hant':'en';document.body.classList.toggle('priv',S.priv);
+  document.title=(FLOWS[r]?'':((NAV().find(n=>n[0]===r)||[])[2]||'')+' · ')+'Finance Tracker';
+  root.innerHTML=(FLOWS[r]?FLOWS[r]():shell(r))+overlayHtml();
+  tipEl.hidden=true;
+  if(S.overlay&&!S._ov){const f=root.querySelector('.scrim [data-autofocus]')||root.querySelector('.sheet,.dialog');f&&f.focus({preventScroll:true})}
+  else if(key){try{const el=root.querySelector(key);el&&el.focus({preventScroll:true})}catch(e){}}
+  S._ov=!!S.overlay;document.body.style.overflow=S.overlay?'hidden':'';
+  const tr=document.getElementById('track');if(tr){tr.scrollLeft=S.story*tr.clientWidth;tr.addEventListener('scroll',()=>{const i=Math.round(tr.scrollLeft/tr.clientWidth);if(i!==S.story){S.story=i;root.querySelectorAll('.prog i').forEach((e,k)=>e.classList.toggle('on',k<=i))}},{passive:true})}
+  if(r==='scan'&&S.scan<100&&!scanT)scanT=setInterval(()=>{S.scan+=2;const b=document.getElementById('scanbox');if(!b||S.scan>=100){clearInterval(scanT);scanT=null}if(b)b.innerHTML=scanInner()},130)}
+let scanT=null,toastT=null,lastFocus=null;
+function toast(msg,act,label){toastEl.innerHTML=`<span>${msg}</span>${act?`<button data-act="${act}">${label}</button>`:''}`;toastEl.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{toastEl.hidden=true},6000)}
+const openOv=o=>{lastFocus=keyOf(document.activeElement);S.overlay=o;render()};
+const closeOv=()=>{S.overlay=null;S.menu=false;render();if(lastFocus){try{const el=root.querySelector(lastFocus);el&&el.focus()}catch(e){}}};
+const blank=()=>({a:'',cur:'SGD',m:'',d:TODAY,c:'dining',inc:false});
+let nextId=100000;
+function addTx(d,src){const t={id:nextId++,d:d.d,m:d.m,c:d.c,a:Number(d.a),cur:d.cur,sgd:Math.round(Number(d.a)/RATES[d.cur]*100)/100,src:src||'m',inc:!!d.inc};TX().push(t);sortTx();return t}
+const sortTx=()=>TX().sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id);
+let undo=null,undoW=null;
+function removeTx(id){const l=TX(),i=l.findIndex(t=>t.id===id);if(i<0)return;undo=l.splice(i,1)[0];toast(T(`Deleted ${undo.m}`,`已刪除 ${undo.m}`),'undo',T('Undo','復原'))}
+
+/* ============ actions ============ */
+const ACT={
+  lang(){S.lang=S.lang==='en'?'zh':'en';render()},setlang(a){S.lang=a;render()},
+  theme(){S.theme=S.theme==='dark'?'light':'dark';render()},settheme(a){S.theme=a;render()},
+  priv(){S.priv=!S.priv;render()},
+  menu(){S.menu=!S.menu;render()},
+  goto(a){S.menu=false;S.overlay=null;if(a==='scan')S.scan=0;if(route()===a)render();else go(a)},
+  toggle(a){S[a]=!S[a];S.menu=false;S.day=null;render()},
+  skip(_,el,e){e.preventDefault();document.getElementById('main').focus()},
+  month(a){const i=MONTHS.indexOf(S.month)+Number(a);if(MONTHS[i]){S.month=MONTHS[i];S.day=null;render()}},
+  day(a){S.day=a;render()},
+  table(a){S.tables[a]=!S.tables[a];render()},
+  txcat(a){S.txf={type:'all',cat:a,cur:'all',src:'all',month:S.month};S.txq='';go('transactions')},
+  txmer(a){S.txf={type:'all',cat:'all',cur:'all',src:'all',month:S.month};S.txq=a;go('transactions')},
+  txnew(){openOv({kind:'tx',id:null,draft:blank()})},
+  txedit(a){const t=TX().find(x=>x.id===Number(a));if(t)openOv({kind:'tx',id:t.id,draft:{a:t.a,cur:t.cur,m:t.m,d:t.d,c:t.c,inc:t.inc}})},
+  txtype(a){const d=S.overlay.draft;d.inc=a==='1';d.c=d.inc?'salary':'dining';render()},
+  txsave(){const o=S.overlay,d=o.draft,a=Number(d.a);
+    if(!(a>0)){o.err=T('Enter an amount greater than zero.','請輸入大於零的金額。');return render()}
+    if(!String(d.m).trim()){o.err=T('Enter who the payment was to.','請輸入付款對象。');return render()}
+    let msg;
+    if(o.id){const t=TX().find(x=>x.id===o.id),catCh=t.c!==d.c,oldM=t.m;
+      if(catCh&&o.past)TX().forEach(x=>{if(x.m===oldM)x.c=d.c});
+      Object.assign(t,{a,cur:d.cur,m:d.m.trim(),d:d.d,c:d.c,inc:!!d.inc,sgd:Math.round(a/RATES[d.cur]*100)/100});sortTx();
+      msg=catCh?T(`Saved. ${oldM} goes under ${cn(d.c)} from now on.`,`已儲存。之後 ${oldM} 都會歸到「${cn(d.c)}」。`):T('Changes saved','變更已儲存')}
+    else{addTx({...d,m:d.m.trim()},o.src);if(o.rev)S.review=S.review.filter(r=>r.id!==o.rev);msg=T('Transaction added','已新增交易')}
+    closeOv();toast(msg)},
+  txdel(){const id=S.overlay.id;closeOv();removeTx(id);render()},
+  undo(){if(undo){TX().push(undo);sortTx();undo=null;toastEl.hidden=true;render()}},
+  txmore(){S.txLimit+=40;render()},
+  txclear(){S.txq='';S.txf={type:'all',cat:'all',cur:'all',src:'all',month:'all'};render()},
+  close(){closeOv()},scrim(_,el,e){if(e.target===el)closeOv()},
+  more(){openOv({kind:'more'})},
+  insoff(a){S.insOff[a]=1;render();toast(T('Insight dismissed','已略過這則洞察'))},
+  insreset(){S.insOff={};render()},
+  dupfix(a){S.insOff.dup=1;removeTx(Number(a));render()},
+  imptab(a){S.impTab=a;if(route()!=='import')go('import');else render()},
+  impstage(a){S.impStage=Number(a);if(a==='0')S.pwOk=false;render();if(a==='3')toast(T('Import finished. The files were not kept.','匯入完成，檔案沒有被保留。'))},
+  pw(){S.pwOk=true;render();toast(T('Unlocked OCBC_360_Account_Oct2026.pdf','已解鎖 OCBC_360_Account_Oct2026.pdf'))},
+  revok(a){const r=S.review.find(x=>x.id===a);S.review=S.review.filter(x=>x.id!==a);if(r.notice)toast(T(`${r.m} will show under Recurring when it is charged`,`${r.m} 扣款後會顯示在定期扣款`));else{addTx(r,'g');toast(T(`${r.m} added to your transactions`,`${r.m} 已加入交易`))}render()},
+  revno(a){const r=S.review.find(x=>x.id===a);S.review=S.review.filter(x=>x.id!==a);render();toast(T(`${r.m} rejected. It will not be suggested again.`,`已拒絕 ${r.m}，之後不會再建議。`))},
+  revedit(a){const r=S.review.find(x=>x.id===a);openOv({kind:'tx',id:null,rev:r.id,src:'g',draft:{a:r.a,cur:r.cur,m:r.m,d:r.d>TODAY?TODAY:r.d,c:r.c,inc:false}})},
+  revall(){const n=S.review.length;S.review.forEach(r=>{if(!r.notice)addTx(r,'g')});S.review=[];render();toast(T(`${n} accepted`,`已接受 ${n} 筆`))},
+  rescan(){toast(T('Scanned mail since 09:12. Nothing new.','已掃描 09:12 之後的郵件，沒有新發現。'))},
+  dash(a){S.dash=Number(a);S.sec=0;render()},
+  dashnew(){S.dashes.push({name:T('Untitled','未命名'),w:[]});S.dash=S.dashes.length-1;S.edit=true;S.sec=0;render()},
+  deldash(){const n=S.dashes[S.dash].name;S.dashes.splice(S.dash,1);S.dash=0;S.edit=false;render();toast(T(`Deleted ${n}`,`已刪除「${n}」`))},
+  resetdash(){S.dashes[0].w=DEFAULT_W();render();toast(T('Overview is back to the default layout','總覽已恢復預設版面'))},
+  sec(a){S.sec=Number(a);render()},
+  hicat(a){S.hiCat=S.hiCat===a?null:a;render()},
+  addbuilt(a){S.dashes[S.dash].w.push({k:a,size:a==='flow'?4:2});closeOv();toast(T(`${BUILT[a].name()} added`,`已加入「${BUILT[a].name()}」`))},
+  wdel(a){const w=S.dashes[S.dash].w,[x]=w.splice(Number(a),1);undoW={d:S.dash,i:Number(a),x};render();toast(T(`Removed ${wTitle(x)}`,`已移除「${wTitle(x)}」`),'undow',T('Undo','復原'))},
+  undow(){if(undoW){S.dashes[undoW.d].w.splice(undoW.i,0,undoW.x);undoW=null;toastEl.hidden=true;render()}},
+  buildchart(){S.edit=true;S._next={kind:'chart',idx:null,cfg:{k:'chart',type:'bar',measure:'spending',group:'category',period:'m0',size:2}};go('overview')},
+  firstday(){S.menu=false;S.dash=0;S.story=0;S.edit=false;if(route()==='overview')openOv({kind:'story'});else{S._next={kind:'story'};go('overview')}},
+  edit(){S.edit=!S.edit;render();if(!S.edit)toast(T('Layout saved','版面已儲存'))},
+  chartnew(){openOv({kind:'chart',idx:null,cfg:{k:'chart',type:'bar',measure:'spending',group:'category',period:'m0',size:2}})},
+  chartedit(a){openOv({kind:'chart',idx:Number(a),cfg:{...S.dashes[S.dash].w[Number(a)]}})},
+  cfg(a){const[k,v]=a.split(':'),c=S.overlay.cfg;c[k]=k==='size'?Number(v):v;if(c.type==='line')c.group='month';if(!c.pinned&&!c.f)delete c.title;render()},
+  chartsave(){const o=S.overlay,w=S.dashes[S.dash].w;if(o.idx==null)w.push(o.cfg);else w[o.idx]=o.cfg;closeOv();toast(o.idx==null?T('Chart added','已新增圖表'):T('Chart saved','圖表已儲存'))},
+  wmove(a){const[i,d]=a.split(':').map(Number),w=S.dashes[S.dash].w,j=i+d;if(j<0||j>=w.length)return;[w[i],w[j]]=[w[j],w[i]];render();const b=root.querySelector(`[data-act="wmove"][data-arg="${j}:${d}"]:not([disabled])`)||root.querySelector(`[data-act="wmove"][data-arg="${j}:${-d}"]`);b&&b.focus()},
+  wsize(a){const c=S.dashes[S.dash].w[Number(a)];c.size=c.size%4+1;render()},
+  wdelc(){const i=S.overlay.idx;S.dashes[S.dash].w.splice(i,1);closeOv();toast(T('Chart removed','已移除圖表'))},
+  ask(a){ask(ASK_Q().find(q=>q[0]===a)[1],a)},
+  pin(a){const q=S.asks[Number(a)];q.pinned=1;S.dashes[S.dash].w.push({...answer(q.key).cfg});render();toast(T(`Pinned to ${dashName(S.dash)}`,`已釘選到「${dashName(S.dash)}」`),'viewdash',T('View','查看'))},
+  viewdash(){toastEl.hidden=true;S.sec=Math.max(0,S.dashes[S.dash].w.filter(c=>c.k!=='flow').length-1);go('overview')},
+  askshow(a){S.txq=a==='grab'?'Grab':'';S.txf={type:'all',cat:a==='japan'?'dining':a==='subs'?'bills':a==='groceries'?'groceries':'all',cur:a==='japan'?'JPY':'all',src:'all',month:a==='japan'?'2026-09':'all'};go('transactions')},
+  story(a){storyGo(Number(a))},storystep(a){storyGo(S.story+Number(a))},
+  storyopen(){S.month=prevM(CURM);S.day=null;S.dash=0;if(route()==='overview')closeOv();else go('overview')},
+  confirm(a){openOv({kind:'confirm',what:a})},
+  gmailoff(){S.gmail=false;closeOv();toast(T('Gmail disconnected. No more mail will be read.','已中斷 Gmail 連結，不會再讀取任何郵件。'))},
+  dodelete(){S.overlay=null;S.empty=true;S.txEmpty=[];go('landing');toast(T('Account deleted. Nothing about you is stored any more.','帳戶已刪除，不再保存任何關於你的資料。'))},
+  copy(){try{navigator.clipboard.writeText('https://financetracker.app/join/kai-7Q2M')}catch(e){}toast(T('Invite link copied','已複製邀請連結'))},
+  export(){const rows=[['date','merchant','category','type','amount','currency','amount_sgd','source'],...TX().map(t=>[t.d,t.m,CATS[t.c].en,t.inc?'income':'expense',t.a,t.cur,t.sgd,SRC[t.src][0]])];const csv=rows.map(r=>r.map(x=>/[",\n]/.test(String(x))?`"${String(x).replace(/"/g,'""')}"`:x).join(',')).join('\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='finance-tracker-transactions.csv';a.click();toast(T(`Downloaded ${TX().length} transactions as CSV`,`已下載 ${TX().length} 筆交易（CSV）`))},
+  startscan(){S.scan=0;S.gmail=true},skipgmail(){S.gmail=false;S.empty=true;S.txEmpty=[]},
+  scandone(a){S.empty=false;S.gmail=true;if(a==='review'){S.impTab='gmail';go('import')}else{go('overview');toast(T('212 transactions added. Change any of them in Transactions.','已加入 212 筆交易，可在交易清單中修改。'))}}
+};
+function ask(q,key){if(S.aiOut)return;if(!key){const s=q.toLowerCase();key=/japan|日本/.test(s)?'japan':/subscri|bill|訂閱|帳單/.test(s)?'subs':/grab/.test(s)?'grab':/grocer|雜貨|超市/.test(s)?'groceries':'none'}
+  S.asks.push({q,key});render()}
+function storyGo(i){const tr=document.getElementById('track');if(!tr)return;i=Math.max(0,Math.min(tr.children.length-1,i));tr.scrollTo({left:i*tr.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
+
+/* ============ events ============ */
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-act]');
+  if(S.menu&&!e.target.closest('.menu')&&!(el&&el.dataset.act==='menu')){S.menu=false;render();if(!el)return}
+  if(!el){const sl=e.target.closest('.slide');if(sl&&!e.target.closest('button')){const b=sl.getBoundingClientRect();storyGo(S.story+(e.clientX-b.left<b.width*.3?-1:1))}return}
+  if(el.disabled||el.getAttribute('aria-disabled')==='true')return;
+  const fn=ACT[el.dataset.act];if(fn)fn(el.dataset.arg,el,e)});
+document.addEventListener('submit',e=>{e.preventDefault();const i=document.getElementById('askin');if(i&&i.value.trim())ask(i.value.trim())});
+document.addEventListener('input',e=>{const el=e.target,on=el.dataset.on;if(!on)return;
+  if(on==='txq'){S.txq=el.value;S.txLimit=40;document.getElementById('txlist').innerHTML=txList()}
+  else if(on==='txd'){const d=S.overlay.draft;d[el.dataset.arg]=el.value;if(el.dataset.arg==='a'){const h=document.getElementById('txconv');if(h)h.innerHTML=convHint(d)}}
+  else if(on==='dashname')S.dashes[S.dash].name=el.value;
+  else if(on==='delc')document.getElementById('delbtn').disabled=el.value.trim()!=='DELETE'});
+document.addEventListener('change',e=>{const el=e.target,on=el.dataset.on;if(!on)return;
+  if(on==='cur'){S.cur=el.value;render()}
+  else if(on==='txf'){S.txf[el.dataset.arg]=el.value;S.txLimit=40;render()}
+  else if(on==='txdc'){S.overlay.draft.cur=el.value;render()}
+  else if(on==='txdcat'){S.overlay.draft.c=el.value;render()}
+  else if(on==='txpast')S.overlay.past=el.checked;
+  else if(on==='cfgperiod'){S.overlay.cfg.period=el.value;delete S.overlay.cfg.months;render()}
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&(S.overlay||S.menu)){e.preventDefault();closeOv();return}
+  if(S.overlay&&e.key==='Tab'){const f=[...root.querySelectorAll('.scrim a[href],.scrim button:not([disabled]),.scrim input,.scrim select')];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
+  if(((route()==='review'&&!S.overlay)||(S.overlay&&S.overlay.kind==='story'))&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!/INPUT|SELECT/.test(e.target.tagName)){e.preventDefault();storyGo(S.story+(e.key==='ArrowRight'?1:-1))}});
+/* tooltips: per-mark on bars, bands and cells; crosshair on lines */
+function showTip(html,x,y){tipEl.innerHTML=html;tipEl.hidden=false;const b=tipEl.getBoundingClientRect();tipEl.style.left=Math.max(8,Math.min(window.innerWidth-b.width-8,x+14))+'px';tipEl.style.top=Math.max(8,y-b.height-12)+'px'}
+document.addEventListener('pointermove',e=>{
+  const m=e.target.closest&&e.target.closest('[data-tip]');
+  if(m){const[b,r]=m.dataset.tip.split('|');showTip(`<b>${esc(b)}</b>${esc(r)}`,e.clientX,e.clientY);return}
+  const sv=e.target.closest&&e.target.closest('svg[data-ch]');
+  if(sv){const c=CH[sv.dataset.ch],bx=sv.getBoundingClientRect(),vx=(e.clientX-bx.left)/bx.width*sv.viewBox.baseVal.width,i=Math.max(0,Math.min(c.n-1,Math.round((vx-c.x0)/c.dx))),xh=sv.querySelector('.xh');
+    xh.setAttribute('x1',c.x0+i*c.dx);xh.setAttribute('x2',c.x0+i*c.dx);xh.style.opacity=.6;
+    showTip(`${esc(c.rows[i].t)}${c.rows[i].v.map((v,k)=>`<b><i class="k" style="background:${c.colors[k]}"></i>${esc(v)} <span style="font-weight:400;opacity:.8">${esc(c.names[k])}</span></b>`).join('')}`,e.clientX,e.clientY);return}
+  if(!tipEl.hidden){tipEl.hidden=true;root.querySelectorAll('.xh').forEach(x=>x.style.opacity=0)}});
+document.addEventListener('focusin',e=>{const m=e.target.closest&&e.target.closest('[data-tip]');if(m){const[b,r]=m.dataset.tip.split('|'),bx=m.getBoundingClientRect();showTip(`<b>${esc(b)}</b>${esc(r)}`,bx.left,bx.top)}});
+document.addEventListener('focusout',()=>{tipEl.hidden=true});
+/* pie: hovering or focusing a slice or legend row dims the others; a tap pins it */
+const hl=k=>root.querySelectorAll('.pie [data-hl]').forEach(e=>e.classList.toggle('dim',!!k&&e.dataset.hl!==k));
+document.addEventListener('pointerover',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(x.dataset.hl)});
+document.addEventListener('pointerout',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(S.hiCat)});
+document.addEventListener('focusin',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(x.dataset.hl)});
+/* dashboard editor: drag to reorder, drag the corner handle to resize */
+let dragI=null;
+document.addEventListener('dragstart',e=>{const w=e.target.closest&&e.target.closest('.w.edit');if(!w)return;dragI=Number(w.dataset.i);w.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(dragI))}catch(x){}});
+document.addEventListener('dragover',e=>{const w=e.target.closest&&e.target.closest('.w.edit');const dz=e.target.closest&&e.target.closest('#drop');if(dz){e.preventDefault();dz.classList.add('over')}if(w&&dragI!=null){e.preventDefault();root.querySelectorAll('.w.over').forEach(x=>x.classList.remove('over'));w.classList.add('over')}});
+document.addEventListener('dragleave',e=>{const dz=e.target.closest&&e.target.closest('#drop');if(dz&&!dz.contains(e.relatedTarget))dz.classList.remove('over')});
+document.addEventListener('drop',e=>{const dz=e.target.closest&&e.target.closest('#drop');if(dz){e.preventDefault();S.impStage=1;render();return}
+  const w=e.target.closest&&e.target.closest('.w.edit');if(w&&dragI!=null){e.preventDefault();const j=Number(w.dataset.i),l=S.dashes[S.dash].w,[x]=l.splice(dragI,1);l.splice(j,0,x)}dragI=null;render()});
+document.addEventListener('dragend',()=>{if(dragI!=null){dragI=null;render()}});
+document.addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('.w-size');if(!h)return;e.preventDefault();const card=h.closest('.w'),i=Number(h.dataset.size),c=S.dashes[S.dash].w[i],col=document.getElementById('dash').clientWidth/4,w0=card.getBoundingClientRect().width,x0=e.clientX;
+  const mv=ev=>{const n=Math.max(1,Math.min(4,Math.round((w0+ev.clientX-x0)/col)));if(n!==c.size){c.size=n;card.className=card.className.replace(/\bs\d\b/,'s'+n)}};
+  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);render()};addEventListener('pointermove',mv);addEventListener('pointerup',up)});
+addEventListener('hashchange',()=>{S.overlay=S._next||null;S._next=null;S._ov=false;S.menu=false;render();scrollTo(0,0);const m=document.getElementById('main');m&&m.focus({preventScroll:true})});
+let rsT;addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(render,150)});
+if(qs.get('scan'))S.scan=Number(qs.get('scan'));
+if(qs.get('ask'))qs.get('ask').split(',').forEach(k=>{const q=ASK_Q().find(x=>x[0]===k);q&&S.asks.push({q:q[1],key:k})});
+if(qs.get('month'))S.month=qs.get('month');
+if(qs.get('dash'))S.dash=Number(qs.get('dash'));if(qs.get('sec'))S.sec=Number(qs.get('sec'));if(qs.get('cat'))S.hiCat=qs.get('cat');
+render();
+if(qs.get('sheet')==='tx')ACT.txedit(DB.tx.find(t=>t.cur==='JPY').id);
+if(qs.get('sheet')==='chart')ACT.chartnew();
+if(qs.get('sheet')==='story')ACT.firstday();
+</script>
+</body>
+</html>

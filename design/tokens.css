@@ -1,0 +1,176 @@
+/* Finance Tracker design tokens.
+   Source of truth for colour, type, spacing, radius, shadow and chart palette.
+   design/prototype/index.html inlines this file verbatim (between the TOKENS markers);
+   rebuild with design/prototype/sync-tokens.sh after editing. */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces: the pale green of passbook and cheque paper, with white slips on top */
+  --bg: #e9f0eb;
+  --surface: #fbfcfa;
+  --surface-2: #e0e8e3;
+  --surface-3: #d2dcd6;
+  --line: #d0dad4;
+  --line-strong: #aebbb4;
+  --line-field: #7a8781; /* borders of inputs and outline buttons: 3:1 on the surface */
+  --scrim: rgba(18, 28, 25, 0.48);
+
+  /* Ink */
+  --ink: #17201d;
+  --ink-2: #47524e;
+  --ink-3: #55605b;
+  --ink-inverse: #fbfcfa;
+
+  /* Brand: lagoon teal. Kaya gold marks "now"; orange belongs to charts (expenses), not to chrome */
+  --brand: #0b5d53;
+  --brand-hover: #094c44;
+  --on-brand: #ffffff;
+  --accent: #009180;
+  --accent-soft: #d9efe9;
+  --warm: #eb6834;
+  --warm-soft: #fde5d8;
+  --gold: #f2c14e;
+  --gold-soft: #fbefcd;
+  --deep: #0c4a43;
+  --on-deep: #f3f7f4;
+
+  /* Meaning (always paired with an icon or a word) */
+  --pos: #0a6b3c;
+  --pos-soft: #dcefe2;
+  --neg: #b3331c;
+  --neg-soft: #fbe2db;
+  --warn: #855600;
+  --warn-soft: #fbefcd;
+  --focus: #1f6fe0;
+
+  /* Chart palette: categorical, fixed order, validated for colour-blind separation on --surface */
+  --s1: #009180; /* teal: income, kept, single-series default */
+  --s2: #eb6834; /* orange: expenses, dining */
+  --s3: #2a78d6; /* blue: housing */
+  --s4: #eda100; /* yellow: transport */
+  --s5: #e87ba4; /* magenta: shopping */
+  --s6: #008300; /* green: groceries */
+  --s7: #6250d6; /* violet: travel */
+  --s8: #e34948; /* red: bills and subscriptions */
+  --s-other: #8d9a94; /* neutral: other, context series */
+  /* Sequential ramp (calendar heatmap): one hue, more is darker */
+  --seq-0: #e0e8e3;
+  --seq-1: #cfeae3;
+  --seq-2: #9bd6c9;
+  --seq-3: #55b9a7;
+  --seq-4: #14907f;
+  --seq-5: #0a5e54;
+  --grid: #e2e9e4;
+  --axis: #aebbb4;
+
+  /* Type: system stack only, no web fonts */
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-md: 15px;
+  --fs-lg: 17px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+  --fs-3xl: 34px;
+  --fs-4xl: 46px;
+  --fs-5xl: 60px;
+  --lh-tight: 1.12;
+  --lh-snug: 1.3;
+  --lh-body: 1.5;
+  --fw-regular: 400;
+  --fw-medium: 550;
+  --fw-bold: 680;
+
+  /* Spacing: 4 px base */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Radius */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-pill: 999px;
+
+  /* Shadow */
+  --sh-1: 0 1px 0 rgba(18, 33, 29, 0.05);
+  --sh-2: 0 6px 20px -8px rgba(18, 33, 29, 0.18), 0 1px 2px rgba(18, 33, 29, 0.06);
+  --sh-3: 0 24px 60px -20px rgba(20, 30, 26, 0.38), 0 2px 6px rgba(20, 30, 26, 0.1);
+
+  /* Motion and targets */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+  --tap: 44px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0d1614;
+  --surface: #15211e;
+  --surface-2: #1c2b27;
+  --surface-3: #243631;
+  --line: #273833;
+  --line-strong: #3a4f49;
+  --line-field: #6f8079;
+  --scrim: rgba(2, 8, 6, 0.66);
+
+  --ink: #eef2ec;
+  --ink-2: #b9c5bf;
+  --ink-3: #93a29c;
+  --ink-inverse: #0d1614;
+
+  --brand: #62d6c1;
+  --brand-hover: #7ee2cf;
+  --on-brand: #06231f;
+  --accent: #19a391;
+  --accent-soft: #173b35;
+  --warm: #d95926;
+  --warm-soft: #43261a;
+  --gold: #f2c14e;
+  --gold-soft: #3d3317;
+  --deep: #103f39;
+  --on-deep: #f3f7f4;
+
+  --pos: #5fd08f;
+  --pos-soft: #173524;
+  --neg: #ff9a80;
+  --neg-soft: #43231b;
+  --warn: #f2c14e;
+  --warn-soft: #3d3317;
+  --focus: #8ab8ff;
+
+  /* Same eight hues, re-stepped for the dark surface and validated again */
+  --s1: #19a391;
+  --s2: #d95926;
+  --s3: #3987e5;
+  --s4: #c98500;
+  --s5: #d55181;
+  --s6: #008300;
+  --s7: #9085e9;
+  --s8: #e66767;
+  --s-other: #7d8a85;
+  --seq-0: #1c2b27;
+  --seq-1: #17443d;
+  --seq-2: #176256;
+  --seq-3: #1b8473;
+  --seq-4: #35ad98;
+  --seq-5: #7fe0cc;
+  --grid: #223430;
+  --axis: #3a4f49;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --sh-2: 0 8px 24px -10px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --sh-3: 0 28px 70px -20px rgba(0, 0, 0, 0.75), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
