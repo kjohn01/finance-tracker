@@ -591,6 +591,7 @@ button.li:hover .t{text-decoration:underline;text-underline-offset:3px}
 .spin{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (max-width:860px){.flow-card{padding:var(--sp-5);border-radius:var(--r-lg)}.flow-card h1{font-size:var(--fs-2xl)}}
+@media (max-width:860px){.tbtn{min-height:var(--tap)}}
 </style>
 </head>
 <body>
@@ -814,7 +815,7 @@ function sankey(m,w){
   if(!total)return'';
   const left=iG.map(g=>({label:cn(g.k),v:g.v,col:'var(--s1)'}));if(E>In)left.push({label:T('From savings','動用存款'),v:E-In,col:'var(--s-other)'});
   const right=eG.map(g=>({label:cn(g.k,1),v:g.v,col:cc(g.k),k:g.k}));if(In>E)right.push({label:T('Kept','留下來'),v:In-E,col:'var(--s1)',kept:1});
-  const sm=w<560,h=sm?410:400,gap=sm?15:17,gapL=26,nw=sm?10:14,padL=sm?0:128,padR=sm?142:230;
+  const sm=w<560,h=sm?410:400,gap=sm?15:17,gapL=sm?34:26,nw=sm?10:14,padL=sm?0:128,padR=sm?142:230;
   const sc=(h-gap*(right.length-1))/total,xL=padL,xR=w-padR-nw,xM=(xL+xR)/2;
   let y=0;right.forEach(n=>{n.h=Math.max(1.5,n.v*sc);n.y=y;y+=n.h+gap});
   const mH=total*sc,mY=(h-mH)/2,lH=mH+gapL*(left.length-1);let ly=(h-lH)/2;left.forEach(n=>{n.h=Math.max(1.5,n.v*sc);n.y=ly;ly+=n.h+gapL});
@@ -823,7 +824,7 @@ function sankey(m,w){
   left.forEach(n=>{s+=rib(xL+nw,n.y,n.y+n.h,xM,acc,acc+n.v*sc,n.col,.22,tipA(ft(n.v),n.label));acc+=n.v*sc});
   acc=mY;right.forEach(n=>{s+=rib(xM+nw,acc,acc+n.v*sc,xR,n.y,n.y+n.h,n.col,n.kept?.3:.38,tipA(ft(n.v)+', '+Math.round(n.v/total*100)+'%',n.label));acc+=n.v*sc});
   left.forEach(n=>{s+=`<rect x="${xL}" y="${n.y}" width="${nw}" height="${n.h}" rx="3" style="fill:${n.col}"/>`;
-    s+=sm?`<text x="${xL+nw+8}" y="${n.y+Math.min(n.h/2+4,n.h>30?20:n.h/2+4)}"><tspan class="lab">${esc(n.label)}</tspan> <tspan class="val num">${ft(n.v,{dec:0})}</tspan></text>`
+    const ty=n.y+(n.h>34?16:n.h/2+4);s+=sm?`<text x="${xL+nw+7}" y="${ty}" class="lab">${esc(n.label)}</text><text x="${xL+nw+7}" y="${ty+14}" class="val num">${ft(n.v,{dec:0})}</text>`
         :`<text x="${xL-10}" y="${n.y+n.h/2-(n.h>30?3:-4)}" text-anchor="end" class="lab">${esc(n.label)}</text>${n.h>30?`<text x="${xL-10}" y="${n.y+n.h/2+13}" text-anchor="end" class="val num">${ft(n.v,{dec:0})}</text>`:''}`});
   s+=`<rect x="${xM}" y="${mY}" width="${nw}" height="${mH}" rx="3" style="fill:var(--ink)" ${tipA(ft(total,{dec:0}),T('Money in','流入金額'))}/>`;
   right.forEach(n=>{s+=`<rect x="${xR}" y="${n.y}" width="${nw}" height="${n.h}" rx="3" style="fill:${n.col}"/><text x="${xR+nw+8}" y="${n.y+n.h/2+4}"><tspan class="lab">${esc(n.label)}</tspan> <tspan class="val num">${n.kept?ftd(keptD(In,E),{dec:0}):ft(n.v,{dec:0})}${sm?'':', '+Math.round(n.v/total*100)+'%'}</tspan></text>`});
@@ -1014,13 +1015,14 @@ function transactionsPage(){
     ${sel('src',[['all',T('All sources','所有來源')],...Object.keys(SRC).map(k=>[k,T(...SRC[k])])],T('Source','來源'))}
     ${active?`<button class="btn quiet sm" data-act="txclear">${T('Clear','清除')}</button>`:''}</div>
   <div id="txlist">${txList()}</div>`}
+const convHint=d=>{const conv=Number(d.a)>0?Number(d.a)/RATES[d.cur]:0;return d.cur!=="SGD"&&conv?T(`About ${fmtv(conv,"SGD")} at today's rate. The original ${d.cur} amount is kept.`,`依今日匯率約 ${fmtv(conv,"SGD")}，原始 ${d.cur} 金額會保留。`):T("Kept in the currency you paid in; totals convert to your display currency.","保留你付款時的幣別，總計會換算成顯示幣別。")};
 function txSheet(o){const d=o.draft,isNew=!o.id,conv=d.a>0?d.a/RATES[d.cur]:0,old=o.id&&TX().find(t=>t.id===o.id),catChanged=old&&old.c!==d.c,same=old?TX().filter(t=>t.m===old.m&&t.id!==old.id).length:0;
   const cats=Object.keys(CATS).filter(k=>!!CATS[k].inc===!!d.inc);
   return`<div class="sheet-h"><h2 id="ov-title">${isNew?T('Add a transaction','新增交易'):T('Edit transaction','編輯交易')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div>
   <div class="seg fill" role="group" aria-label="${T('Type','類型')}"><button data-act="txtype" data-arg="0" aria-pressed="${!d.inc}">${T('Expense','支出')}</button><button data-act="txtype" data-arg="1" aria-pressed="${!!d.inc}">${T('Income','收入')}</button></div>
   <div class="row" style="align-items:flex-end"><label class="field grow"><span>${T('Amount','金額')}</span><input class="input num" inputmode="decimal" data-autofocus data-on="txd" data-arg="a" value="${d.a||''}" placeholder="0.00" style="font-size:22px;font-weight:var(--fw-bold);min-height:54px"></label>
     <label class="field" style="width:110px"><span>${T('Currency','幣別')}</span><select class="select" data-on="txdc" style="min-height:54px">${Object.keys(CUR).map(c=>`<option ${c===d.cur?'selected':''}>${c}</option>`).join('')}</select></label></div>
-  <p class="hint" id="txconv">${d.cur!=='SGD'&&conv?T(`About ${fmtv(conv,'SGD')} at today's rate. The original ${d.cur} amount is kept.`,`依今日匯率約 ${fmtv(conv,'SGD')}，原始 ${d.cur} 金額會保留。`):T('Kept in the currency you paid in; totals convert to your display currency.','保留你付款時的幣別，總計會換算成顯示幣別。')}</p>
+  <p class="hint" id="txconv">${convHint(d)}</p>
   <label class="field"><span>${d.inc?T('From','來源'):T('Merchant','商家')}</span><input class="input" data-on="txd" data-arg="m" value="${esc(d.m)}" placeholder="${T('For example, FairPrice','例如 FairPrice')}"></label>
   <label class="field"><span>${T('Date','日期')}</span><input class="input" type="date" data-on="txd" data-arg="d" value="${d.d}" max="${TODAY}"></label>
   <label class="field"><span>${T('Category','類別')}</span><select class="select" data-on="txdcat">${cats.map(k=>`<option value="${k}" ${k===d.c?'selected':''}>${cn(k)}</option>`).join('')}</select></label>
@@ -1176,7 +1178,7 @@ function slides(){const m=prevM(CURM),pm=prevM(m),s=monthStats(m),p=monthStats(p
   const watch=['dining','groceries','transport','shopping','other'].map(k=>({k,v:(cats.find(c=>c.k===k)||{v:0}).v,a:avg3(k)})).sort((a,b)=>(b.v-b.a)-(a.v-a.a))[0];
   const bar=`<div style="display:flex;gap:2px;height:14px;border-radius:7px;overflow:hidden">${cats.map(c=>`<i style="flex:${c.v};background:${cc(c.k)}"></i>`).join('')}</div>`;
   return[
-   {bg:'#0c4a43',h:`<div><div class="kick">${T('Month in review','月度回顧')}</div><h2 style="font-size:44px;margin-top:10px">${mName(m)}</h2></div><p>${T('Six cards, about a minute. Swipe, tap the sides, or use the arrow keys.','六張卡片，大約一分鐘。可以滑動、點兩側，或用方向鍵。')}</p>`},
+   {bg:'#0c4a43',h:`<div><div class="kick">${T('Month in review','月度回顧')}</div><h2 style="font-size:44px;margin-top:10px">${mName(m)}</h2></div><p>${T('Seven cards, about a minute. Swipe, tap the sides, or use the arrow keys.','七張卡片，大約一分鐘。可以滑動、點兩側，或用方向鍵。')}</p>`},
    {bg:'#f2c14e',ink:'#17201d',h:`<div><div class="kick">${T('You spent','你花了')}</div><div class="huge">${m0(s.E)}</div><p>${T(`across ${s.n} payments in ${curs.length} currencies.`,`共 ${s.n} 筆，使用 ${curs.length} 種幣別。`)}</p></div><div class="panel"><b>${s.E>p.E?'+':'−'}${mh(Math.abs(s.E-p.E),{dec:0})}</b> ${T(`against ${mWord(pm)}, ${Math.abs(pct(s.E,p.E))}% ${s.E>p.E?'more':'less'}`,`（與${mWord(pm)}相比${s.E>p.E?'增加':'減少'} ${Math.abs(pct(s.E,p.E))}%）`)}</div>`},
    {bg:'#173f73',h:`<div><div class="kick">${T('Biggest category','最大類別')}</div><h2 style="margin-top:8px">${cn(top.k)}</h2><div class="huge">${m0(top.v)}</div><p>${T(`${Math.round(top.v/s.E*100)}% of everything you spent.`,`占總支出的 ${Math.round(top.v/s.E*100)}%。`)}</p></div><div class="panel">${bar}<div style="margin-top:10px;font-size:13px">${cats.slice(0,4).map(c=>`${cn(c.k,1)} ${Math.round(c.v/s.E*100)}%`).join(T(', ','、'))}</div></div>`},
    {bg:'#3d2f9e',h:`<div><div class="kick">${T('Biggest change','變化最大')}</div><h2 style="margin-top:8px">${cn(ch.k)}</h2><div class="huge">${ch.d>0?'+':'−'}${m0(Math.abs(ch.d))}</div><p>${T(`against ${mWord(pm)}.`,`（與${mWord(pm)}相比）`)} ${ch.k==='travel'?T('Six days in Tokyo will do that.','在東京待六天就是這樣。'):''}</p></div>${ch.k==='travel'?`<div class="panel">${T('Paid in yen','以日圓支付')}: <b><span class="amt num">${fmtv(exps(s.tx).filter(t=>t.cur==='JPY').reduce((a,t)=>a+t.a,0),'JPY')}</span></b></div>`:''}`},
@@ -1385,18 +1387,17 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{e.preventDefault();const i=document.getElementById('askin');if(i&&i.value.trim())ask(i.value.trim())});
 document.addEventListener('input',e=>{const el=e.target,on=el.dataset.on;if(!on)return;
   if(on==='txq'){S.txq=el.value;S.txLimit=40;document.getElementById('txlist').innerHTML=txList()}
-  else if(on==='txd')S.overlay.draft[el.dataset.arg]=el.value;
+  else if(on==='txd'){const d=S.overlay.draft;d[el.dataset.arg]=el.value;if(el.dataset.arg==='a'){const h=document.getElementById('txconv');if(h)h.innerHTML=convHint(d)}}
   else if(on==='dashname')S.dashes[S.dash].name=el.value;
   else if(on==='delc')document.getElementById('delbtn').disabled=el.value.trim()!=='DELETE'});
 document.addEventListener('change',e=>{const el=e.target,on=el.dataset.on;if(!on)return;
   if(on==='cur'){S.cur=el.value;render()}
   else if(on==='txf'){S.txf[el.dataset.arg]=el.value;S.txLimit=40;render()}
-  else if(on==='txd'&&el.dataset.arg==='a')render();
   else if(on==='txdc'){S.overlay.draft.cur=el.value;render()}
   else if(on==='txdcat'){S.overlay.draft.c=el.value;render()}
   else if(on==='txpast')S.overlay.past=el.checked;
   else if(on==='cfgperiod'){S.overlay.cfg.period=el.value;render()}
-  else if(on==='dashname')render()});
+});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&(S.overlay||S.menu)){e.preventDefault();closeOv();return}
   if(S.overlay&&e.key==='Tab'){const f=[...root.querySelectorAll('.scrim a[href],.scrim button:not([disabled]),.scrim input,.scrim select')];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}

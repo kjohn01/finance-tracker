@@ -11,3 +11,11 @@ A running log of what worked, what did not, and what to change. After release th
 - **Check platform limits before promising a feature.** Google's rules for Gmail access (100-user cap, warning screen) and the lack of a Google exchange-rate service only surfaced after the feature was requested. Research third-party limits as part of the PRD.
 - **Real test data is a dependency.** Bank statement parsing cannot be verified without real samples. Ask for sample data at the PRD stage and track it as an open item.
 - **Name the team at kickoff.** Names were added after the PRD; putting the roster in `CLAUDE.md` from the start lets every agent pick it up automatically.
+
+## 11 Nov 2026: Design phase (Jinni)
+
+- **Send the designer every skill and base branch up front.** The frontend-design guidance and the change of base branch arrived mid-build and cost a palette and layout rewrite. Next time: list required skills and the PR base in the first brief.
+- **Run the "generic defaults" check on a written plan before any CSS.** The first palette (cream and coral) was caught only after tokens existed. A ten-line plan reviewed first is cheaper.
+- **Compute sample data, never hand-type chart numbers.** One generated transaction list feeding every chart made "totals add up across screens" true by construction, and exposed a rounding mismatch (in minus out against kept) that hand-typed figures would have hidden.
+- **Script the screenshots and an interaction smoke test from the start.** The smoke test caught a lost-click bug (a re-render on blur swallowed the Save click) that no screenshot could show. Ghost can reuse `design/screenshots/capture.js` as a visual baseline.
+- **Commit work in progress early.** An interruption mid-build lost nothing only because parts were on disk; commit after the first assembled file.
