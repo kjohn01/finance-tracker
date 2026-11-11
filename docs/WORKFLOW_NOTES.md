@@ -19,3 +19,7 @@ A running log of what worked, what did not, and what to change. After release th
 - **Compute sample data, never hand-type chart numbers.** One generated transaction list feeding every chart made "totals add up across screens" true by construction, and exposed a rounding mismatch (in minus out against kept) that hand-typed figures would have hidden.
 - **Script the screenshots and an interaction smoke test from the start.** The smoke test caught a lost-click bug (a re-render on blur swallowed the Save click) that no screenshot could show. Ghost can reuse `design/screenshots/capture.js` as a visual baseline.
 - **Commit work in progress early.** An interruption mid-build lost nothing only because parts were on disk; commit after the first assembled file.
+- **Ask for the navigation model before drawing screens.** "Dashboards" was designed as its own destination and then merged into the overview at review. One question up front ("is the overview the user's own dashboard?") would have saved the rework.
+- **Review every phone screenshot, not a sample.** The first pass looked at about a third of them and missed a 9,000 px overview. Side-by-side light and dark montages made reviewing all 28 screens practical.
+- **Do not commit a full screenshot matrix.** 80 PNGs added 27 MB. Commit about a dozen and keep a script that regenerates the rest on demand.
+- **Measure touch targets by script at the phone width.** "44 px" was claimed with exceptions; a script listing every control under 44 px turned it into a fact.

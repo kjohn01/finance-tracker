@@ -195,7 +195,7 @@ svg{display:block;max-width:100%}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:var(--r-xs)}
 [tabindex="-1"]:focus{outline:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:absolute;left:8px;top:-60px;background:var(--brand);color:var(--on-brand);padding:10px 14px;border-radius:var(--r-sm);z-index:99}
+.skip{position:absolute;left:8px;top:-60px;background:var(--brand);color:var(--on-brand);padding:12px 14px;border-radius:var(--r-sm);z-index:99}
 .skip:focus{top:8px}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
@@ -259,10 +259,10 @@ svg{display:block;max-width:100%}
 .select.sm{min-height:36px;font-size:var(--fs-sm);width:auto;border-radius:var(--r-pill);padding-left:14px}
 .input:hover,.select:hover{border-color:var(--ink)}
 .hint{font-size:var(--fs-xs);color:var(--ink-3)}
-.switch{position:relative;width:52px;height:32px;border-radius:var(--r-pill);background:var(--line-strong);flex:none;transition:background var(--dur)}
-.switch::before{content:"";position:absolute;inset:-6px 0}
-.switch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:var(--sh-1);transition:transform var(--dur) var(--ease)}
-.switch[aria-checked=true]{background:var(--accent)}
+.switch{position:relative;width:52px;height:44px;flex:none}
+.switch::before{content:"";position:absolute;left:0;right:0;top:6px;height:32px;border-radius:var(--r-pill);background:var(--line-field);transition:background var(--dur)}
+.switch::after{content:"";position:absolute;top:9px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:var(--sh-1);transition:transform var(--dur) var(--ease)}
+.switch[aria-checked=true]::before{background:var(--accent)}
 .switch[aria-checked=true]::after{transform:translateX(20px)}
 .av{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:var(--fs-sm);font-weight:var(--fw-bold);flex:none;color:var(--ink);background:color-mix(in srgb,var(--avc,var(--s-other)) 22%,var(--surface))}
 .av.sm{width:32px;height:32px;border-radius:10px;font-size:var(--fs-xs)}
@@ -302,7 +302,7 @@ svg{display:block;max-width:100%}
   .shell{grid-template-columns:minmax(0,1fr)}
   .side{display:none}
   .top{padding:var(--sp-2) var(--sp-3) var(--sp-2) var(--sp-4);gap:0}
-  .top h1{font-size:var(--fs-lg)}
+  .top h1{font-size:var(--fs-lg);padding-right:8px}
   .page{padding:var(--sp-2) var(--sp-4) 120px}
   .grid{gap:var(--sp-4)}
   .c12,.c8,.c7,.c6,.c5,.c4{grid-column:span 12}
@@ -370,12 +370,13 @@ svg{display:block;max-width:100%}
 /* ---------- overview ---------- */
 .monthnav{display:inline-flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-pill);padding:2px;box-shadow:var(--sh-1)}
 .monthnav b{min-width:128px;text-align:center;font-size:var(--fs-md)}
-.monthnav .iconbtn{width:40px;height:40px}
+.monthnav .iconbtn{width:var(--tap);height:var(--tap)}
 .monthnav .iconbtn[disabled]{opacity:.3;cursor:default}
-.say{font-size:clamp(27px,3.5vw,46px);line-height:1.14;letter-spacing:-.03em;font-weight:450;color:var(--ink-2);max-width:24ch;text-wrap:balance}
+.say{font-size:clamp(27px,3.5vw,46px);line-height:1.14;letter-spacing:-.03em;font-weight:450;color:var(--ink-2);max-width:30ch;text-wrap:balance}
 .say b{font-weight:740;color:var(--ink);white-space:nowrap}
 .say-sub{display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-5);margin-top:var(--sp-4);color:var(--ink-2);font-size:var(--fs-md);align-items:center}
-.say-sub span{display:inline-flex;align-items:center;gap:6px}
+.say-sub>span{display:inline-flex;align-items:flex-start;gap:6px}
+.say-sub>span>.ic{margin-top:3px}
 .flowband{margin:var(--sp-6) 0 var(--sp-8);padding:var(--sp-5) 0 var(--sp-2);border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
 .flowband .cap{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);margin-bottom:var(--sp-4);color:var(--ink-3);font-size:var(--fs-sm)}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
@@ -436,7 +437,8 @@ button.li:hover .t{text-decoration:underline;text-underline-offset:3px}
 .file .fi{width:40px;height:48px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center;font-size:10px;font-weight:var(--fw-bold);color:var(--ink-2)}
 @media (max-width:860px){.file{grid-template-columns:auto minmax(0,1fr)}.file>.chip{grid-column:2;justify-self:start}.file b.trunc{white-space:normal;word-break:break-all}}
 .pw{grid-column:2/-1;display:flex;gap:var(--sp-2);flex-wrap:wrap;align-items:center}
-.pw .input{flex:1 1 160px;width:auto}
+.pw{min-width:0}
+.pw .input{flex:1 1 140px;width:auto;min-width:0}
 .rev{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--sp-3);padding:var(--sp-4) var(--sp-5);align-items:center}
 .rev .from{font-size:var(--fs-xs);color:var(--ink-3);display:flex;gap:6px;align-items:center;min-width:0}
 .rev .acts{display:flex;gap:4px}
@@ -516,7 +518,7 @@ button.li:hover .t{text-decoration:underline;text-underline-offset:3px}
 /* ---------- settings ---------- */
 .set{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-5);align-items:start}
 .set .card{display:flex;flex-direction:column;gap:var(--sp-4)}
-.set-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);min-height:var(--tap)}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);min-height:var(--tap);padding:var(--sp-2) 0}
 .copy{display:flex;gap:var(--sp-2)}
 .copy .input{font-size:var(--fs-sm)}
 .danger-card{border-color:color-mix(in srgb,var(--neg) 40%,var(--line))}
@@ -591,7 +593,44 @@ button.li:hover .t{text-decoration:underline;text-underline-offset:3px}
 .spin{animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (max-width:860px){.flow-card{padding:var(--sp-5);border-radius:var(--r-lg)}.flow-card h1{font-size:var(--fs-2xl)}}
-@media (max-width:860px){.tbtn{min-height:var(--tap)}}
+.ov-head{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-2)}
+.ov-tabs{flex:1 1 auto;min-width:0}
+.ov-ctrls{display:flex;gap:var(--sp-2);align-items:center;flex:none}
+.ov-say{flex:1 1 100%;margin-top:var(--sp-4)}
+.ov-edit{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:flex-end;margin:var(--sp-4) 0}
+.dash>.flowband{grid-column:1/-1;margin:var(--sp-2) 0}
+.w>.body{container-type:inline-size;justify-content:flex-start}
+.w.s1>.body{justify-content:center}
+.w .card-h h3{font-size:var(--fs-lg)}
+.w-tools{cursor:grab}
+.pie{display:flex;gap:var(--sp-5);align-items:center}
+.pie-d{width:208px;flex:none}
+.pie-l{flex:1;min-width:0}
+.pie path{transition:opacity var(--dur)}
+.pie .dim{opacity:.3}
+.pie .pl.dim{opacity:.6}
+.pl{display:grid;grid-template-columns:12px minmax(0,1fr) auto 40px 66px;gap:8px;align-items:center;width:100%;min-height:36px;padding:0 6px;border-radius:var(--r-xs);font-size:var(--fs-sm);text-align:right}
+.pl>span:nth-child(2){text-align:left}
+.pl.head{min-height:24px;font-size:var(--fs-xs);color:var(--ink-3)}
+button.pl:hover,button.pl[aria-pressed=true]{background:var(--surface-2)}
+@container (max-width:520px){.calwrap{grid-template-columns:1fr}.cal{max-width:420px}.pie{flex-direction:column;align-items:stretch}.pie-d{align-self:center}}
+.secs{display:flex;gap:6px;overflow-x:auto;margin:0 calc(-1*var(--sp-4)) var(--sp-3);padding:2px var(--sp-4);scrollbar-width:none}
+.secs::-webkit-scrollbar,.ov-tabs::-webkit-scrollbar{display:none}
+.secs button{flex:none;min-height:var(--tap);padding:0 14px;border-radius:var(--r-pill);border:1px solid var(--line-field);font-size:var(--fs-sm);font-weight:var(--fw-medium);color:var(--ink-2);background:var(--surface)}
+.secs button[aria-selected=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);padding:var(--sp-3) 0}
+.mrow-b{display:flex;gap:4px;margin-left:auto}
+.mrow-b .iconbtn{border:1px solid var(--line)}
+.flip{transform:rotate(180deg)}
+.story-ov{width:min(600px,100%);background:var(--surface);border-radius:var(--r-xl);padding:var(--sp-4);box-shadow:var(--sh-3);max-height:96vh;overflow:auto}
+.story-ov .story{max-height:calc(100vh - 210px)}
+@media (max-width:860px){.tbtn{min-height:var(--tap)}
+  .ov-tabs{flex:1 1 100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 calc(-1*var(--sp-4));padding:2px var(--sp-4)}
+  .ov-tabs .tab{flex:none;min-height:var(--tap)}
+  .ov-say{order:2;margin-top:0}.ov-ctrls{order:3;width:100%;justify-content:space-between}
+  .cal{gap:3px;margin:0 -8px}.pl{min-height:var(--tap)}.flow-top .logo,.logo{min-height:var(--tap)}
+  .flowband{margin:var(--sp-4) 0 var(--sp-5)}
+  .story-ov{padding:var(--sp-3)}.story-ov .story{max-height:calc(100vh - 200px)}}
 </style>
 </head>
 <body>
@@ -610,7 +649,7 @@ const S={
   txq:'', txf:{type:'all',cat:'all',cur:'all',src:'all',month:'all'}, txLimit:40,
   overlay:null, menu:false, toast:null,
   impTab:qs.get('tab')||'files', impStage:Number(qs.get('stage')||0), pwOk:false,
-  dash:0, edit:qs.get('edit')==='1', asks:[], aiLeft:17, story:Number(qs.get('card')||0), insOff:{},
+  dash:0, edit:qs.get('edit')==='1', asks:[], story:Number(qs.get('card')||0), insOff:{},
   ob:{cur:'SGD',lang:'en'}, scan:0, txEmpty:[], invites:37
 };
 const T=(en,zh)=>S.lang==='zh'?zh:en;
@@ -852,13 +891,13 @@ function lineChart(pts,w,h,col='var(--s1)'){
   const n=pts.length-1;s+=`<circle cx="${X(n)}" cy="${Y(vals[n])}" r="5" style="fill:${col};stroke:var(--surface)" stroke-width="2"/><text x="${X(n)+9}" y="${Y(vals[n])+4}" class="lab num">${ftd(vals[n],{compact:1})}</text>`;
   return s+`<line class="xh" y1="${pt}" y2="${h-pb}"/></svg>`}
 /* donut: at most five parts plus Other, gaps not strokes */
-function donut(items,size=168){
+function donut(items,size=168,centre,hi){
   const tot=items.reduce((a,p)=>a+p.v,0)||1,r=size/2-4,ri=r*.64,c=size/2;let a0=-Math.PI/2,s=svgO(size,size,items.map(p=>p.label).join(', '),`style="max-width:${size}px"`);
   const P=(rad,a)=>`${(c+rad*Math.cos(a)).toFixed(2)} ${(c+rad*Math.sin(a)).toFixed(2)}`;
   items.forEach(p=>{const a1=a0+p.v/tot*Math.PI*2,g=items.length>1?.018:0,x0=a0+g,x1=Math.max(a1-g,x0+.001),big=x1-x0>Math.PI?1:0;
     if(p.v/tot>=.9999)s+=`<circle cx="${c}" cy="${c}" r="${(r+ri)/2}" fill="none" style="stroke:${p.col}" stroke-width="${r-ri}"/>`;
-    else s+=`<path d="M${P(r,x0)}A${r} ${r} 0 ${big} 1 ${P(r,x1)}L${P(ri,x1)}A${ri} ${ri} 0 ${big} 0 ${P(ri,x0)}Z" style="fill:${p.col}" ${tipA(ft(p.v)+', '+Math.round(p.v/tot*100)+'%',p.label)}/>`;a0=a1});
-  return s+`<text x="${c}" y="${c-2}" text-anchor="middle" class="lab num" style="font-size:17px;font-weight:680">${ft(tot,{compact:1})}</text><text x="${c}" y="${c+15}" text-anchor="middle">${T('total','合計')}</text></svg>`}
+    else s+=`<path d="M${P(r,x0)}A${r} ${r} 0 ${big} 1 ${P(r,x1)}L${P(ri,x1)}A${ri} ${ri} 0 ${big} 0 ${P(ri,x0)}Z" style="fill:${p.col}" ${p.k?`data-hl="${p.k}" data-act="hicat" data-arg="${p.k}" class="${hi&&hi!==p.k?'dim':''}"`:''} ${tipA(ft(p.v)+', '+Math.round(p.v/tot*100)+'%',p.label)}/>`;a0=a1});
+  return s+`<text x="${c}" y="${c-2}" text-anchor="middle" class="lab num" style="font-size:${size>190?22:17}px;font-weight:680">${centre?centre[0]:ft(tot,{compact:1})}</text><text x="${c}" y="${c+(size>190?19:15)}" text-anchor="middle">${centre?esc(centre[1]):T('total','合計')}</text></svg>`}
 /* small: one outlier among usual amounts */
 function dotStrip(vals,hiV,w){const mx=Math.max(...vals,hiV)*1.05,h=54,X=v=>8+v/mx*(w-16);vals=vals.slice().sort((a,b)=>a-b);const med=vals[Math.floor(vals.length/2)];
   let s=svgO(w,h,T('Each dot is one dining bill; the highlighted one is far above the rest','每個點代表一筆餐飲消費，標示的那筆遠高於其他'))+`<line class="axisl" x1="8" x2="${w-8}" y1="30" y2="30"/>`;
@@ -876,7 +915,7 @@ const legend=items=>`<div class="legend">${items.map(([c,l,ln])=>`<span><i class
 function withTable(id,chart,head,rows){const on=S.tables[id];return{btn:`<button class="tbtn" data-act="table" data-arg="${id}" aria-pressed="${!!on}">${I(on?'bar':'table','sm')}${on?T('Chart','圖表'):T('Table','表格')}</button>`,
   body:on?`<div class="tblwrap"><table class="tbl"><thead><tr>${head.map((x,i)=>`<th class="${i?'r':''}">${x}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map((x,i)=>`<td class="${i?'r num':''}">${x}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:chart}}
 /* ============ shell ============ */
-const NAV=()=>[['overview','home',T('Overview','總覽')],['insights','spark',T('Insights','洞察')],['transactions','list',T('Transactions','交易')],['import','upload',T('Import','匯入')],['recurring','repeat',T('Recurring','定期扣款')],['dashboards','grid',T('Dashboards','儀表板')],['ask','chat',T('Ask your money','問問你的錢')],['review','story',T('Month in review','月度回顧')],['settings','gear',T('Settings','設定')]];
+const NAV=()=>[['overview','home',T('Overview','總覽')],['insights','spark',T('Insights','洞察')],['transactions','list',T('Transactions','交易')],['import','upload',T('Import','匯入')],['recurring','repeat',T('Recurring','定期扣款')],['ask','chat',T('Ask your money','問問你的錢')],['review','story',T('Month in review','月度回顧')],['settings','gear',T('Settings','設定')]];
 const route=()=>(location.hash.replace(/^#\/?/,'')||'landing').split('?')[0];
 const go=r=>{location.hash='#/'+r};
 function controls(){return`
@@ -888,7 +927,7 @@ function protoMenu(){if(!S.menu)return'';const b=(act,arg,l)=>`<button data-act=
   <div class="nav-sep">${T('Before the app','進入應用程式之前')}</div>
   ${b('goto','landing',T('Landing page','首頁'))}${b('goto','invite',T('Invite accepted','接受邀請'))}${b('goto','signin',T('Google sign-in','Google 登入'))}${b('goto','onboard',T('Currency and language','幣別與語言'))}${b('goto','gmail',T('Gmail access explained','Gmail 存取說明'))}${b('goto','scan',T('First scan','首次掃描'))}${b('goto','full',T('All 100 places taken','100 個名額已滿'))}
   <div class="nav-sep">${T('States','狀態')}</div>
-  ${b('toggle','empty',(S.empty?'✓ ':'')+T('Brand-new account, no data','全新帳戶（無資料）'))}${b('toggle','aiOut',(S.aiOut?'✓ ':'')+T('Free AI allowance used up','免費 AI 額度用完'))}${b('toggle','gmail',(!S.gmail?'✓ ':'')+T('Gmail not connected','尚未連結 Gmail'))}
+  ${b('firstday','',T('The 1st of the month: review opens by itself','每月 1 日：回顧自動開啟'))}${b('toggle','empty',(S.empty?'✓ ':'')+T('Brand-new account, no data','全新帳戶（無資料）'))}${b('toggle','aiOut',(S.aiOut?'✓ ':'')+T('Free AI allowance used up','免費 AI 額度用完'))}${b('toggle','gmail',(!S.gmail?'✓ ':'')+T('Gmail not connected','尚未連結 Gmail'))}
   </div>`}
 function shell(r){const nav=NAV(),cur=nav.find(n=>n[0]===r)||nav[0],nIns=insightsList().length,nRev=S.gmail&&!S.empty?S.review.length:0;
   const cnt=k=>k==='insights'&&nIns?`<span class="count">${nIns}</span>`:k==='import'&&nRev?`<span class="count">${nRev}</span>`:'';
@@ -948,44 +987,6 @@ function calendar(m){
 function dayDetail(){const k=S.day,tx=exps(TX().filter(t=>t.d===k));
   return`<div><div class="row between"><b>${fd(k,1)}</b><span class="a">${mh(sum(tx))}</span></div>
   ${tx.length?`<div class="divide" style="margin-top:4px">${tx.slice(0,5).map(t=>`<button class="li" data-act="txedit" data-arg="${t.id}">${av(t,1)}<span class="grow"><span class="t trunc" style="display:block">${t.m}</span><span class="s">${cn(t.c,1)}</span></span><span class="a">${mh(t.sgd)}</span></button>`).join('')}</div>${tx.length>5?`<p class="xs muted">${T(`and ${tx.length-5} more`,`還有 ${tx.length-5} 筆`)}</p>`:''}`:`<p class="small muted" style="padding:16px 0">${T('Nothing spent this day.','這天沒有支出。')}</p>`}</div>`}
-function overviewPage(){
-  if(S.empty&&!TX().length)return emptyOverview();
-  const m=S.month,s=monthStats(m),pm=prevM(m),isCur=m===CURM,hasPrev=MONTHS.includes(pm),ps=monthStats(pm),mi=MONTHS.indexOf(m);
-  if(!S.day||!S.day.startsWith(m)){const by={};exps(s.tx).forEach(t=>{if(t.c!=='housing')by[t.d]=(by[t.d]||0)+t.sgd});S.day=isCur?TODAY:(Object.entries(by).sort((a,b)=>b[1]-a[1])[0]||[m+'-01'])[0]}
-  const say=S.lang==='zh'
-    ?`${mWord(m)}${isCur?'到目前為止':''}，收入 <b>${m0(s.In)}</b>，支出 <b>${m0(s.E)}</b>，${s.net>=0?`還留下 <b>${kh(s.In,s.E)}</b>。`:`比收入多花了 <b>${kh(s.In,s.E)}</b>。`}`
-    :`${isCur?'So far in':'In'} ${mWord(m)}, <b>${m0(s.In)}</b> came in and <b>${m0(s.E)}</b> went out. ${s.net>=0?`<b>${kh(s.In,s.E)}</b> is still yours.`:`That is <b>${kh(s.In,s.E)}</b> more than came in.`}`;
-  let sub='';
-  if(hasPrev){const day=isCur?Number(TODAY.slice(8)):31,a=isCur?toDay(m,day):s.E,b=isCur?toDay(pm,day):ps.E,df=a-b;
-    sub+=`<span>${I(df>0?'up':'check','sm')}${isCur?T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than by ${day} ${mWord(pm)}`,`比 ${mWord(pm)}${day} 日同期${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`):T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than in ${mWord(pm)}`,`比 ${mWord(pm)}${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`)}</span>`}
-  if(isCur)sub+=`<span>${I('line','sm')}${T(`On course for about ${mh(forecast().total,{dec:0})} by 31 October`,`照這個步調，到 10 月 31 日約 ${mh(forecast().total,{dec:0})}`)}</span>`;
-  const cats=group(exps(s.tx),t=>t.c),pcats=group(exps(ps.tx),t=>t.c),cmax=cats.length?cats[0].v:1;
-  const mer=group(exps(s.tx),t=>t.m).slice(0,6),mmax=mer.length?mer[0].v:1;
-  const ren=recurring().filter(r=>r.inDays<=30),ins=insightsList().slice(0,3);
-  const sw=mob()?vw()-32:Math.min(vw()-248,1240)-64;
-  const flowT=withTable('flow',sankey(m,sw),[T('Category','類別'),T('Amount','金額'),T('Share of money in','占收入比例')],[...cats.map(c=>[cn(c.k),ft(c.v),Math.round(c.v/Math.max(s.In,s.E)*100)+'%']),...(s.net>0?[[T('Kept','留下來'),ft(s.net),Math.round(s.net/s.In*100)+'%']]:[])]);
-  const ieT=withTable('ie',incExpChart(m,cw(6),230),[T('Month','月份'),T('Income','收入'),T('Expenses','支出'),T('Kept','留下來')],MONTHS.map(x=>{const q=monthStats(x);return[mName(x),ft(q.In),ft(q.E),ft(q.net)]}));
-  const stT=withTable('st',stackChart(m,cw(6),230),[T('Month','月份'),...EXPCATS.map(k=>cn(k,1))],MONTHS.map(x=>{const g=group(exps(inM(TX(),x)),t=>t.c);return[mName(x,1),...EXPCATS.map(k=>ft((g.find(y=>y.k===k)||{v:0}).v,{dec:0}))]}));
-  const scale=[0,1,2,3,4,5].map(i=>`<i style="background:var(--seq-${i})"></i>`).join('');
-  return`<div class="page-h" style="align-items:flex-start"><div style="flex:1 1 420px;min-width:0"><p class="say">${say}</p><div class="say-sub">${sub}</div></div>
-    <div class="monthnav" style="flex:none"><button class="iconbtn" data-act="month" data-arg="-1" ${mi<=0?'disabled':''} aria-label="${T('Previous month','上個月')}">${I('left')}</button><b aria-live="polite">${mName(m)}</b><button class="iconbtn" data-act="month" data-arg="1" ${mi>=MONTHS.length-1?'disabled':''} aria-label="${T('Next month','下個月')}">${I('right')}</button></div></div>
-  <section class="flowband" aria-label="${T('Money flow','金流圖')}"><div class="cap"><span>${T('Money flow: each band is as thick as its amount. Hover or tap a band for the figure.','金流圖：色帶越寬，金額越大。滑過或點一下色帶可看金額。')}</span>${flowT.btn}</div>${flowT.body}</section>
-  <div class="grid">
-    <section class="card c7"><div class="card-h"><div><h3>${T('Spending pace','支出步調')}</h3><div class="sub">${T('Running total through the month','當月累計支出')}</div></div></div>
-      ${paceChart(m,cw(7),230)}<div style="margin-top:10px">${legend([['var(--s1)',mName(m,1),1],['var(--s-other)',hasPrev?mName(pm,1):'',1]].filter(x=>x[1]))}</div></section>
-    <section class="card c5"><div class="card-h"><div><h3>${T('Worth a look','值得看一眼')}</h3><div class="sub">${ins.length?T('Noticed in your October transactions','從 10 月的交易中發現'):T('Nothing new right now','目前沒有新發現')}</div></div><a class="btn quiet sm" href="#/insights">${T('All insights','全部洞察')}</a></div>
-      <div class="divide">${ins.map(i=>`<a class="li" href="#/insights" style="text-decoration:none;color:inherit"><span class="ins-ic" style="--insc:${i.col};width:38px;height:38px;border-radius:12px;flex:none">${I(i.icon)}</span><span class="grow"><span class="s">${i.tag}</span><span class="t" style="display:block">${i.title}</span></span>${I('right','sm')}</a>`).join('')}</div></section>
-    <section class="card c7"><div class="card-h"><div><h3>${T('Spending by day','每日支出')}</h3><div class="sub">${T('Stronger colour means more spent. Pick a day to see what was bought.','顏色越濃代表花越多，點一天看當天買了什麼。')}</div></div></div>
-      <div class="calwrap"><div>${calendar(m)}<div class="scale" style="margin-top:12px"><span>${ft(0,{dec:0})}</span>${scale}<span>${ft(500,{dec:0})}+</span></div></div>${dayDetail()}</div></section>
-    <section class="card c5"><div class="card-h"><div><h3>${T('By category','各類別')}</h3><div class="sub">${hasPrev?T(`Change is against ${isCur?'all of ':''}${mWord(pm)}`,`增減是與${mWord(pm)}${isCur?'整月':''}相比`):mName(m)}</div></div></div>
-      ${cats.map(c=>{const p=(pcats.find(x=>x.k===c.k)||{v:0}).v,d=c.v-p;return`<button class="bar-row" style="width:100%" data-act="txcat" data-arg="${c.k}"><span class="row" style="gap:8px"><i class="dot" style="background:${cc(c.k)}"></i><span class="t trunc">${cn(c.k)}</span></span><span class="num" style="text-align:right;white-space:nowrap">${mh(c.v,{dec:0})}${hasPrev?` <span class="xs muted">${d>=0?'+':'−'}${fmtv(Math.abs(D(d)),S.cur,{dec:0}).replace(CUR[S.cur].s,'')}</span>`:''}</span><span class="track"><i style="width:${c.v/cmax*100}%;background:${cc(c.k)}"></i></span></button>`}).join('')}</section>
-    <section class="card c6"><div class="card-h"><div><h3>${T('Income against expenses','收入與支出')}</h3><div class="sub">${T('Last six months','近六個月')}</div></div>${ieT.btn}</div>${ieT.body}${S.tables.ie?'':`<div style="margin-top:10px">${legend([['var(--s1)',T('Income','收入')],['var(--s2)',T('Expenses','支出')]])}</div>`}</section>
-    <section class="card c6"><div class="card-h"><div><h3>${T('Spending per month','每月支出')}</h3><div class="sub">${T('Split by category','依類別區分')}</div></div>${stT.btn}</div>${stT.body}${S.tables.st?'':`<div style="margin-top:10px">${legend(EXPCATS.map(k=>[cc(k),cn(k,1)]))}</div>`}</section>
-    <section class="card c6"><div class="card-h"><div><h3>${T('Top merchants','消費最多的商家')}</h3><div class="sub">${mName(m)}</div></div></div>
-      <div class="divide">${mer.map(g=>{const t=s.tx.find(x=>x.m===g.k);return`<button class="li" data-act="txmer" data-arg="${esc(g.k)}">${av(t)}<span class="grow"><span class="t trunc" style="display:block">${esc(g.k)}</span><span class="track" style="display:block;height:6px;border-radius:6px;background:var(--surface-2);margin-top:6px"><i style="display:block;height:100%;border-radius:6px;width:${g.v/mmax*100}%;background:var(--s2)"></i></span></span><span class="a">${mh(g.v)}<small>${T(`${g.n} ${g.n>1?'payments':'payment'}`,`${g.n} 筆`)}</small></span></button>`}).join('')}</div></section>
-    <section class="card c6"><div class="card-h"><div><h3>${T('Coming up','即將扣款')}</h3><div class="sub">${T(`${ren.length} renewals in the next 30 days, ${mh(sum(ren),{dec:0})} in all`,`未來 30 天有 ${ren.length} 筆續訂，共 ${mh(sum(ren),{dec:0})}`)}</div></div><a class="btn quiet sm" href="#/recurring">${T('See all','查看全部')}</a></div>
-      <div class="divide">${ren.slice(0,6).map(r=>`<div class="li">${av(r)}<div class="grow"><div class="t trunc">${r.m}</div><div class="s">${fd(r.next,1)}, ${r.inDays===1?T('tomorrow','明天'):T(`in ${r.inDays} days`,`${r.inDays} 天後`)}</div></div><div class="a">${mh(r.sgd)}${r.change>0?`<small class="neg">${T('up','漲')} ${fmtv(D(r.change),S.cur)}</small>`:''}</div></div>`).join('')}</div></section>
-  </div>`}
 function emptyOverview(){return`<div class="empty" style="padding-top:var(--sp-8)"><h2>${T('Welcome, Kai. Your dashboard is one import away.','歡迎，Kai。匯入一次，儀表板就會出現。')}</h2><p>${T('Pick whichever is easiest. You can use all three, and Finance Tracker skips anything it has already seen.','選一個最方便的方式開始。三種可以一起用，重複的資料會自動略過。')}</p>
   <div class="starts">
     <button class="start" data-act="goto" data-arg="gmail">${I('mail','lg')}<b>${T('Scan Gmail for receipts','掃描 Gmail 收據')}</b><span class="ink2">${T('Read-only. Finds purchases, invoices and renewal notices from the last 12 months. About two minutes.','唯讀。找出過去 12 個月的消費、發票與續訂通知，大約兩分鐘。')}</span></button>
@@ -1087,21 +1088,39 @@ function recurringPage(){
   <section class="card c4"><div class="eyebrow">${T('Each month','每月')}</div><div class="bignum" style="margin-top:6px">${mh(mo)}</div><div class="sub">${T(`${rec.length} recurring charges, rent included`,`${rec.length} 筆定期扣款（含房租）`)}</div></section>
   <section class="card c4"><div class="eyebrow">${T('Over a year','一年合計')}</div><div class="bignum" style="margin-top:6px">${mh(mo*12,{dec:0})}</div><div class="sub">${T('At current prices','以目前價格計算')}</div></section>
   <section class="card c12"><div class="card-h"><div><h3>${T('The next 30 days','未來 30 天')}</h3><div class="sub">${T('One square per charge, on the day it is due','每個方塊代表一筆扣款，落在到期日')}</div></div></div>
-    <div class="strip" role="img" aria-label="${T('Timeline of charges due in the next 30 days','未來 30 天扣款時間軸')}">${days.map(d=>{const due=soon.filter(r=>r.next===d),day=dt(d).getDate();return`<div>${due.map(r=>`<i style="background:${cc(r.c)}" ${tipA(ft(r.sgd),r.m+', '+fd(d,1))}></i>`).join('')}<span class="${day===1?'wk':''}">${day===1||dt(d).getDay()===1?(day===1?mName(d.slice(0,7),1):day):''}</span></div>`}).join('')}</div></section>
+    <div class="strip" role="img" aria-label="${T('Timeline of charges due in the next 30 days','未來 30 天扣款時間軸')}">${days.map(d=>{const due=soon.filter(r=>r.next===d),day=dt(d).getDate();return`<div>${due.map(r=>`<i style="background:${cc(r.c)}" ${tipA(ft(r.sgd),r.m+', '+fd(d,1))}></i>`).join('')}<span class="${day===1?'wk':''}">${day===1?mName(d.slice(0,7),1):dt(d).getDay()===1&&day>3?day:''}</span></div>`}).join('')}</div></section>
   <section class="card c12" style="padding:0"><div class="divide">${rec.map(r=>`<div class="rev">${av(r)}<div style="min-width:0"><b class="trunc" style="display:block">${r.m}</b><div class="small ink2">${T(`Monthly on day ${r.day}`,`每月 ${r.day} 日`)}${r.vary?T(', amount varies','，金額不固定'):''}</div>
       <div class="row wrap" style="gap:6px;margin-top:6px"><span class="chip"><i class="dot" style="background:${cc(r.c)};width:8px;height:8px;border-radius:50%"></i>${cn(r.c,1)}</span>${r.isNew?`<span class="chip teal">${T(`New in ${mWord(r.from)}`,`${mWord(r.from)}新增`)}</span>`:''}${r.change>0?`<span class="chip warm">${I('up','sm')}${T(`Up ${fmtv(D(r.change),S.cur)} since ${mWord(r.prev.d.slice(0,7))}`,`比 ${mWord(r.prev.d.slice(0,7))}漲 ${fmtv(D(r.change),S.cur)}`)}</span>`:''}</div></div>
     <div class="right"><div class="amount">${mh(r.sgd)}${r.cur!==S.cur?`<div class="xs muted" style="font-weight:400"><span class="amt num">${fmtv(r.last.a,r.cur)}</span></div>`:''}</div><div class="small" style="text-align:right;min-width:120px"><b>${fd(r.next,1)}</b><div class="muted">${r.inDays===1?T('tomorrow','明天'):T(`in ${r.inDays} days`,`${r.inDays} 天後`)}</div></div></div></div>`).join('')}</div></section></div>`}
 
-/* ============ custom dashboards ============ */
-S.dashes=[{name:T('Everyday','日常'),w:[
-  {type:'number',measure:'spending',group:'category',period:'m0',size:1},{type:'number',measure:'net',group:'category',period:'m0',size:1},{type:'donut',measure:'spending',group:'category',period:'m0',size:2},
-  {type:'line',measure:'spending',group:'month',period:'m6',size:2},{type:'bar',measure:'spending',group:'currency',period:'m3',size:2},{type:'table',measure:'spending',group:'merchant',period:'m0',size:2},{type:'bar',measure:'net',group:'month',period:'m6',size:2}]},
-  {name:T('Income','收入'),w:[{type:'number',measure:'income',group:'category',period:'m6',size:1},{type:'bar',measure:'income',group:'merchant',period:'m6',size:3},{type:'bar',measure:'income',group:'month',period:'m6',size:4}]}];
+/* The overview is the user's dashboard: a list of widgets (ready-made ones and charts they configure), per tab. */
+const DEFAULT_W=()=>[{k:'flow',size:4},{k:'pace',size:2},{k:'insights',size:2},{k:'catpie',size:2},{k:'calendar',size:2},{k:'incexp',size:2},{k:'stack',size:2},{k:'merchants',size:2},{k:'renewals',size:2}];
+S.dashes=[{name:null,w:DEFAULT_W()},{name:T('Travel','旅遊'),w:[
+  {k:'chart',type:'number',measure:'spending',group:'category',period:'m6',size:1,f:{cat:'travel'},title:T('Travel spending','旅遊支出')},
+  {k:'chart',type:'number',measure:'spending',group:'category',period:'m6',size:1,f:{cur:'JPY'},title:T('Paid in yen','以日圓支付')},
+  {k:'chart',type:'bar',measure:'spending',group:'currency',period:'m6',size:2},
+  {k:'chart',type:'line',measure:'spending',group:'month',period:'m6',size:2,f:{cat:'travel'},title:T('Travel by month','每月旅遊支出')},
+  {k:'chart',type:'donut',measure:'spending',group:'category',period:'m6',size:2,f:{cur:'JPY'},title:T('What the yen went on','日圓花在哪裡')}]}];
+S.sec=0;S.hiCat=null;
+const dashName=i=>i===0?T('Overview','總覽'):S.dashes[i].name;
+const BUILT={
+  flow:{name:()=>T('Money flow','金流圖'),short:()=>T('Flow','金流')},
+  pace:{name:()=>T('Spending pace','支出步調'),short:()=>T('Pace','步調')},
+  insights:{name:()=>T('Worth a look','值得看一眼'),short:()=>T('Insights','洞察')},
+  catpie:{name:()=>T('Spending by category','各類別支出'),short:()=>T('Categories','類別')},
+  calendar:{name:()=>T('Spending by day','每日支出'),short:()=>T('Calendar','日曆')},
+  incexp:{name:()=>T('Income against expenses','收入與支出'),short:()=>T('Income','收支')},
+  stack:{name:()=>T('Spending per month','每月支出'),short:()=>T('Months','各月')},
+  merchants:{name:()=>T('Top merchants','消費最多的商家'),short:()=>T('Merchants','商家')},
+  renewals:{name:()=>T('Coming up','即將扣款'),short:()=>T('Coming up','即將扣款')}};
 const W_M=()=>({spending:T('Spending','支出'),income:T('Income','收入'),net:T('Net','淨額')}),W_G=()=>({category:T('category','類別'),merchant:T('merchant','商家'),month:T('month','月份'),currency:T('currency','幣別')}),
-  W_P=()=>({m0:T('This month','本月'),m1:T('Last month','上個月'),m3:T('Last 3 months','近 3 個月'),m6:T('Last 6 months','近 6 個月')}),W_T=()=>({bar:T('Bar','長條'),line:T('Line','折線'),donut:T('Donut','環圈'),number:T('Number','數字'),table:T('Table','表格')});
-const wTitle=c=>c.title||(c.type==='number'?W_M()[c.measure]:T(`${W_M()[c.measure]} by ${W_G()[c.group]}`,`各${W_G()[c.group]}${W_M()[c.measure]}`));
-const pMonths=p=>p==='m0'?[CURM]:p==='m1'?[prevM(CURM)]:MONTHS.slice(p==='m3'?-3:-6);
-function wData(c,months=pMonths(c.period)){
+  W_P=()=>({m0:T('The month shown','目前顯示的月份'),m1:T('The month before','前一個月'),m3:T('3 months up to it','截至該月的 3 個月'),m6:T('6 months up to it','截至該月的 6 個月')}),W_T=()=>({bar:T('Bar','長條'),line:T('Line','折線'),donut:T('Donut','環圈'),number:T('Number','數字'),table:T('Table','表格')});
+const wTitle=c=>c.k!=='chart'?BUILT[c.k].name():c.title||(c.type==='number'?W_M()[c.measure]:T(`${W_M()[c.measure]} by ${W_G()[c.group]}`,`各${W_G()[c.group]}${W_M()[c.measure]}`));
+const wShort=c=>c.k!=='chart'?BUILT[c.k].short():wTitle(c);
+/* periods are relative to the month the stepper shows; a pinned Ask answer keeps the months it was asked about */
+const pMonths=c=>{if(c.months)return c.months;const i=MONTHS.indexOf(S.month),p=c.period;return p==='m0'?[S.month]:p==='m1'?[prevM(S.month)]:MONTHS.slice(Math.max(0,i+1-(p==='m3'?3:6)),i+1)};
+const pLabel=c=>{const ms=pMonths(c);return ms.length===1?mName(ms[0]):T(`${mName(ms[0],1)} to ${mName(ms[ms.length-1],1)}`,`${mName(ms[0],1)}至${mName(ms[ms.length-1],1)}`)};
+function wData(c,months=pMonths(c)){
   let tx=TX().filter(t=>months.includes(t.d.slice(0,7)));const f=c.f||{};
   if(f.cat)tx=tx.filter(t=>t.c===f.cat);if(f.cur)tx=tx.filter(t=>t.cur===f.cur);if(f.m)tx=tx.filter(t=>t.m===f.m);
   if(c.measure==='spending')tx=exps(tx);else if(c.measure==='income')tx=incs(tx);
@@ -1114,29 +1133,85 @@ function wData(c,months=pMonths(c.period)){
   return{rows,total:rows.reduce((a,r)=>a+r.v,0),base}}
 function wBody(c,w){const d=wData(c);
   if(!d.rows.length||d.rows.every(r=>!r.v))return`<p class="small muted">${T('No transactions in this period.','這段期間沒有交易。')}</p>`;
-  if(c.type==='number'){let cmp='';if(c.period==='m0'||c.period==='m1'){const pm=prevM(pMonths(c.period)[0]);let pv=wData(c,[pm]).total;if(c.period==='m0'&&c.measure==='spending'&&!c.f)pv=toDay(pm,Number(TODAY.slice(8)));if(MONTHS.includes(pm)){const df=d.total-pv;cmp=`<div class="sub">${df>=0?'+':'−'}${mh(Math.abs(df),{dec:0})} ${c.period==='m0'?T(`against the same point in ${mWord(pm)}`,`（與${mWord(pm)}同期相比）`):T(`against ${mWord(pm)}`,`（與${mWord(pm)}相比）`)}</div>`}}
-    const big=c.measure==="net"&&!c.f?`<span class="amt num">${fmtv(keptD(wData({...c,measure:"income"}).total,wData({...c,measure:"spending"}).total),S.cur,{dec:0})}</span>`:mh(d.total,{dec:0});return`<div class="bignum">${big}</div>${cmp}`}
-  if(c.type==='line'||(c.type==='bar'&&c.group==='month')){const cc2={...c,group:'month'},dd=wData(cc2);return c.type==='line'?lineChart(dd.rows,w,190,dd.base):colChart(dd.rows,w,190,dd.base)}
-  if(c.type==='donut'){const top=d.rows.filter(r=>r.v>0).slice(0,5),rest=d.rows.filter(r=>r.v>0).slice(5).reduce((a,r)=>a+r.v,0);if(c.group!=='category')top.forEach((r,i)=>r.col=`var(--s${i+1})`);if(rest>0)top.push({label:T('Other','其他'),v:rest,col:'var(--s-other)'});
-    return`<div class="row wrap" style="gap:var(--sp-5);justify-content:center"><div style="width:168px;flex:none">${donut(top)}</div><div class="grow" style="min-width:150px">${top.map(r=>`<div class="row between small" style="padding:4px 0"><span class="row" style="gap:8px;min-width:0"><i class="dot" style="background:${r.col}"></i><span class="trunc">${esc(r.label)}</span></span><span class="num">${Math.round(r.v/d.total*100)}%</span></div>`).join('')}</div></div>`}
+  if(c.type==='number'){let cmp='';const ms=pMonths(c);if(ms.length===1){const pm=prevM(ms[0]),part=ms[0]===CURM;let pv=wData(c,[pm]).total;if(part&&c.measure==='spending'&&!c.f)pv=toDay(pm,Number(TODAY.slice(8)));if(MONTHS.includes(pm)){const df=d.total-pv;cmp=`<div class="sub">${df>=0?'+':'−'}${mh(Math.abs(df),{dec:0})} ${part&&c.measure==='spending'&&!c.f?T(`against the same point in ${mWord(pm)}`,`（與${mWord(pm)}同期相比）`):T(`against ${mWord(pm)}`,`（與${mWord(pm)}相比）`)}</div>`}}
+    const big=c.measure==='net'&&!c.f?`<span class="amt num">${fmtv(keptD(wData({...c,measure:'income'}).total,wData({...c,measure:'spending'}).total),S.cur,{dec:0})}</span>`:mh(d.total,{dec:0});return`<div class="bignum">${big}</div>${cmp}`}
+  if(c.type==='line'||(c.type==='bar'&&c.group==='month')){const dd=wData({...c,group:'month'});return c.type==='line'?lineChart(dd.rows,w,190,dd.base):colChart(dd.rows,w,190,dd.base)}
+  if(c.type==='donut'){const pos=d.rows.filter(r=>r.v>0),top=pos.slice(0,5),rest=pos.slice(5).reduce((a,r)=>a+r.v,0);if(c.group!=='category')top.forEach((r,i)=>r.col=`var(--s${i+1})`);if(rest>0)top.push({label:T('Other','其他'),v:rest,col:'var(--s-other)'});const tt=top.reduce((a,r)=>a+r.v,0);
+    return`<div class="row wrap" style="gap:var(--sp-5);justify-content:center"><div style="width:168px;flex:none">${donut(top)}</div><div class="grow" style="min-width:150px">${top.map(r=>`<div class="row between small" style="padding:4px 0"><span class="row" style="gap:8px;min-width:0"><i class="dot" style="background:${r.col}"></i><span class="trunc">${esc(r.label)}</span></span><span class="num">${Math.round(r.v/tt*100)}%</span></div>`).join('')}</div></div>`}
   if(c.type==='table')return`<table class="tbl"><thead><tr><th>${W_G()[c.group].replace(/^./,x=>x.toUpperCase())}</th><th class="r">${T('Amount','金額')}</th><th class="r">${T('Share','占比')}</th></tr></thead><tbody>${d.rows.slice(0,6).map(r=>`<tr><td>${esc(r.label)}</td><td class="r num">${mh(r.v)}</td><td class="r num">${d.total?Math.round(r.v/d.total*100):0}%</td></tr>`).join('')}</tbody></table>`;
   const top=d.rows.slice(0,6),mx=Math.max(...top.map(r=>Math.abs(r.v)))||1;
   return top.map(r=>`<div class="bar-row"><span class="trunc small">${esc(r.label)}</span><span class="num small">${mh(r.v,{dec:0})}</span><span class="track"><i style="width:${Math.abs(r.v)/mx*100}%;background:${r.v<0?'var(--s2)':r.col}"></i></span></div>`).join('')}
-const wW=size=>mob()?vw()-64:(Math.min(vw()-248,1240)-64-60)/4*size+20*(size-1)-40;
-function dashboardsPage(){const d=S.dashes[S.dash],ed=S.edit;
-  const tabs=`<div class="tabs">${S.dashes.map((x,i)=>`<button class="tab" data-act="dash" data-arg="${i}" aria-pressed="${i===S.dash}">${esc(x.name)}</button>`).join('')}<button class="tab" data-act="dashnew">${I('plus','sm')}${T('New dashboard','新增儀表板')}</button></div>`;
-  const head=`<div class="page-h">${tabs}<div class="row">${ed?`<button class="btn ghost" data-act="chartnew">${I('plus')}${T('Add chart','新增圖表')}</button><button class="btn primary" data-act="edit">${T('Done','完成')}</button>`:`<button class="btn ghost" data-act="edit">${I('edit')}${T('Edit dashboard','編輯儀表板')}</button>`}</div></div>`;
-  const name=ed?`<label class="field" style="max-width:360px;margin-bottom:var(--sp-5)"><span>${T('Dashboard name','儀表板名稱')}</span><input class="input" data-on="dashname" value="${esc(d.name)}"></label><p class="hint" style="margin:-8px 0 var(--sp-5)">${T('Drag a chart by its handle to reorder, or use the arrow buttons. Drag the round corner handle to resize.','拖曳把手可以調整順序，也可以用箭頭按鈕。拖曳右下角的圓形把手可以調整大小。')}</p>`:'';
-  if(!d.w.length)return head+name+`<div class="card">${empty('grid',T('This dashboard has no charts yet','這個儀表板還沒有圖表'),T('Add a chart and choose what it measures, how it is grouped, the period and the type.','新增一張圖表，選擇要看的數值、分組方式、期間與圖表類型。'),`<button class="btn primary" data-act="chartnew">${I('plus')}${T('Add the first chart','新增第一張圖表')}</button>`)}</div>`;
-  return head+name+`<div class="dash" id="dash">${d.w.map((c,i)=>`<section class="card w s${c.size} ${ed?'edit':''}" data-i="${i}" ${ed?'draggable="true"':''}>
-    ${ed?`<div class="w-tools"><span class="iconbtn grip" title="${T('Drag to reorder','拖曳調整順序')}" aria-hidden="true">${I('grip')}</span><button class="iconbtn" data-act="wmove" data-arg="${i}:-1" ${i?'':'disabled'} aria-label="${T('Move earlier','往前移')}">${I('left')}</button><button class="iconbtn" data-act="wmove" data-arg="${i}:1" ${i<d.w.length-1?'':'disabled'} aria-label="${T('Move later','往後移')}">${I('right')}</button><button class="iconbtn" data-act="wsize" data-arg="${i}" aria-label="${T('Change width','調整寬度')}" title="${T('Change width','調整寬度')}">${I('resize')}</button><span class="grow"></span><button class="iconbtn" data-act="chartedit" data-arg="${i}" aria-label="${T('Chart settings','圖表設定')}">${I('gear')}</button></div>`:''}
-    <div class="card-h" style="margin-bottom:var(--sp-3)"><div style="min-width:0"><h3 style="font-size:var(--fs-md)">${esc(wTitle(c))}</h3><div class="sub">${W_P()[c.period]}${c.pinned?`, ${T('pinned from Ask','從提問釘選')}`:''}</div></div></div>
-    <div class="body">${wBody(c,wW(c.size))}</div>${ed?`<span class="w-size hide-m" data-size="${i}" title="${T('Drag to resize','拖曳調整大小')}" aria-hidden="true">${I('resize','sm')}</span>`:''}</section>`).join('')}
-    ${ed?`<button class="addw" style="grid-column:span 2" data-act="chartnew">${I('plus','lg')}${T('Add chart','新增圖表')}</button>`:''}</div>`}
+const contentW=()=>Math.min(vw()-248,1240)-64;
+const wW=size=>mob()?vw()-64:(contentW()-60)/4*size+20*(size-1)-40;
+/* categories as a donut: the legend carries name, amount, share and change, so colour is never the only cue */
+function catPie(m){
+  const s=monthStats(m),pm=prevM(m),hasPrev=MONTHS.includes(pm),cats=group(exps(s.tx),t=>t.c),pc=group(exps(inM(TX(),pm)),t=>t.c),sel=cats.find(c=>c.k===S.hiCat);
+  const items=cats.map(c=>({k:c.k,label:cn(c.k),v:c.v,col:cc(c.k)}));
+  const centre=sel?[ft(sel.v,{compact:1}),cn(sel.k,1)]:[ft(s.E,{compact:1}),T('spent','支出')];
+  const chg=c=>{const d=c.v-(pc.find(x=>x.k===c.k)||{v:0}).v;return(d>=0?'+':'−')+fmtv(Math.abs(D(d)),S.cur,{dec:0})};
+  const t=withTable('cat',`<div class="pie"><div class="pie-d">${donut(items,208,centre,S.hiCat)}</div><div class="pie-l" role="group" aria-label="${T('Categories','類別')}">
+    <div class="pl head" aria-hidden="true"><span></span><span>${T('Category','類別')}</span><span>${T('Amount','金額')}</span><span>${T('Share','占比')}</span>${hasPrev?`<span>${T(`vs ${mName(pm,1)}`,`較${mName(pm,1)}`)}</span>`:''}</div>
+    ${cats.map(c=>`<button class="pl ${S.hiCat&&S.hiCat!==c.k?'dim':''}" data-act="hicat" data-arg="${c.k}" data-hl="${c.k}" aria-pressed="${S.hiCat===c.k}"><i class="dot" style="background:${cc(c.k)}"></i><span class="trunc">${cn(c.k,1)}</span><span class="num">${mh(c.v,{dec:0})}</span><span class="num">${Math.round(c.v/s.E*100)}%</span>${hasPrev?`<span class="num muted"><span class="amt">${chg(c)}</span></span>`:''}</button>`).join('')}
+    ${sel?`<button class="btn quiet sm" style="margin-top:6px" data-act="txcat" data-arg="${sel.k}">${T(`See the ${cn(sel.k,1)} transactions`,`查看「${cn(sel.k,1)}」的交易`)}</button>`:''}</div></div>`,
+    [T('Category','類別'),T('Amount','金額'),T('Share','占比'),...(hasPrev?[T(`Change against ${mWord(pm)}`,`與${mWord(pm)}相比`)]:[])],cats.map(c=>[cn(c.k),ft(c.v),Math.round(c.v/s.E*100)+'%',...(hasPrev?[S.priv?'•••':chg(c)]:[])]));
+  return t}
+/* title, subtitle, optional header control and body for any widget */
+function wParts(c,w){const m=S.month,pm=prevM(m),hasPrev=MONTHS.includes(pm),isCur=m===CURM;
+  if(c.k==='chart')return{sub:pLabel(c)+(c.pinned?T(', pinned from Ask','，從提問釘選'):''),body:wBody(c,w)};
+  if(c.k==='flow'){const s=monthStats(m),cats=group(exps(s.tx),t=>t.c),t=withTable('flow',sankey(m,w),[T('Category','類別'),T('Amount','金額'),T('Share of money in','占收入比例')],[...cats.map(x=>[cn(x.k),ft(x.v),Math.round(x.v/Math.max(s.In,s.E)*100)+'%']),...(s.net>0?[[T('Kept','留下來'),ft(s.net),Math.round(s.net/s.In*100)+'%']]:[])]);
+    return{sub:T('Each band is as thick as its amount. Hover or tap a band for the figure.','色帶越寬，金額越大。滑過或點一下色帶可看金額。'),right:t.btn,body:t.body}}
+  if(c.k==='pace')return{sub:T('Running total through the month','當月累計支出'),body:paceChart(m,w,230)+`<div style="margin-top:10px">${legend([['var(--s1)',mName(m,1),1],['var(--s-other)',hasPrev?mName(pm,1):'',1]].filter(x=>x[1]))}</div>`};
+  if(c.k==='insights'){const ins=insightsList().slice(0,3);return{sub:ins.length?T('Noticed in your October transactions','從 10 月的交易中發現'):T('Nothing new right now','目前沒有新發現'),right:`<a class="btn quiet sm" href="#/insights">${T('All insights','全部洞察')}</a>`,
+    body:`<div class="divide">${ins.map(i=>`<a class="li" href="#/insights" style="text-decoration:none;color:inherit"><span class="ins-ic" style="--insc:${i.col};width:38px;height:38px;border-radius:12px;flex:none">${I(i.icon)}</span><span class="grow"><span class="s">${i.tag}</span><span class="t" style="display:block">${i.title}</span></span>${I('right','sm')}</a>`).join('')}</div>`}}
+  if(c.k==='catpie'){const t=catPie(m);return{sub:T('Tap a slice or a row to pick it out','點一下扇形或列可以單獨標示'),right:t.btn,body:t.body}}
+  if(c.k==='calendar'){const scale=[0,1,2,3,4,5].map(i=>`<i style="background:var(--seq-${i})"></i>`).join('');
+    return{sub:T('Stronger colour means more spent. Pick a day to see what was bought.','顏色越濃代表花越多，點一天看當天買了什麼。'),body:`<div class="calwrap"><div>${calendar(m)}<div class="scale" style="margin-top:12px"><span>${ft(0,{dec:0})}</span>${scale}<span>${ft(500,{dec:0})}+</span></div></div>${dayDetail()}</div>`}}
+  if(c.k==='incexp'){const t=withTable('ie',incExpChart(m,w,230),[T('Month','月份'),T('Income','收入'),T('Expenses','支出'),T('Kept','留下來')],MONTHS.map(x=>{const q=monthStats(x);return[mName(x),ft(q.In),ft(q.E),ft(q.net)]}));
+    return{sub:T('Last six months','近六個月'),right:t.btn,body:t.body+(S.tables.ie?'':`<div style="margin-top:10px">${legend([['var(--s1)',T('Income','收入')],['var(--s2)',T('Expenses','支出')]])}</div>`)}}
+  if(c.k==='stack'){const t=withTable('st',stackChart(m,w,230),[T('Month','月份'),...EXPCATS.map(k=>cn(k,1))],MONTHS.map(x=>{const g=group(exps(inM(TX(),x)),y=>y.c);return[mName(x,1),...EXPCATS.map(k=>ft((g.find(y=>y.k===k)||{v:0}).v,{dec:0}))]}));
+    return{sub:T('Split by category','依類別區分'),right:t.btn,body:t.body+(S.tables.st?'':`<div style="margin-top:10px">${legend(EXPCATS.map(k=>[cc(k),cn(k,1)]))}</div>`)}}
+  if(c.k==='merchants'){const s=monthStats(m),mer=group(exps(s.tx),t=>t.m).slice(0,6),mmax=mer.length?mer[0].v:1;
+    return{sub:mName(m),body:`<div class="divide">${mer.map(g=>{const t=s.tx.find(x=>x.m===g.k);return`<button class="li" data-act="txmer" data-arg="${esc(g.k)}">${av(t)}<span class="grow"><span class="t trunc" style="display:block">${esc(g.k)}</span><span class="track" style="display:block;height:6px;border-radius:6px;background:var(--surface-2);margin-top:6px"><i style="display:block;height:100%;border-radius:6px;width:${g.v/mmax*100}%;background:var(--s2)"></i></span></span><span class="a">${mh(g.v)}<small>${T(`${g.n} ${g.n>1?'payments':'payment'}`,`${g.n} 筆`)}</small></span></button>`}).join('')}</div>`}}
+  const ren=recurring().filter(r=>r.inDays<=30);
+  return{sub:T(`${ren.length} renewals in the next 30 days, ${mh(sum(ren),{dec:0})} in all`,`未來 30 天有 ${ren.length} 筆續訂，共 ${mh(sum(ren),{dec:0})}`),right:`<a class="btn quiet sm" href="#/recurring">${T('See all','查看全部')}</a>`,
+    body:`<div class="divide">${ren.slice(0,6).map(r=>`<div class="li">${av(r)}<div class="grow"><div class="t trunc">${r.m}</div><div class="s">${fd(r.next,1)}, ${r.inDays===1?T('tomorrow','明天'):T(`in ${r.inDays} days`,`${r.inDays} 天後`)}</div></div><div class="a">${mh(r.sgd)}${r.change>0?`<small class="neg">${T('up','漲')} ${fmtv(D(r.change),S.cur)}</small>`:''}</div></div>`).join('')}</div>`}}
+function wCard(c,i,ed,n){const flow=c.k==='flow',w=flow&&!ed?(mob()?vw()-32:contentW()):wW(c.size),p=wParts(c,w);
+  const head=`<div class="card-h" style="margin-bottom:var(--sp-3)"><div style="min-width:0"><h3>${esc(wTitle(c))}</h3><div class="sub">${p.sub}</div></div>${p.right||''}</div>`;
+  if(flow&&!ed)return`<section class="flowband s4" aria-label="${BUILT.flow.name()}"><div class="cap"><span>${T('Money flow.','金流圖。')} ${p.sub}</span>${p.right}</div>${p.body}</section>`;
+  const tools=ed?`<div class="w-tools" title="${T('Drag to reorder','拖曳調整順序')}"><button class="iconbtn" data-act="wmove" data-arg="${i}:-1" ${i?'':'disabled'} aria-label="${T('Move earlier','往前移')}">${I('left')}</button><button class="iconbtn" data-act="wmove" data-arg="${i}:1" ${i<n-1?'':'disabled'} aria-label="${T('Move later','往後移')}">${I('right')}</button><button class="iconbtn" data-act="wsize" data-arg="${i}" aria-label="${T('Change width','調整寬度')}" title="${T('Change width','調整寬度')}">${I('resize')}</button><span class="grow"></span>${c.k==='chart'?`<button class="iconbtn" data-act="chartedit" data-arg="${i}" aria-label="${T('Chart settings','圖表設定')}">${I('gear')}</button>`:''}<button class="iconbtn" data-act="wdel" data-arg="${i}" aria-label="${T('Remove','移除')} ${esc(wTitle(c))}">${I('trash')}</button></div>`:'';
+  return`<section class="card w s${c.size} ${ed?'edit':''}" data-i="${i}" ${ed?'draggable="true"':''}>${tools}${head}<div class="body">${p.body}</div>${ed?`<span class="w-size" data-size="${i}" title="${T('Drag to resize','拖曳調整大小')}" aria-hidden="true">${I('resize','sm')}</span>`:''}</section>`}
+function overviewPage(){
+  if(S.empty&&!TX().length)return emptyOverview();
+  if(S.dash>=S.dashes.length)S.dash=0;
+  const m=S.month,s=monthStats(m),pm=prevM(m),isCur=m===CURM,hasPrev=MONTHS.includes(pm),ps=monthStats(pm),mi=MONTHS.indexOf(m),d=S.dashes[S.dash],ed=S.edit,main=S.dash===0;
+  if(!S.day||!S.day.startsWith(m)){const by={};exps(s.tx).forEach(t=>{if(t.c!=='housing')by[t.d]=(by[t.d]||0)+t.sgd});S.day=isCur?TODAY:(Object.entries(by).sort((a,b)=>b[1]-a[1])[0]||[m+'-01'])[0]}
+  const say=S.lang==='zh'
+    ?`${mWord(m)}${isCur?'到目前為止':''}，收入 <b>${m0(s.In)}</b>，支出 <b>${m0(s.E)}</b>，${s.net>=0?`還留下 <b>${kh(s.In,s.E)}</b>。`:`比收入多花了 <b>${kh(s.In,s.E)}</b>。`}`
+    :`${isCur?'So far in':'In'} ${mWord(m)}, <b>${m0(s.In)}</b> came in and <b>${m0(s.E)}</b> went out. ${s.net>=0?`<b>${kh(s.In,s.E)}</b> is still yours.`:`That is <b>${kh(s.In,s.E)}</b> more than came in.`}`;
+  let sub='';
+  if(hasPrev){const day=isCur?Number(TODAY.slice(8)):31,a=isCur?toDay(m,day):s.E,b=isCur?toDay(pm,day):ps.E,df=a-b;
+    sub+=`<span>${I(df>0?'up':'check','sm')}<span>${isCur?T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than by ${day} ${mWord(pm)}`,`比 ${mWord(pm)}${day} 日同期${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`):T(`${mh(Math.abs(df),{dec:0})} ${df>0?'more':'less'} spent than in ${mWord(pm)}`,`比 ${mWord(pm)}${df>0?'多':'少'}花 ${mh(Math.abs(df),{dec:0})}`)}</span></span>`}
+  if(isCur)sub+=`<span>${I('line','sm')}<span>${T(`On course for about ${mh(forecast().total,{dec:0})} by 31 October`,`照這個步調，到 10 月 31 日約 ${mh(forecast().total,{dec:0})}`)}</span></span>`;
+  const tabs=`<div class="tabs ov-tabs" role="group" aria-label="${T('Dashboards','儀表板')}">${S.dashes.map((x,i)=>`<button class="tab" data-act="dash" data-arg="${i}" aria-pressed="${i===S.dash}">${esc(dashName(i))}</button>`).join('')}<button class="tab" data-act="dashnew" aria-label="${T('New dashboard','新增儀表板')}">${I('plus','sm')}${T('New','新增')}</button></div>`;
+  const ctrls=`<div class="ov-ctrls"><div class="monthnav"><button class="iconbtn" data-act="month" data-arg="-1" ${mi<=0?'disabled':''} aria-label="${T('Previous month','上個月')}">${I('left')}</button><b aria-live="polite">${mName(m)}</b><button class="iconbtn" data-act="month" data-arg="1" ${mi>=MONTHS.length-1?'disabled':''} aria-label="${T('Next month','下個月')}">${I('right')}</button></div>
+    ${ed?`<button class="btn primary" data-act="edit">${T('Done','完成')}</button>`:`<button class="btn ghost" data-act="edit">${I('edit')}${T('Edit','編輯')}</button>`}</div>`;
+  const sayBlock=main?`<div class="ov-say"><p class="say">${say}</p><div class="say-sub">${sub}</div></div>`:`<div class="ov-say"><p class="say" style="font-size:var(--fs-2xl)"><b>${esc(d.name)}</b></p></div>`;
+  let h=`<div class="ov-head">${tabs}${ctrls}${ed?'':sayBlock}</div>`;
+  if(ed)h+=`<div class="ov-edit">${main?'':`<label class="field" style="flex:1 1 220px;max-width:360px"><span>${T('Dashboard name','儀表板名稱')}</span><input class="input" data-on="dashname" value="${esc(d.name)}"></label>`}
+      <button class="btn ghost" data-act="chartnew">${I('plus')}${T('Add chart','新增圖表')}</button>${main?`<button class="btn ghost" data-act="resetdash">${T('Reset to default','恢復預設')}</button>`:`<button class="btn danger-ghost" data-act="deldash">${I('trash')}${T('Delete dashboard','刪除儀表板')}</button>`}</div>
+    <p class="hint hide-m" style="margin-bottom:var(--sp-5)">${T('Drag a chart to reorder it, or use the arrow buttons. Drag the round corner handle to resize.','拖曳圖表可以調整順序，也可以用箭頭按鈕。拖曳右下角的圓形把手可以調整大小。')}</p>`;
+  if(!d.w.length)return h+`<div class="card">${empty('grid',T('This dashboard has no charts yet','這個儀表板還沒有圖表'),T('Add a chart and choose what it measures, how it is grouped, the period and the type.','新增一張圖表，選擇要看的數值、分組方式、期間與圖表類型。'),`<button class="btn primary" data-act="chartnew">${I('plus')}${T('Add the first chart','新增第一張圖表')}</button>`)}</div>`;
+  if(mob()&&ed)return h+`<div class="card divide" style="padding:0 var(--sp-4)">${d.w.map((c,i)=>`<div class="mrow"><div class="grow"><b class="trunc" style="display:block">${esc(wTitle(c))}</b><span class="hint">${c.k==='chart'?W_T()[c.type]+T(', ','，')+pLabel(c):T('Ready-made','內建圖表')}</span></div>
+      <div class="mrow-b"><button class="iconbtn" data-act="wmove" data-arg="${i}:-1" ${i?'':'disabled'} aria-label="${T('Move up','往上移')}">${I('down','flip')}</button><button class="iconbtn" data-act="wmove" data-arg="${i}:1" ${i<d.w.length-1?'':'disabled'} aria-label="${T('Move down','往下移')}">${I('down')}</button>${c.k==='chart'?`<button class="iconbtn" data-act="chartedit" data-arg="${i}" aria-label="${T('Chart settings','圖表設定')}">${I('gear')}</button>`:''}<button class="iconbtn" data-act="wdel" data-arg="${i}" aria-label="${T('Remove','移除')} ${esc(wTitle(c))}">${I('trash')}</button></div></div>`).join('')}</div>
+      <p class="hint" style="margin-top:var(--sp-3)">${T('On a phone, charts show one at a time in this order. Widths apply on larger screens.','在手機上，圖表會依這個順序一次顯示一張。寬度設定適用於較大的螢幕。')}</p>`;
+  if(mob()){const fl=d.w.findIndex(c=>c.k==='flow'),rest=d.w.map((c,i)=>[c,i]).filter(x=>x[0].k!=='flow');if(S.sec>=rest.length)S.sec=0;const cur=rest[S.sec];
+    return h+(fl>=0?wCard(d.w[fl],fl,false,d.w.length):'')+(rest.length?`<div class="secs" role="tablist" aria-label="${T('Charts','圖表')}">${rest.map((x,k)=>`<button role="tab" aria-selected="${k===S.sec}" data-act="sec" data-arg="${k}">${esc(wShort(x[0]))}</button>`).join('')}</div><div role="tabpanel">${wCard(cur[0],cur[1],false,d.w.length)}</div>`:'')}
+  return h+`<div class="dash" id="dash">${d.w.map((c,i)=>wCard(c,i,ed,d.w.length)).join('')}${ed?`<button class="addw" style="grid-column:span 2" data-act="chartnew">${I('plus','lg')}${T('Add chart','新增圖表')}</button>`:''}</div>`}
 function chartSheet(o){const c=o.cfg,seg=(key,opts)=>`<div class="seg fill" role="group">${Object.entries(opts).map(([k,l])=>`<button data-act="cfg" data-arg="${key}:${k}" aria-pressed="${c[key]===k}" ${key==='group'&&c.type==='line'&&k!=='month'?'disabled style="opacity:.4"':''}>${l.replace(/^./,x=>x.toUpperCase())}</button>`).join('')}</div>`;
   const ti={bar:'bar',line:'line',donut:'donut',number:'hash',table:'table'};
   return`<div class="sheet-h"><h2 id="ov-title">${o.idx==null?T('Add a chart','新增圖表'):T('Chart settings','圖表設定')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div>
-  <div class="preview"><div class="small" style="font-weight:var(--fw-bold)">${esc(wTitle(c))}</div><div class="hint" style="margin-bottom:10px">${W_P()[c.period]}</div>${wBody(c,mob()?vw()-66:378)}</div>
+  ${o.idx==null&&Object.keys(BUILT).some(k=>!S.dashes[S.dash].w.find(x=>x.k===k))?`<div class="field"><span>${T('Ready-made charts','內建圖表')}</span><div class="row wrap" style="gap:6px">${Object.keys(BUILT).filter(k=>!S.dashes[S.dash].w.find(x=>x.k===k)).map(k=>`<button class="tab" data-act="addbuilt" data-arg="${k}">${I('plus','sm')}${BUILT[k].name()}</button>`).join('')}</div></div><div class="field"><span>${T('Or build your own','或自己設定一張')}</span></div>`:''}
+  <div class="preview"><div class="small" style="font-weight:var(--fw-bold)">${esc(wTitle(c))}</div><div class="hint" style="margin-bottom:10px">${pLabel(c)}</div>${wBody(c,mob()?vw()-66:378)}</div>
   <div class="field"><span>${T('Type','類型')}</span><div class="typegrid">${Object.entries(W_T()).map(([k,l])=>`<button data-act="cfg" data-arg="type:${k}" aria-pressed="${c.type===k}">${I(ti[k])}${l}</button>`).join('')}</div></div>
   <div class="field"><span>${T('Measure','數值')}</span>${seg('measure',W_M())}</div>
   ${c.type==='number'?'':`<div class="field"><span>${T('Group by','分組方式')}</span>${seg('group',W_G())}${c.type==='line'?`<span class="hint">${T('A line shows change over time, so it groups by month.','折線圖呈現隨時間的變化，因此固定依月份分組。')}</span>`:''}</div>`}
@@ -1147,20 +1222,19 @@ function chartSheet(o){const c=o.cfg,seg=(key,opts)=>`<div class="seg fill" role
 /* ============ ask your money ============ */
 const ASK_Q=()=>[['japan',T('How much did I spend on dining in Japan in September?','我 9 月在日本吃飯花了多少？')],['subs',T('Which bills and subscriptions cost me the most per year?','哪些帳單和訂閱一年下來最貴？')],['grab','我這三個月在 Grab 花了多少？'],['groceries',T('Am I spending more on groceries than in May?','我的生鮮雜貨支出比 5 月多嗎？')]];
 function answer(key){
-  if(key==='japan'){const cfg={type:'bar',measure:'spending',group:'merchant',period:'m1',size:2,f:{cat:'dining',cur:'JPY'},title:T('Dining in Japan, September','9 月在日本的餐飲'),pinned:1},tx=TX().filter(t=>t.d.startsWith('2026-09')&&t.c==='dining'&&t.cur==='JPY'),tot=sum(tx),jpy=tx.reduce((a,t)=>a+t.a,0),big=tx.slice().sort((a,b)=>b.a-a.a)[0];
+  if(key==='japan'){const cfg={k:'chart',months:['2026-09'],type:'bar',measure:'spending',group:'merchant',period:'m1',size:2,f:{cat:'dining',cur:'JPY'},title:T('Dining in Japan, September','9 月在日本的餐飲'),pinned:1},tx=TX().filter(t=>t.d.startsWith('2026-09')&&t.c==='dining'&&t.cur==='JPY'),tot=sum(tx),jpy=tx.reduce((a,t)=>a+t.a,0),big=tx.slice().sort((a,b)=>b.a-a.a)[0];
     return{cfg,fig:mh(tot),text:T(`on dining in Japan in September: ${tx.length} meals, <span class="amt num">${fmtv(jpy,'JPY')}</span> in yen. The biggest was ${big.m} on ${fd(big.d)}, <span class="amt num">${fmtv(big.a,'JPY')}</span>.`,`是你 9 月在日本的餐飲支出：共 ${tx.length} 餐，日圓原幣 <span class="amt num">${fmtv(jpy,'JPY')}</span>。最高的一筆是 ${fd(big.d)}的 ${big.m}，<span class="amt num">${fmtv(big.a,'JPY')}</span>。`),how:[T('Category: Dining','類別：餐飲'),T('Paid in JPY','以日圓付款'),T('1 to 30 Sep 2026','2026 年 9 月 1 日至 30 日'),T(`${tx.length} transactions`,`${tx.length} 筆交易`)]}}
-  if(key==='subs'){const cfg={type:'bar',measure:'spending',group:'merchant',period:'m0',size:2,f:{cat:'bills'},title:T('Bills and subscriptions by merchant','各商家的帳單與訂閱'),pinned:1},rec=recurring().filter(r=>r.c==='bills').sort((a,b)=>b.sgd-a.sgd),tot=sum(rec)*12;
+  if(key==='subs'){const cfg={k:'chart',months:[CURM],type:'bar',measure:'spending',group:'merchant',period:'m0',size:2,f:{cat:'bills'},title:T('Bills and subscriptions by merchant','各商家的帳單與訂閱'),pinned:1},rec=recurring().filter(r=>r.c==='bills').sort((a,b)=>b.sgd-a.sgd),tot=sum(rec)*12;
     return{fig:mh(tot,{dec:0}),text:T(`a year for your ${rec.length} bills and subscriptions at current prices. ${rec[0].m} is the largest at ${mh(rec[0].sgd*12,{dec:0})} a year, then ${rec[1].m} at ${mh(rec[1].sgd*12,{dec:0})}.`,`是你 ${rec.length} 筆帳單與訂閱以目前價格計算的一年總額。最高的是 ${rec[0].m}，一年 ${mh(rec[0].sgd*12,{dec:0})}，其次是 ${rec[1].m}，一年 ${mh(rec[1].sgd*12,{dec:0})}。`),
       chart:rec.slice(0,6).map(r=>`<div class="bar-row"><span class="trunc small">${r.m}</span><span class="num small">${mh(r.sgd*12,{dec:0})}</span><span class="track"><i style="width:${r.sgd/rec[0].sgd*100}%;background:var(--s8)"></i></span></div>`).join(''),cfg,how:[T('Category: Bills & subscriptions','類別：帳單與訂閱'),T('Latest monthly price × 12','最近一次月費 × 12'),T(`${rec.length} recurring charges`,`${rec.length} 筆定期扣款`)]}}
-  if(key==='grab'){const cfg={type:'bar',measure:'spending',group:'month',period:'m3',size:2,f:{m:'Grab'},title:T('Grab rides by month','每月 Grab 車資'),pinned:1},tx=TX().filter(t=>t.m==='Grab'&&t.d>='2026-08'),tot=sum(tx);
+  if(key==='grab'){const cfg={k:'chart',months:MONTHS.slice(-3),type:'bar',measure:'spending',group:'month',period:'m3',size:2,f:{m:'Grab'},title:T('Grab rides by month','每月 Grab 車資'),pinned:1},tx=TX().filter(t=>t.m==='Grab'&&t.d>='2026-08'),tot=sum(tx);
     return{cfg,fig:mh(tot),text:T(`on Grab rides from August to October so far, across ${tx.length} trips. That is about ${mh(tot/tx.length)} a ride. GrabFood orders are counted under Dining, not here.`,`是你 8 月到 10 月至今的 Grab 車資，共 ${tx.length} 趟，平均每趟約 ${mh(tot/tx.length)}。GrabFood 訂單算在餐飲，不包含在內。`),how:[T('Merchant: Grab','商家：Grab'),T('1 Aug to 24 Oct 2026','2026 年 8 月 1 日至 10 月 24 日'),T(`${tx.length} transactions`,`${tx.length} 筆交易`)]}}
-  if(key==='groceries'){const cfg={type:'line',measure:'spending',group:'month',period:'m6',size:2,f:{cat:'groceries'},title:T('Groceries by month','每月生鮮雜貨'),pinned:1},v=m=>sum(TX().filter(t=>t.c==='groceries'&&t.d.startsWith(m))),a=v('2026-05'),b=v(CURM),more=b>a;
+  if(key==='groceries'){const cfg={k:'chart',months:MONTHS,type:'line',measure:'spending',group:'month',period:'m6',size:2,f:{cat:'groceries'},title:T('Groceries by month','每月生鮮雜貨'),pinned:1},v=m=>sum(TX().filter(t=>t.c==='groceries'&&t.d.startsWith(m))),a=v('2026-05'),b=v(CURM),more=b>a;
     return{cfg,fig:(more?T('Yes, ','是，'):T('No, ','否，'))+mh(Math.abs(b-a),{dec:0})+' '+(more?T('more','更多'):T('less','更少')),text:T(`Groceries are at ${mh(b,{dec:0})} so far in October, against ${mh(a,{dec:0})} for all of May. October still has a week to run.`,`10 月至今的生鮮雜貨是 ${mh(b,{dec:0})}，5 月整月是 ${mh(a,{dec:0})}。10 月還有一週。`),how:[T('Category: Groceries','類別：生鮮雜貨'),T('May to October 2026','2026 年 5 月至 10 月')],lead:1}}
   return{none:1}}
 function askPage(){const out=S.aiOut,qs2=ASK_Q();
-  const box=out?`<div class="note" role="status">${I('bolt')}<div><b>${T("Today's free questions are used up","今天的免費提問額度已用完")}</b><div style="margin-top:4px">${T('Ask your money runs on a free AI allowance that resets at 8:00 am Singapore time. Everything else works as usual, and your earlier answers are still below.','「問問你的錢」使用免費的 AI 額度，每天新加坡時間早上 8:00 重設。其他功能都照常運作，先前的回答也還在下方。')}</div><div class="row wrap" style="margin-top:12px"><a class="btn sm primary" href="#/dashboards">${T('Build a chart yourself','自己建立圖表')}</a><a class="btn sm ghost" href="#/transactions">${T('Search transactions','搜尋交易')}</a></div></div></div>`
+  const box=out?`<div class="note" role="status">${I('bolt')}<div><b>${T("Today's free questions are used up","今天的免費提問額度已用完")}</b><div style="margin-top:4px">${T('Ask your money runs on a free AI allowance that resets at 8:00 am Singapore time. Everything else works as usual, and your earlier answers are still below.','「問問你的錢」使用免費的 AI 額度，每天新加坡時間早上 8:00 重設。其他功能都照常運作，先前的回答也還在下方。')}</div><div class="row wrap" style="margin-top:12px"><button class="btn sm primary" data-act="buildchart">${T('Build a chart yourself','自己建立圖表')}</button><a class="btn sm ghost" href="#/transactions">${T('Search transactions','搜尋交易')}</a></div></div></div>`
     :`<form class="askbox" data-form="ask"><input id="askin" aria-label="${T('Your question','你的問題')}" placeholder="${T('Ask in English or Chinese','用中文或英文提問')}" autocomplete="off"><button class="btn primary" type="submit" aria-label="${T('Ask','提問')}">${T('Ask','提問')}</button></form>
-     <div class="row between" style="margin-top:10px;gap:var(--sp-3)"><div class="meter" style="flex:0 0 120px" role="img" aria-label="${T(`${S.aiLeft} of 20 free questions left today`,`今天還剩 ${S.aiLeft}/20 次免費提問`)}"><i style="width:${S.aiLeft/20*100}%"></i></div><span class="xs muted grow">${T(`${S.aiLeft} of 20 free questions left today`,`今天還剩 ${S.aiLeft}/20 次免費提問`)}</span></div>
      <div class="sugg" aria-label="${T('Example questions','範例問題')}">${qs2.map(q=>`<button data-act="ask" data-arg="${q[0]}" lang="${q[0]==='grab'?'zh-Hant':S.lang==='zh'?'zh-Hant':'en'}">${q[1]}</button>`).join('')}</div>`;
   const hist=S.asks.map((a,i)=>{const r=answer(a.key);
     return`<div class="stack" style="gap:var(--sp-3)"><div class="q">${esc(a.q)}</div>${r.none?`<div class="card ans"><p>${T('The prototype answers only the four example questions. In the real app, the answer and its chart appear here; if a question cannot be answered from your transactions, it says so and suggests a search instead.','原型只回答四個範例問題。正式版會在這裡顯示答案與圖表；如果問題無法從你的交易中回答，會直接說明並建議改用搜尋。')}</p></div>`
@@ -1185,13 +1259,13 @@ function slides(){const m=prevM(CURM),pm=prevM(m),s=monthStats(m),p=monthStats(p
    {bg:'#fbfcfa',ink:'#17201d',h:`<div><div class="kick">${T('New subscriptions','新增的訂閱')}</div><h2 style="margin-top:8px">${news.length?T(`${news.length} started in ${mWord(m)}`,`${mWord(m)}新增 ${news.length} 筆`):T('None this month','這個月沒有')}</h2></div><div>${news.map(r=>`<div class="panel" style="background:#e0e8e3;display:flex;justify-content:space-between;gap:12px"><b>${r.m}</b><span>${mh(r.sgd)} ${T('a month','/ 月')}</span></div>`).join('')}<p style="margin-top:14px">${news.length?T(`That adds ${mh(sum(news)*12,{dec:0})} a year.`,`一年會多出 ${mh(sum(news)*12,{dec:0})}。`):''}</p></div>`},
    {bg:'#8f2f17',h:`<div><div class="kick">${T('One thing to watch','值得留意')}</div><h2 style="margin-top:8px">${cn(watch.k)}</h2><div class="huge">${m0(watch.v)}</div><p>${watch.v>watch.a?T(`${mh(watch.v-watch.a,{dec:0})} above your average for June to August.`,`比 6 至 8 月的平均多 ${mh(watch.v-watch.a,{dec:0})}。`):T('In line with your average for June to August.','與 6 至 8 月的平均相當。')}</p></div><div class="panel">${T('Average for June to August','6 至 8 月平均')}: <b>${mh(watch.a,{dec:0})}</b></div>`},
    {bg:'#0c4a43',h:`<div><h2 style="font-size:38px">${T(`That was ${mWord(m)}.`,`這就是你的 ${mWord(m)}。`)}</h2><p style="margin-top:12px">${T(`${m0(s.In)} in, ${m0(s.E)} out, ${kh(s.In,s.E)} ${s.net>=0?'kept':'over'}.`,`收入 ${m0(s.In)}，支出 ${m0(s.E)}，${s.net>=0?'留下':'超支'} ${kh(s.In,s.E)}。`)}</p></div><div class="stack"><button class="btn block" data-act="storyopen">${T(`Open the ${mWord(m)} overview`,`開啟${mWord(m)}總覽`)}</button><button class="btn alt block" data-act="story" data-arg="0">${T('Watch again','再看一次')}</button></div>`}]}
-function reviewPage(){
-  if(S.empty)return empty('story',T('Your first review arrives on the 1st','第一份回顧會在 1 日出現'),T('At the end of each month, Finance Tracker turns it into a short story: what you spent, the biggest category, what changed, new subscriptions and one thing to watch.','每個月結束時，Finance Tracker 會整理成一段短短的故事：總支出、最大類別、最大變化、新增的訂閱，以及一件值得留意的事。'));
-  const sl=slides();
-  return`<div class="story-stage"><button class="story-nav" data-act="storystep" data-arg="-1" aria-label="${T('Previous card','上一張')}">${I('left')}</button>
+function reviewStage(){const sl=slides();return`<div class="story-stage"><button class="story-nav" data-act="storystep" data-arg="-1" aria-label="${T('Previous card','上一張')}">${I('left')}</button>
   <div class="story" role="region" aria-roledescription="${T('story','故事')}" aria-label="${T('September in review','9 月回顧')}"><div class="prog" aria-hidden="true">${sl.map((_,i)=>`<i class="${i<=S.story?'on':''}"></i>`).join('')}</div>
     <div class="story-track" id="track" tabindex="0" aria-label="${T('Story cards. Use the left and right arrow keys.','故事卡片，可用左右方向鍵切換。')}">${sl.map((x,i)=>`<section class="slide" style="--sl-bg:${x.bg};--sl-ink:${x.ink||'#f3f7f4'}" aria-label="${T(`Card ${i+1} of ${sl.length}`,`第 ${i+1} 張，共 ${sl.length} 張`)}">${x.h}</section>`).join('')}</div></div>
-  <button class="story-nav" data-act="storystep" data-arg="1" aria-label="${T('Next card','下一張')}">${I('right')}</button></div>
+  <button class="story-nav" data-act="storystep" data-arg="1" aria-label="${T('Next card','下一張')}">${I('right')}</button></div>`}
+function reviewPage(){
+  if(S.empty)return empty('story',T('Your first review arrives on the 1st','第一份回顧會在 1 日出現'),T('At the end of each month, Finance Tracker turns it into a short story: what you spent, the biggest category, what changed, new subscriptions and one thing to watch.','每個月結束時，Finance Tracker 會整理成一段短短的故事：總支出、最大類別、最大變化、新增的訂閱，以及一件值得留意的事。'));
+  return`${reviewStage()}
   <p class="small muted" style="text-align:center;margin-top:var(--sp-4)">${T('Every figure here is the same one the September overview shows.','這裡的每個數字都與 9 月總覽上的一致。')}</p>`}
 
 /* ============ settings ============ */
@@ -1200,9 +1274,8 @@ function settingsPage(){const row=(l,ctrl,h='')=>`<div class="set-row"><div><div
   <section class="card"><h3>${T('Gmail','Gmail')}</h3>${S.gmail?`<div class="row">${GLOGO}<div class="grow"><b>kai.lin@gmail.com</b><div class="hint">${T('Read-only. Last scan today at 09:12, 38 new emails read.','唯讀。上次掃描：今天 09:12，讀取了 38 封新郵件。')}</div></div><span class="chip teal">${T('Connected','已連結')}</span></div>
       <div class="row wrap"><button class="btn ghost sm" data-act="rescan">${T('Scan now','立即掃描')}</button><button class="btn danger-ghost sm" data-act="confirm" data-arg="gmailoff">${T('Disconnect Gmail','中斷 Gmail 連結')}</button></div>`
     :`<p class="ink2">${T('Not connected. Finance Tracker is not reading any mail. Transactions you already imported are still here.','尚未連結。Finance Tracker 目前不會讀取任何郵件，已匯入的交易仍然保留。')}</p><div><button class="btn primary sm" data-act="goto" data-arg="gmail">${T('Connect Gmail','連結 Gmail')}</button></div>`}</section>
-  <section class="card"><h3>${T('Your invite link','你的邀請連結')}</h3><p class="ink2 small">${T('Finance Tracker is invite-only and has room for 100 people in total. Anyone with your link can create an account while places remain.','Finance Tracker 採邀請制，總共只有 100 個名額。只要還有名額，拿到你連結的人都可以建立帳戶。')}</p>
-    <div class="copy"><input class="input" readonly value="financetracker.app/join/kai-7Q2M" aria-label="${T('Invite link','邀請連結')}"><button class="btn ghost" data-act="copy">${I('copy')}${T('Copy','複製')}</button></div>
-    <div><div class="row between small"><b>${T(`${S.invites} of 100 places used`,`已使用 ${S.invites}/100 個名額`)}</b><span class="muted">${T('3 joined with your link','3 人透過你的連結加入')}</span></div><div class="meter" style="margin-top:8px"><i style="width:${S.invites}%"></i></div></div></section>
+  <section class="card"><h3>${T('Your invite link','你的邀請連結')}</h3><p class="ink2 small">${T('Finance Tracker is invite-only. Anyone who opens your link can create an account.','Finance Tracker 採邀請制，開啟你連結的人就可以建立帳戶。')}</p>
+    <div class="copy"><input class="input" readonly value="financetracker.app/join/kai-7Q2M" aria-label="${T('Invite link','邀請連結')}"><button class="btn ghost" data-act="copy">${I('copy')}${T('Copy','複製')}</button></div></section>
   <section class="card"><h3>${T('Display','顯示')}</h3><div class="divide">
     ${row(T('Language','語言'),`<div class="seg"><button data-act="setlang" data-arg="en" aria-pressed="${S.lang==='en'}">English</button><button data-act="setlang" data-arg="zh" aria-pressed="${S.lang==='zh'}" lang="zh-Hant">繁體中文</button></div>`)}
     ${row(T('Display currency','顯示幣別'),`<select class="select sm" data-on="cur" aria-label="${T('Display currency','顯示幣別')}">${Object.keys(CUR).map(c=>`<option ${c===S.cur?'selected':''}>${c}</option>`).join('')}</select>`,T('Rates updated today at 08:00. Original amounts are never changed.','匯率於今天 08:00 更新，原始金額不會被更動。'))}
@@ -1212,7 +1285,7 @@ function settingsPage(){const row=(l,ctrl,h='')=>`<div class="set-row"><div><div
     ${row(T('Export transactions','匯出交易'),`<button class="btn ghost sm" data-act="export">${I('download','sm')}${T('Download CSV','下載 CSV')}</button>`,T(`All ${TX().length} transactions with original amounts and currencies.`,`全部 ${TX().length} 筆交易，包含原始金額與幣別。`))}
     <div class="hint">${T('Signed in with Google as Kai Lin.','以 Google 帳戶 Kai Lin 登入。')} <button class="btn quiet sm" data-act="goto" data-arg="landing">${T('Sign out','登出')}</button></div></section>
   <section class="card danger-card" style="grid-column:1/-1"><h3>${T('Delete account','刪除帳戶')}</h3><div class="row wrap between"><p class="ink2" style="max-width:60ch">${T('Removes your account, every transaction, dashboard and insight, and the Gmail connection. This cannot be undone, so export first if you want a copy.','會移除你的帳戶、所有交易、儀表板與洞察，以及 Gmail 連結。此動作無法復原，如需備份請先匯出。')}</p><button class="btn danger-ghost" data-act="confirm" data-arg="delete">${T('Delete account and all data','刪除帳戶與所有資料')}</button></div></section></div>`}
-const PAGES={overview:overviewPage,insights:insightsPage,transactions:transactionsPage,import:importPage,recurring:recurringPage,dashboards:dashboardsPage,ask:askPage,review:reviewPage,settings:settingsPage};
+const PAGES={overview:overviewPage,insights:insightsPage,transactions:transactionsPage,import:importPage,recurring:recurringPage,ask:askPage,review:reviewPage,settings:settingsPage};
 /* ============ landing and sign-up flow ============ */
 const flowTop=()=>`<div class="flow-top"><a class="logo" href="#/landing" style="text-decoration:none;color:inherit">${LOGO}<span>Finance Tracker</span></a><button class="iconbtn txt" data-act="lang" lang="${S.lang==='en'?'zh-Hant':'en'}" aria-label="${T('Switch to Traditional Chinese','切換為英文')}">${S.lang==='en'?'中文':'EN'}</button><button class="iconbtn" data-act="theme" aria-label="${T('Switch theme','切換主題')}">${I(S.theme==='dark'?'sun':'moon')}</button></div>`;
 const flowWrap=(step,inner)=>`<div class="flow">${flowTop()}${step?`<div class="steps" role="img" aria-label="${T(`Step ${step} of 5`,`第 ${step} 步，共 5 步`)}">${[1,2,3,4,5].map(i=>`<i class="${i<=step?'on':''}"></i>`).join('')}</div>`:''}<main id="main" class="flow-card" tabindex="-1">${inner}</main></div>`;
@@ -1228,7 +1301,7 @@ function landingPage(){const w=mob()?vw()-64:Math.min(vw(),1240)-64-50,was=S.emp
     <div class="feat">${I('chat','lg')}<b>${T('Ask it a question','直接問它')}</b><p>${T('"How much did I spend on dining in Japan in September?" gets a figure, a chart and the working behind it.','「我 9 月在日本吃飯花了多少？」會得到數字、圖表，以及計算過程。')}</p></div></section></main>
   <footer class="land-foot">${T('Gmail access is read-only. Only merchant, amount, currency and date are kept; emails and statement files are never stored.','Gmail 權限為唯讀。只保留商家、金額、幣別與日期，不會儲存郵件或對帳單檔案。')}</footer></div>`}
 function invitePage(){return flowWrap(1,`<div><span class="chip teal">${I('check','sm')}${T('Invite link accepted','邀請連結有效')}</span></div><h1>${T('Wei Jie invited you to Finance Tracker','Wei Jie 邀請你使用 Finance Tracker')}</h1>
-  <p class="lede">${T(`It is invite-only for now, with room for 100 people. ${100-S.invites} places are left, and this link holds one for you.`,`目前採邀請制，總共 100 個名額，還剩 ${100-S.invites} 個，這個連結為你保留了一個。`)}</p>
+  <p class="lede">${T('It is invite-only for now, and this link lets you create an account.','目前採邀請制，這個連結可以讓你建立帳戶。')}</p>
   <a class="btn gbtn block" href="#/signin" style="min-height:52px">${GLOGO}${T('Sign in with Google','使用 Google 登入')}</a>
   <p class="hint">${T('Google is the only way to sign in. At this step it shares your name and email address, nothing from your mailbox.','只能使用 Google 登入。這一步只會提供你的姓名與電子郵件地址，不包含信箱內容。')}</p>
   <a class="btn quiet" href="#/overview">${T('Just looking? Try the demo','只是看看？試用示範版')}</a>`)}
@@ -1253,7 +1326,7 @@ function gmailPage(){const f=(ic,b,s,no)=>`<div class="fact ${no?'no':''}"><div 
     ${f('check',T('You approve every find','每一筆都由你確認'),T('Nothing is saved to your transactions until you accept it.','在你接受之前，不會存入你的交易。'))}
     ${f('x',T('You can stop it at any time','隨時可以停止'),T('Disconnect in Settings and the reading stops at once. Deleting your account removes everything.','在「設定」中斷連結後會立刻停止讀取。刪除帳戶會移除所有資料。'),1)}</div>
   <div class="gmock"><div class="gw">${I('alert')}${T('Google will show a warning on the next screen','下一個畫面 Google 會顯示警告')}</div>
-    <p style="margin-top:6px" class="ink2">${T('It says "Google hasn\'t verified this app". That is expected: Google\'s review is a paid process meant for public apps, and Finance Tracker is an invite-only project for at most 100 people. To carry on:','內容是「Google 尚未驗證這個應用程式」。這是預期中的情況：Google 的審核是針對公開應用程式的付費流程，而 Finance Tracker 是最多 100 人的邀請制專案。繼續的方法：')}</p>
+    <p style="margin-top:6px" class="ink2">${T('It says "Google hasn\'t verified this app". That is expected: Google\'s review is a paid process meant for public apps, and Finance Tracker is a small invite-only project. To carry on:','內容是「Google 尚未驗證這個應用程式」。這是預期中的情況：Google 的審核是針對公開應用程式的付費流程，而 Finance Tracker 是小型的邀請制專案。繼續的方法：')}</p>
     <ol><li>${T('Choose <kbd>Advanced</kbd>','點選 <kbd>進階</kbd>')}</li><li>${T('Choose <kbd>Go to Finance Tracker</kbd>','點選 <kbd>前往 Finance Tracker</kbd>')}</li><li>${T('Check that the only permission listed is <kbd>Read your email</kbd>, then allow it','確認列出的權限只有 <kbd>讀取你的電子郵件</kbd>，再按允許')}</li></ol></div>
   <div class="stack"><a class="btn primary block" href="#/scan" data-act="startscan">${T('Continue to Google','前往 Google')}</a><a class="btn ghost block" href="#/overview" data-act="skipgmail">${T('Skip for now','先跳過')}</a>
   <p class="hint" style="text-align:center">${T('Skipping is fine. Statement upload and manual entry work without Gmail, and you can connect it later in Settings.','跳過也沒關係。不連結 Gmail 也能上傳對帳單和手動記錄，之後可以在「設定」中連結。')}</p></div>`)}
@@ -1275,6 +1348,7 @@ function overlayHtml(){const o=S.overlay;if(!o)return'';const still=S._ov?'still
     <p class="ink2">${del?T(`This removes ${TX().length} transactions, ${S.dashes.length} dashboards, your insights and the Gmail connection. It cannot be undone.`,`這會移除 ${TX().length} 筆交易、${S.dashes.length} 個儀表板、你的洞察以及 Gmail 連結，而且無法復原。`):T('Finance Tracker stops reading your mail straight away. Transactions you already imported stay, and you can reconnect whenever you like.','Finance Tracker 會立刻停止讀取你的郵件。已匯入的交易會保留，之後隨時可以重新連結。')}</p>
     ${del?`<label class="field"><span>${T('Type DELETE to confirm','請輸入 DELETE 以確認')}</span><input class="input" data-autofocus data-on="delc" autocomplete="off" autocapitalize="characters"></label>`:''}
     <div class="row wrap" style="justify-content:flex-end"><button class="btn ghost" data-act="close">${del?T('Keep my account','保留帳戶'):T('Keep connected','保持連結')}</button><button class="btn danger" id="delbtn" data-act="${del?'dodelete':'gmailoff'}" ${del?'disabled':''}>${del?T('Delete everything','全部刪除'):T('Disconnect Gmail','中斷 Gmail 連結')}</button></div></div></div>`}
+  if(o.kind==='story')return`<div class="scrim center ${still}" data-act="scrim"><div class="story-ov" role="dialog" aria-modal="true" aria-labelledby="ov-title" tabindex="-1"><div class="row between" style="margin-bottom:10px"><b id="ov-title">${T('Your September review is ready','你的 9 月回顧出爐了')}</b><button class="btn sm ghost" data-act="close">${T('Not now','先不要')}</button></div>${reviewStage()}<p class="small" style="text-align:center;margin-top:10px">${T('It opens by itself on the 1st of each month, and stays under Month in review.','每月 1 日會自動開啟，之後也能在「月度回顧」找到。')}</p></div></div>`;
   const inner=o.kind==='tx'?txSheet(o):o.kind==='chart'?chartSheet(o):`<div class="sheet-h"><h2 id="ov-title">${T('More','更多')}</h2><button class="iconbtn" data-act="close" aria-label="${T('Close','關閉')}">${I('x')}</button></div><nav>${NAV().map(n=>`<a class="nav" href="#/${n[0]}" style="min-height:48px" ${n[0]===route()?'aria-current="page"':''}>${I(n[1])}<span>${n[2]}</span></a>`).join('')}</nav>`;
   return`<div class="scrim ${still}" data-act="scrim"><div class="sheet" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="ov-title">${inner}</div></div>`}
 
@@ -1301,7 +1375,7 @@ const blank=()=>({a:'',cur:'SGD',m:'',d:TODAY,c:'dining',inc:false});
 let nextId=100000;
 function addTx(d,src){const t={id:nextId++,d:d.d,m:d.m,c:d.c,a:Number(d.a),cur:d.cur,sgd:Math.round(Number(d.a)/RATES[d.cur]*100)/100,src:src||'m',inc:!!d.inc};TX().push(t);sortTx();return t}
 const sortTx=()=>TX().sort((a,b)=>a.d<b.d?1:a.d>b.d?-1:b.id-a.id);
-let undo=null;
+let undo=null,undoW=null;
 function removeTx(id){const l=TX(),i=l.findIndex(t=>t.id===id);if(i<0)return;undo=l.splice(i,1)[0];toast(T(`Deleted ${undo.m}`,`已刪除 ${undo.m}`),'undo',T('Undo','復原'))}
 
 /* ============ actions ============ */
@@ -1348,22 +1422,31 @@ const ACT={
   revedit(a){const r=S.review.find(x=>x.id===a);openOv({kind:'tx',id:null,rev:r.id,src:'g',draft:{a:r.a,cur:r.cur,m:r.m,d:r.d>TODAY?TODAY:r.d,c:r.c,inc:false}})},
   revall(){const n=S.review.length;S.review.forEach(r=>{if(!r.notice)addTx(r,'g')});S.review=[];render();toast(T(`${n} accepted`,`已接受 ${n} 筆`))},
   rescan(){toast(T('Scanned mail since 09:12. Nothing new.','已掃描 09:12 之後的郵件，沒有新發現。'))},
-  dash(a){S.dash=Number(a);render()},
-  dashnew(){S.dashes.push({name:T('Untitled dashboard','未命名儀表板'),w:[]});S.dash=S.dashes.length-1;S.edit=true;render()},
-  edit(){S.edit=!S.edit;render();if(!S.edit)toast(T('Dashboard saved','儀表板已儲存'))},
-  chartnew(){openOv({kind:'chart',idx:null,cfg:{type:'bar',measure:'spending',group:'category',period:'m0',size:2}})},
+  dash(a){S.dash=Number(a);S.sec=0;render()},
+  dashnew(){S.dashes.push({name:T('Untitled','未命名'),w:[]});S.dash=S.dashes.length-1;S.edit=true;S.sec=0;render()},
+  deldash(){const n=S.dashes[S.dash].name;S.dashes.splice(S.dash,1);S.dash=0;S.edit=false;render();toast(T(`Deleted ${n}`,`已刪除「${n}」`))},
+  resetdash(){S.dashes[0].w=DEFAULT_W();render();toast(T('Overview is back to the default layout','總覽已恢復預設版面'))},
+  sec(a){S.sec=Number(a);render()},
+  hicat(a){S.hiCat=S.hiCat===a?null:a;render()},
+  addbuilt(a){S.dashes[S.dash].w.push({k:a,size:a==='flow'?4:2});closeOv();toast(T(`${BUILT[a].name()} added`,`已加入「${BUILT[a].name()}」`))},
+  wdel(a){const w=S.dashes[S.dash].w,[x]=w.splice(Number(a),1);undoW={d:S.dash,i:Number(a),x};render();toast(T(`Removed ${wTitle(x)}`,`已移除「${wTitle(x)}」`),'undow',T('Undo','復原'))},
+  undow(){if(undoW){S.dashes[undoW.d].w.splice(undoW.i,0,undoW.x);undoW=null;toastEl.hidden=true;render()}},
+  buildchart(){S.edit=true;S._next={kind:'chart',idx:null,cfg:{k:'chart',type:'bar',measure:'spending',group:'category',period:'m0',size:2}};go('overview')},
+  firstday(){S.menu=false;S.dash=0;S.story=0;S.edit=false;if(route()==='overview')openOv({kind:'story'});else{S._next={kind:'story'};go('overview')}},
+  edit(){S.edit=!S.edit;render();if(!S.edit)toast(T('Layout saved','版面已儲存'))},
+  chartnew(){openOv({kind:'chart',idx:null,cfg:{k:'chart',type:'bar',measure:'spending',group:'category',period:'m0',size:2}})},
   chartedit(a){openOv({kind:'chart',idx:Number(a),cfg:{...S.dashes[S.dash].w[Number(a)]}})},
-  cfg(a){const[k,v]=a.split(':'),c=S.overlay.cfg;c[k]=k==='size'?Number(v):v;if(c.type==='line')c.group='month';if(!c.pinned)delete c.title;render()},
+  cfg(a){const[k,v]=a.split(':'),c=S.overlay.cfg;c[k]=k==='size'?Number(v):v;if(c.type==='line')c.group='month';if(!c.pinned&&!c.f)delete c.title;render()},
   chartsave(){const o=S.overlay,w=S.dashes[S.dash].w;if(o.idx==null)w.push(o.cfg);else w[o.idx]=o.cfg;closeOv();toast(o.idx==null?T('Chart added','已新增圖表'):T('Chart saved','圖表已儲存'))},
   wmove(a){const[i,d]=a.split(':').map(Number),w=S.dashes[S.dash].w,j=i+d;if(j<0||j>=w.length)return;[w[i],w[j]]=[w[j],w[i]];render();const b=root.querySelector(`[data-act="wmove"][data-arg="${j}:${d}"]:not([disabled])`)||root.querySelector(`[data-act="wmove"][data-arg="${j}:${-d}"]`);b&&b.focus()},
   wsize(a){const c=S.dashes[S.dash].w[Number(a)];c.size=c.size%4+1;render()},
   wdelc(){const i=S.overlay.idx;S.dashes[S.dash].w.splice(i,1);closeOv();toast(T('Chart removed','已移除圖表'))},
   ask(a){ask(ASK_Q().find(q=>q[0]===a)[1],a)},
-  pin(a){const q=S.asks[Number(a)];q.pinned=1;S.dashes[0].w.push({...answer(q.key).cfg});render();toast(T(`Pinned to ${S.dashes[0].name}`,`已釘選到「${S.dashes[0].name}」`),'viewdash',T('View','查看'))},
-  viewdash(){S.dash=0;toastEl.hidden=true;go('dashboards')},
+  pin(a){const q=S.asks[Number(a)];q.pinned=1;S.dashes[S.dash].w.push({...answer(q.key).cfg});render();toast(T(`Pinned to ${dashName(S.dash)}`,`已釘選到「${dashName(S.dash)}」`),'viewdash',T('View','查看'))},
+  viewdash(){toastEl.hidden=true;S.sec=Math.max(0,S.dashes[S.dash].w.filter(c=>c.k!=='flow').length-1);go('overview')},
   askshow(a){S.txq=a==='grab'?'Grab':'';S.txf={type:'all',cat:a==='japan'?'dining':a==='subs'?'bills':a==='groceries'?'groceries':'all',cur:a==='japan'?'JPY':'all',src:'all',month:a==='japan'?'2026-09':'all'};go('transactions')},
   story(a){storyGo(Number(a))},storystep(a){storyGo(S.story+Number(a))},
-  storyopen(){S.month=prevM(CURM);S.day=null;go('overview')},
+  storyopen(){S.month=prevM(CURM);S.day=null;S.dash=0;if(route()==='overview')closeOv();else go('overview')},
   confirm(a){openOv({kind:'confirm',what:a})},
   gmailoff(){S.gmail=false;closeOv();toast(T('Gmail disconnected. No more mail will be read.','已中斷 Gmail 連結，不會再讀取任何郵件。'))},
   dodelete(){S.overlay=null;S.empty=true;S.txEmpty=[];go('landing');toast(T('Account deleted. Nothing about you is stored any more.','帳戶已刪除，不再保存任何關於你的資料。'))},
@@ -1374,7 +1457,7 @@ const ACT={
   scandone(a){S.empty=false;S.gmail=true;if(a==='review'){S.impTab='gmail';go('import')}else{go('overview');toast(T('212 transactions added. Change any of them in Transactions.','已加入 212 筆交易，可在交易清單中修改。'))}}
 };
 function ask(q,key){if(S.aiOut)return;if(!key){const s=q.toLowerCase();key=/japan|日本/.test(s)?'japan':/subscri|bill|訂閱|帳單/.test(s)?'subs':/grab/.test(s)?'grab':/grocer|雜貨|超市/.test(s)?'groceries':'none'}
-  S.asks.push({q,key});S.aiLeft=Math.max(0,S.aiLeft-1);if(!S.aiLeft)S.aiOut=true;render()}
+  S.asks.push({q,key});render()}
 function storyGo(i){const tr=document.getElementById('track');if(!tr)return;i=Math.max(0,Math.min(tr.children.length-1,i));tr.scrollTo({left:i*tr.clientWidth,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
 
 /* ============ events ============ */
@@ -1396,12 +1479,12 @@ document.addEventListener('change',e=>{const el=e.target,on=el.dataset.on;if(!on
   else if(on==='txdc'){S.overlay.draft.cur=el.value;render()}
   else if(on==='txdcat'){S.overlay.draft.c=el.value;render()}
   else if(on==='txpast')S.overlay.past=el.checked;
-  else if(on==='cfgperiod'){S.overlay.cfg.period=el.value;render()}
+  else if(on==='cfgperiod'){S.overlay.cfg.period=el.value;delete S.overlay.cfg.months;render()}
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&(S.overlay||S.menu)){e.preventDefault();closeOv();return}
   if(S.overlay&&e.key==='Tab'){const f=[...root.querySelectorAll('.scrim a[href],.scrim button:not([disabled]),.scrim input,.scrim select')];if(!f.length)return;const a=f[0],z=f[f.length-1];if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus()}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus()}}
-  if(route()==='review'&&!S.overlay&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!/INPUT|SELECT/.test(e.target.tagName)){e.preventDefault();storyGo(S.story+(e.key==='ArrowRight'?1:-1))}});
+  if(((route()==='review'&&!S.overlay)||(S.overlay&&S.overlay.kind==='story'))&&(e.key==='ArrowRight'||e.key==='ArrowLeft')&&!/INPUT|SELECT/.test(e.target.tagName)){e.preventDefault();storyGo(S.story+(e.key==='ArrowRight'?1:-1))}});
 /* tooltips: per-mark on bars, bands and cells; crosshair on lines */
 function showTip(html,x,y){tipEl.innerHTML=html;tipEl.hidden=false;const b=tipEl.getBoundingClientRect();tipEl.style.left=Math.max(8,Math.min(window.innerWidth-b.width-8,x+14))+'px';tipEl.style.top=Math.max(8,y-b.height-12)+'px'}
 document.addEventListener('pointermove',e=>{
@@ -1414,6 +1497,11 @@ document.addEventListener('pointermove',e=>{
   if(!tipEl.hidden){tipEl.hidden=true;root.querySelectorAll('.xh').forEach(x=>x.style.opacity=0)}});
 document.addEventListener('focusin',e=>{const m=e.target.closest&&e.target.closest('[data-tip]');if(m){const[b,r]=m.dataset.tip.split('|'),bx=m.getBoundingClientRect();showTip(`<b>${esc(b)}</b>${esc(r)}`,bx.left,bx.top)}});
 document.addEventListener('focusout',()=>{tipEl.hidden=true});
+/* pie: hovering or focusing a slice or legend row dims the others; a tap pins it */
+const hl=k=>root.querySelectorAll('.pie [data-hl]').forEach(e=>e.classList.toggle('dim',!!k&&e.dataset.hl!==k));
+document.addEventListener('pointerover',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(x.dataset.hl)});
+document.addEventListener('pointerout',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(S.hiCat)});
+document.addEventListener('focusin',e=>{const x=e.target.closest&&e.target.closest('.pie [data-hl]');if(x)hl(x.dataset.hl)});
 /* dashboard editor: drag to reorder, drag the corner handle to resize */
 let dragI=null;
 document.addEventListener('dragstart',e=>{const w=e.target.closest&&e.target.closest('.w.edit');if(!w)return;dragI=Number(w.dataset.i);w.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(dragI))}catch(x){}});
@@ -1425,14 +1513,16 @@ document.addEventListener('dragend',()=>{if(dragI!=null){dragI=null;render()}});
 document.addEventListener('pointerdown',e=>{const h=e.target.closest&&e.target.closest('.w-size');if(!h)return;e.preventDefault();const card=h.closest('.w'),i=Number(h.dataset.size),c=S.dashes[S.dash].w[i],col=document.getElementById('dash').clientWidth/4,w0=card.getBoundingClientRect().width,x0=e.clientX;
   const mv=ev=>{const n=Math.max(1,Math.min(4,Math.round((w0+ev.clientX-x0)/col)));if(n!==c.size){c.size=n;card.className=card.className.replace(/\bs\d\b/,'s'+n)}};
   const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);render()};addEventListener('pointermove',mv);addEventListener('pointerup',up)});
-addEventListener('hashchange',()=>{S.overlay=null;S.menu=false;render();scrollTo(0,0);const m=document.getElementById('main');m&&m.focus({preventScroll:true})});
+addEventListener('hashchange',()=>{S.overlay=S._next||null;S._next=null;S._ov=false;S.menu=false;render();scrollTo(0,0);const m=document.getElementById('main');m&&m.focus({preventScroll:true})});
 let rsT;addEventListener('resize',()=>{clearTimeout(rsT);rsT=setTimeout(render,150)});
 if(qs.get('scan'))S.scan=Number(qs.get('scan'));
 if(qs.get('ask'))qs.get('ask').split(',').forEach(k=>{const q=ASK_Q().find(x=>x[0]===k);q&&S.asks.push({q:q[1],key:k})});
 if(qs.get('month'))S.month=qs.get('month');
+if(qs.get('dash'))S.dash=Number(qs.get('dash'));if(qs.get('sec'))S.sec=Number(qs.get('sec'));if(qs.get('cat'))S.hiCat=qs.get('cat');
 render();
 if(qs.get('sheet')==='tx')ACT.txedit(DB.tx.find(t=>t.cur==='JPY').id);
 if(qs.get('sheet')==='chart')ACT.chartnew();
+if(qs.get('sheet')==='story')ACT.firstday();
 </script>
 </body>
 </html>
