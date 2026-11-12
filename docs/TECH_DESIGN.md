@@ -16,9 +16,9 @@ Youkai, 12 Nov 2026. For Checkpoint 3. Jinni and Ghost comment on the pull reque
 | D6 | **No automatic database backups on the free plan.** | Accept for release 1. Users can export CSV, and all schema changes are in the repository. Revisit before inviting people beyond friends. |
 | D7 | **Sample statements** from each bank you hold (already promised). | Needed before milestone 2. Bank rules for a bank without a sample cannot be accepted. |
 
-## 2. Accounts the product owner must create (all free, no card needed)
+## 2. Accounts the product owner must create (all free)
 
-Keys go through the secure credential form Phaethon opens, or straight into GitHub repository secrets. Never paste them in chat and never commit them.
+None of the three should ask for a payment card on its free plan; if one does, stop and tell Phaethon. Keys go through the secure credential form Phaethon opens, or straight into GitHub repository secrets. Never paste them in chat and never commit them.
 
 | Account | Steps | What we need |
 | --- | --- | --- |
