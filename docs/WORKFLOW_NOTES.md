@@ -23,3 +23,13 @@ A running log of what worked, what did not, and what to change. After release th
 - **Review every phone screenshot, not a sample.** The first pass looked at about a third of them and missed a 9,000 px overview. Side-by-side light and dark montages made reviewing all 28 screens practical.
 - **Do not commit a full screenshot matrix.** 80 PNGs added 27 MB. Commit about a dozen and keep a script that regenerates the rest on demand.
 - **Measure touch targets by script at the phone width.** "44 px" was claimed with exceptions; a script listing every control under 44 px turned it into a fact.
+
+## 12 Nov 2026: Tech design phase (Youkai)
+
+- **Check a dependency's licence at its source repository, not its package page.** The PRD recorded Monopoly as MIT from a stale PyPI page; the repository had been AGPL for over two years. Next time: read the licence file and the last release date before a library is named in a PRD.
+- **Commit and push a skeleton before researching.** A usage limit stopped the first session with nothing on disk. Next time: branch, skeleton, push, then research in small committed steps, with sources written down as they are found.
+- **Fetch documentation as text and search it.** Saving each official page and searching for the exact limit was faster and more reliable than reading whole pages, and left a quotable source for every claim.
+- **Ask for third-party accounts one phase early.** Three things could not be proven without the product owner's Google and Cloudflare accounts (the 7-day test, AI cost per question, model accuracy). Creating the free accounts during the design phase would let the tech design verify instead of assume.
+- **A spike on generated data proves the tool, not the input.** The PDF spike showed the library handles passwords and positions; it says nothing about real bank layouts. Label spikes with what they did not prove.
+- **Decide how reviews are recorded when every agent shares one GitHub account.** GitHub cannot require an approval from the author's own account, so "Ghost approves" needs an agreed form (a review comment plus required checks) before the first feature pull request.
+- **Clarify "no AI model names" for design documents.** The brief forbade model names in files but also asked for a chosen model; the tech design leaves the model id to configuration. State up front whether the rule covers the product's own AI.
