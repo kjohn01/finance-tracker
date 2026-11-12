@@ -33,3 +33,11 @@ A running log of what worked, what did not, and what to change. After release th
 - **A spike on generated data proves the tool, not the input.** The PDF spike showed the library handles passwords and positions; it says nothing about real bank layouts. Label spikes with what they did not prove.
 - **Decide how reviews are recorded when every agent shares one GitHub account.** GitHub cannot require an approval from the author's own account, so "Ghost approves" needs an agreed form (a review comment plus required checks) before the first feature pull request.
 - **Clarify "no AI model names" for design documents.** The brief forbade model names in files but also asked for a chosen model; the tech design leaves the model id to configuration. State up front whether the rule covers the product's own AI.
+
+## 12 Nov 2026: Tech design review and test plan (Ghost)
+
+- **Bring QA in before the data model is drafted, not after.** Four of the six blocking findings (transfers and refunds, the duplicate fingerprint, Gmail against statement duplicates, invite rules) are rules the hand calculations depend on. A half-page "rules that decide totals" list agreed between Fairy, Youkai and Ghost before the tech design would have caught them earlier.
+- **Every PRD acceptance criterion needs a stated way to measure it.** Six criteria could not be automated as written ("under 2 minutes", "24 hours old", "each of the six banks", "18 of 20" on a shared AI allowance, "scores 90"). Next time QA reads the PRD before Checkpoint 1 and marks each criterion as automatic, proxy or manual.
+- **Put unmet PRD obligations in the decision table.** The required real test of weekly Gmail re-approval was reported only under "assumed" in the last section. Anything the PRD demanded and the phase could not deliver belongs in "what the product owner must decide".
+- **Spot-check cited limits by fetching the page, and look for what the document did not cite.** All quoted limits held; the gaps were the uncited ones (database egress, the default 1,000-row response limit, the new Gmail daily threshold).
+- **Keep development and production third-party projects separate from day one** when a provider has a lifetime cap (Google's 100 users): test sign-ins otherwise spend it.
