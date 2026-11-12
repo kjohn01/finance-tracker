@@ -23,3 +23,24 @@ A running log of what worked, what did not, and what to change. After release th
 - **Review every phone screenshot, not a sample.** The first pass looked at about a third of them and missed a 9,000 px overview. Side-by-side light and dark montages made reviewing all 28 screens practical.
 - **Do not commit a full screenshot matrix.** 80 PNGs added 27 MB. Commit about a dozen and keep a script that regenerates the rest on demand.
 - **Measure touch targets by script at the phone width.** "44 px" was claimed with exceptions; a script listing every control under 44 px turned it into a fact.
+
+## 12 Nov 2026: Tech design phase (Youkai)
+
+- **Check a dependency's licence at its source repository, not its package page.** The PRD recorded Monopoly as MIT from a stale PyPI page; the repository had been AGPL for over two years. Next time: read the licence file and the last release date before a library is named in a PRD.
+- **Commit and push a skeleton before researching.** A usage limit stopped the first session with nothing on disk. Next time: branch, skeleton, push, then research in small committed steps, with sources written down as they are found.
+- **Fetch documentation as text and search it.** Saving each official page and searching for the exact limit was faster and more reliable than reading whole pages, and left a quotable source for every claim.
+- **Ask for third-party accounts one phase early.** Three things could not be proven without the product owner's Google and Cloudflare accounts (the 7-day test, AI cost per question, model accuracy). Creating the free accounts during the design phase would let the tech design verify instead of assume.
+- **A spike on generated data proves the tool, not the input.** The PDF spike showed the library handles passwords and positions; it says nothing about real bank layouts. Label spikes with what they did not prove.
+- **Decide how reviews are recorded when every agent shares one GitHub account.** GitHub cannot require an approval from the author's own account, so "Ghost approves" needs an agreed form (a review comment plus required checks) before the first feature pull request.
+- **Clarify "no AI model names" for design documents.** The brief forbade model names in files but also asked for a chosen model; the tech design leaves the model id to configuration. State up front whether the rule covers the product's own AI.
+
+## 12 Nov 2026: Tech design review and test plan (Ghost)
+
+- **Bring QA in before the data model is drafted, not after.** Four of the six blocking findings (transfers and refunds, the duplicate fingerprint, Gmail against statement duplicates, invite rules) are rules the hand calculations depend on. A half-page "rules that decide totals" list agreed between Fairy, Youkai and Ghost before the tech design would have caught them earlier.
+- **Every PRD acceptance criterion needs a stated way to measure it.** Six criteria could not be automated as written ("under 2 minutes", "24 hours old", "each of the six banks", "18 of 20" on a shared AI allowance, "scores 90"). Next time QA reads the PRD before Checkpoint 1 and marks each criterion as automatic, proxy or manual.
+- **Put unmet PRD obligations in the decision table.** The required real test of weekly Gmail re-approval was reported only under "assumed" in the last section. Anything the PRD demanded and the phase could not deliver belongs in "what the product owner must decide".
+- **Spot-check cited limits by fetching the page, and look for what the document did not cite.** All quoted limits held; the gaps were the uncited ones (database egress, the default 1,000-row response limit, the new Gmail daily threshold).
+- **Keep development and production third-party projects separate from day one** when a provider has a lifetime cap (Google's 100 users): test sign-ins otherwise spend it.
+- **Stress-test the data model with a real month before review (Youkai, after the reviews).** Ghost's blocking items (card payments counted twice, identical rows collapsing, the same purchase from two sources) all came from walking one realistic month through the tables. Next time: the tech design includes that walk-through, with one card statement, one deposit statement and one foreign receipt, before anyone reviews it.
+- **Compare the design against every promise on the approved screens.** Three review items were screen copy the architecture had quietly broken ("about two minutes", "never copied", refusal before Google). Next time: list each promise in the prototype's copy and state how the design keeps it.
+- **Put everything the product owner is accepting in the first section.** An untested assumption listed only under "assumed" at the end was rightly flagged as hidden. Decisions and accepted risks belong together at the top.
