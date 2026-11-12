@@ -6,15 +6,35 @@ The words this project uses, with one meaning each. Use them exactly in document
 
 **Account.** A user's membership of Finance Tracker, created by redeeming an invite. Not a bank account; say **bank account** for that.
 
-**Invite.** A personal link that lets one new person create an account. Every user has one to share. _Avoid_: referral, code.
+**Invite.** A user's personal link that lets other people create accounts. Each user has exactly one at a time; it can be used by any number of people while places remain. _Avoid_: referral, code.
 
-**Place.** One of the 100 accounts that can ever be created. A place is used when an invite is redeemed and is not returned when an account is deleted.
+**Regenerate (an invite).** Replace a user's invite with a new one. The old link stops working; accounts already created through it are unaffected.
+
+**Founder invite.** The single-use invite that lets the first user in.
+
+**Place.** One of the 100 accounts that can ever be created. A place is used when an account is created and is not returned when an account is deleted.
 
 **Demo mode.** The app running on sample data for a visitor with no account. Nothing done in demo mode is kept.
 
-**Transaction.** One movement of money on one date: an **expense** (money out) or **income** (money in). It has an original amount, an original currency, a merchant, a category and a source. The unit everything else is built from.
+**Transaction.** One movement of money on one date. It has a kind, an original amount, an original currency, a merchant, a category and a source. The unit everything else is built from.
 
-**Original amount, original currency.** What was actually charged or received. Never changed by conversion.
+**Kind.** What a transaction is: expense, income, refund or transfer.
+
+**Expense.** Money paid to someone else. Adds to spending.
+
+**Income.** Money received from someone else.
+
+**Refund.** Money returned by a merchant for an earlier expense. It reduces spending in its category in the month it arrives. Never income.
+
+**Transfer.** Money moved between the user's own cards and bank accounts, including paying a card bill. Counted in no total, chart, insight or story.
+
+**Spending.** Expenses minus refunds for a period. Transfers are never part of it.
+
+**Original amount, original currency.** What the merchant charged or paid, in the merchant's currency. Never changed by conversion.
+
+**Billed amount.** What the user's bank charged for a transaction, in the bank account's currency, when a statement shows it. Totals use the billed amount when it is known.
+
+**Card or bank account.** A card or deposit account at a bank that statements come from. Never called just "account".
 
 **Display currency.** The one currency the user chooses to see every total in. Changing it changes how amounts are shown, never what is stored.
 
@@ -34,9 +54,13 @@ The words this project uses, with one meaning each. Use them exactly in document
 
 **Import.** Accepting a preview so that its transactions join the user's data. Also the record that this happened.
 
-**Duplicate.** A row in a preview that is already in the user's data from an earlier import. Skipped automatically. Different from a **possible duplicate charge**, which is an insight about two real transactions.
+**Duplicate.** A row in a preview that is the very same row as one imported earlier from the same card or bank account. Skipped automatically.
 
-**Scan.** One pass over the user's Gmail that searches for receipts, invoices and renewal notices and reads only the messages found.
+**Likely match.** A find or preview row that appears to be the same purchase as a transaction that arrived from a different source, such as a receipt and its statement line. Shown as "Already have this"; when the user confirms, one transaction remains.
+
+**Possible duplicate charge.** An insight: two real transactions that suggest the merchant charged twice. Not a duplicate and not a likely match.
+
+**Scan.** One pass over the user's Gmail that searches for receipts, invoices and renewal notices and reads only the messages found. The **first scan** covers the last 12 months, newest first; later scans cover mail since the last one.
 
 **Find.** A purchase or charge a scan has read from one email, waiting for the user to accept, edit or reject it. A find is not a transaction until accepted. _Avoid_: match, result.
 
@@ -54,7 +78,7 @@ The words this project uses, with one meaning each. Use them exactly in document
 
 **Chart.** One view of the transactions on a dashboard tab, defined by a measure, a grouping, a period and a type.
 
-**Measure.** What a chart adds up: spending, income, or net.
+**Measure.** What a chart adds up: spending, income, or net (income minus spending).
 
 **Kept.** Income minus spending for a period. The same as net; "kept" is the word on screen.
 
@@ -68,7 +92,7 @@ The words this project uses, with one meaning each. Use them exactly in document
 
 **Answer.** The figure and chart that respond to a question, with the transactions it was worked out from. An answer can be **pinned**, which adds its chart to the current dashboard tab.
 
-**Allowance.** The number of questions that can be asked in a day at no cost. When it is used up, Ask is unavailable until the next day.
+**Allowance.** The number of questions that can be asked in a day at no cost, by one user and by all users together. When either is used up, Ask is unavailable until the allowance resets.
 
 **Month in review.** A short sequence of cards summarising one finished month.
 
