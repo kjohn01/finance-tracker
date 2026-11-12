@@ -1,6 +1,6 @@
 # ADR 0001: Supabase for data and sign-in, one Cloudflare Worker for everything else
 
-**Status:** Proposed, 12 Nov 2026. **Deciders:** product owner (Checkpoint 3).
+**Status:** Proposed, 12 Nov 2026; revised after review. **Deciders:** product owner (Checkpoint 3).
 
 ## Context
 
@@ -23,13 +23,17 @@ Running cost must be zero. The app needs Google sign-in, a database where one ac
 ## Consequences
 
 - The browser talks to the database directly, so every table needs a security rule and a test for it. This is checked in CI with two users.
+- The free plan has no backups and allows two projects. The second project is used as staging: migrations run there first, and a copy of the live database is saved to its private storage before every migration and weekly. Copies are never uploaded as workflow artifacts, which are public on this repository.
+- Free egress is 5 GB a month, so the app pages, caches and fetches only changes (ADR 0005).
+- Sign-in settings are kept in the repository. Email, password and anonymous sign-in stay off in the live project, checked after every deploy.
+- A free Worker has 10 ms of CPU and 50 outgoing requests per run, so loading rate history is a one-off script, not the scheduled job.
 - The daily rates job doubles as activity that should keep the project from pausing. If it is paused anyway, restoring is one click in the dashboard.
 - Moving off Supabase means replacing sign-in and the store adapter; the schema is plain Postgres. Moving off Cloudflare means re-hosting static files and three small handlers.
 - Never enable Workers Paid: on the free plan, exceeding a limit returns an error and nothing is charged.
 
 ## Sources
 
-- https://supabase.com/pricing (500 MB database, 50,000 monthly users, 2 projects, paused after 1 week of inactivity)
+- https://supabase.com/pricing (500 MB database, 5 GB egress, 50,000 monthly users, 2 projects, paused after 1 week of inactivity)
 - https://supabase.com/docs/guides/deployment/going-into-prod ("may pause applications on the Free Plan that exhibit low activity in a 7-day period")
 - https://supabase.com/docs/guides/platform/backups (daily backups start at the Pro plan)
 - https://developers.cloudflare.com/workers/platform/limits/ (100,000 requests a day, 10 ms CPU, 5 Cron Triggers)

@@ -1,6 +1,6 @@
 # ADR 0005: Every figure is computed in the browser from one loaded list of transactions
 
-**Status:** Proposed, 12 Nov 2026. **Deciders:** product owner (Checkpoint 3).
+**Status:** Proposed, 12 Nov 2026; revised after review. **Deciders:** product owner (Checkpoint 3).
 
 ## Context
 
@@ -19,6 +19,10 @@ After sign-in the app loads the user's transactions and the rate table once, kee
 
 ## Consequences
 
+- Loading is paged (the database returns at most 1,000 rows a request), cached on the device, and later starts fetch only rows changed or deleted since the last load. Automatic refetch on window focus is off. Without this, 100 users reloading full histories would exhaust the 5 GB monthly egress before any phone struggled.
+- The cache is cleared on sign-out and on account deletion.
+- `core` never reads the clock; today's date is passed in, so every figure can be tested at a fixed date.
+- The two store adapters are held to one shared contract test, so the demo store enforces the same rules (unique fingerprint, kinds) as the database.
 - Demo mode and real mode differ only in where the list comes from.
 - Ghost's "matches a hand calculation" tests run as fast unit tests against `core`.
 - If a user outgrows the ceiling, `core` keeps its interface and the store loads by date range, with sums pushed into database functions. That is a contained change, but it is the reason this record exists.

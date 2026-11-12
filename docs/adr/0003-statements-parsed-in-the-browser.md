@@ -1,6 +1,6 @@
 # ADR 0003: Statements are parsed in the browser with our own bank rules
 
-**Status:** Proposed, 12 Nov 2026. **Deciders:** product owner (Checkpoint 3).
+**Status:** Proposed, 12 Nov 2026; revised after review. **Deciders:** product owner (Checkpoint 3).
 
 ## Context
 
@@ -29,6 +29,9 @@ Every import is checked: the sum of parsed rows must equal the total printed on 
 
 ## Consequences
 
+- Bank rules also set each row's kind: a card payment or a move between the user's own accounts is a transfer, and other credits on a card statement are refunds (`docs/tech/DATA_MODEL.md` section 2).
+- pdf.js is configured never to evaluate code from a file.
+- Tests use synthetic files in the repository, built from the real layouts; real samples are checked outside the repository and never committed.
 - The statement screen can truthfully say the file never leaves the device.
 - Image-only (scanned) statements are not supported; the user is pointed to the bank's CSV or manual entry.
 - A bank is "supported" only once a real sample passes Ghost's acceptance test.

@@ -167,7 +167,7 @@ The daily job stores each currency's rate against SGD with the time it was fetch
 - **Logs.** Request bodies are never logged, in the Worker or the database: no questions, receipt text or emails.
 - **Stored:** transaction fields, a label and a hash for each card or account, rules, dashboards, settings, name and email. **Never stored:** statement files, PDF passwords, full account numbers, email bodies, Google tokens, Ask questions.
 - **Account deletion.** One function deletes the sign-in record and every row cascades, except that people the user invited are kept. The device cache is cleared.
-- **Sign-in settings** live in the repository. Email, password and anonymous sign-in are off in the live project; the deploy smoke test fails if either is on.
+- **Sign-in settings** live in the repository. Email, password and anonymous sign-in are off in the live project; the deploy smoke test fails if any of them is on.
 - **Browser hardening.** Strict content security policy; the only third-party script is Google's. No analytics.
 
 ## 10. Scale
